@@ -18,13 +18,57 @@
 <img src="https://halitsever-api.vercel.app/api/details"/>
 </p>
 
-- 🧑‍💻 [**TODO**](#) - update docs
+Watchbear lets you watch any video together, in sync. Start a room, share the
+code, and everyone's playback stays on the same frame, with chat and reactions
+in a side panel right next to the video.
+
+- **Synced playback:** play, pause and seek stay in step for everyone in the room.
+- **Join with a code:** no account; friends drop in within seconds.
+- **Side-panel chat:** live messages and quick reactions next to the video.
+- **Live position:** the panel shows the current second of the active tab's video.
+
+This repo is a pnpm monorepo:
+
+```
+apps/
+  extension/   browser extension (MV3, React + TypeScript + Tailwind, Vite + CRXjs)
+  server/      backend (NestJS)
+  landing/     static landing page
+```
 
 <p align="center" >
 <img src="https://halitsever-api.vercel.app/api/installation"/>
 </p>
 
-Todo: update docs
+Requires Node >= 20 and pnpm >= 10.
+
+```bash
+pnpm install
+```
+
+**Extension**
+
+```bash
+pnpm dev:ext      # Vite dev server with HMR (outputs apps/extension/dist)
+pnpm build:ext    # production build
+```
+
+Then open `chrome://extensions`, enable Developer mode, and **Load unpacked** →
+`apps/extension/dist`.
+
+**Server**
+
+```bash
+pnpm dev:server   # nest start --watch
+pnpm build:server
+```
+
+**Whole workspace**
+
+```bash
+pnpm build        # build every app
+pnpm typecheck    # type-check every app
+```
 
 <p align="center" href="https://github.com/halitsever/watchbear/issues">
 <img src="https://halitsever-api.vercel.app/api/issue"/>

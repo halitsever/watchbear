@@ -1,0 +1,19 @@
+{
+  "name": "watchbear",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Watchbear monorepo: browser extension + server",
+  "scripts": {
+    "dev:ext": "pnpm --filter @watchbear/extension dev",
+    "build:ext": "pnpm --filter @watchbear/extension build",
+    "dev:server": "pnpm --filter @watchbear/server start:dev",
+    "build:server": "pnpm --filter @watchbear/server build",
+    "build": "pnpm -r --if-present build",
+    "typecheck": "pnpm -r --if-present typecheck"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
+  },
+  "packageManager": "pnpm@11.4.0"
+}

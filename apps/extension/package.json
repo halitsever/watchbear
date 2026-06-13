@@ -1,0 +1,35 @@
+{
+  "name": "@watchbear/extension",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "The sweet way to watch together",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.6.1",
+    "@fontsource/fredoka": "^5.2.10",
+    "@fontsource/nunito": "^5.2.7",
+    "@iconify-json/lucide": "^1.2.111",
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
+    "@tailwindcss/vite": "^4.3.1",
+    "@types/chrome": "^0.1.43",
+    "@types/node": "^22.19.21",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "tailwindcss": "^4.3.1",
+    "typescript": "^6.0.3",
+    "unplugin-icons": "^23.0.1",
+    "vite": "^8.0.16"
+  }
+}

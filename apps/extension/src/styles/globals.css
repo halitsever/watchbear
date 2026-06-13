@@ -1,0 +1,55 @@
+@import 'tailwindcss';
+
+@import '@fontsource/fredoka/400.css';
+@import '@fontsource/fredoka/600.css';
+@import '@fontsource/nunito/500.css';
+@import '@fontsource/nunito/600.css';
+@import '@fontsource/nunito/700.css';
+@import '@fontsource/nunito/800.css';
+
+@theme {
+  --color-wb-bg: #1b1310;
+  --color-wb-bg2: #241a13;
+  --color-wb-panel: #2a201a;
+  --color-wb-panel2: #352a21;
+  --color-wb-panel3: #40332a;
+  --color-wb-line: rgba(255, 220, 180, 0.1);
+  --color-wb-honey: #ffb23e;
+  --color-wb-honey-deep: #f2912a;
+  --color-wb-coral: #ff8c6b;
+  --color-wb-cream: #f6ebdc;
+  --color-wb-text: #f6ebdc;
+  --color-wb-dim: #b7a188;
+  --color-wb-faint: #8a765f;
+  --color-wb-online: #7bc96f;
+
+  --font-fredoka: 'Fredoka', sans-serif;
+  --font-nunito: 'Nunito', system-ui, sans-serif;
+
+  --animate-wb-pulse: wb-pulse 1.8s infinite;
+  --animate-wb-spin: wb-spin 0.7s linear infinite;
+
+  @keyframes wb-pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(123, 201, 111, 0.5);
+    }
+    70% {
+      box-shadow: 0 0 0 7px rgba(123, 201, 111, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(123, 201, 111, 0);
+    }
+  }
+
+  @keyframes wb-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+html,
+body {
+  margin: 0;
+  font-family: var(--font-nunito);
+}

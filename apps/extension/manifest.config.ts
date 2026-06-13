@@ -1,0 +1,39 @@
+import { defineManifest } from '@crxjs/vite-plugin';
+
+const icons = {
+  16: 'icons/icon16.png',
+  32: 'icons/icon32.png',
+  48: 'icons/icon48.png',
+  128: 'icons/icon128.png',
+};
+
+export default defineManifest({
+  manifest_version: 3,
+  name: 'Watchbear',
+  short_name: 'Watchbear',
+  description: 'The sweet way to watch together',
+  version: '0.1.0',
+  icons,
+  action: {
+    default_popup: 'src/popup/index.html',
+    default_title: 'Watchbear',
+    default_icon: icons,
+  },
+  side_panel: {
+    default_path: 'src/sidepanel/index.html',
+  },
+  background: {
+    service_worker: 'src/background/main.ts',
+    type: 'module',
+  },
+  content_scripts: [
+    {
+      matches: ['<all_urls>'],
+      js: ['src/content/main.ts'],
+      css: ['src/content/content.css'],
+      run_at: 'document_idle',
+    },
+  ],
+  permissions: ['storage', 'activeTab', 'tabs', 'scripting', 'sidePanel'],
+  host_permissions: ['<all_urls>'],
+});

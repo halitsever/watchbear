@@ -130,3 +130,6 @@ dist
 .pnp.*
 .DS_Store
 .gitignore
+
+# Vite dependency cache
+.vite

@@ -5,6 +5,7 @@
   "description": "Watchbear NestJS backend",
   "scripts": {
     "build": "nest build",
+    "dev": "nest start --watch",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main.js",
@@ -14,8 +15,11 @@
     "@nestjs/common": "^11.1.26",
     "@nestjs/core": "^11.1.26",
     "@nestjs/platform-express": "^11.1.26",
+    "@nestjs/platform-socket.io": "^11.1.26",
+    "@nestjs/websockets": "^11.1.26",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.23",

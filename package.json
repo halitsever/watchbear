@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "description": "Watchbear monorepo: browser extension + server",
   "scripts": {
+    "dev": "pnpm -r --parallel dev",
     "dev:ext": "pnpm --filter @watchbear/extension dev",
     "build:ext": "pnpm --filter @watchbear/extension build",
     "dev:server": "pnpm --filter @watchbear/server start:dev",

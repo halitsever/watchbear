@@ -1,4 +1,5 @@
 import type { TabMessage } from '@/lib/messages';
+import { joinVideoChannel, type VideoChannel, type VideoControl } from '@/lib/socket';
 
 declare global {
   interface Window {
@@ -9,16 +10,91 @@ declare global {
 if (!window.__wbLoaded) {
   window.__wbLoaded = true;
 
+  let channel: VideoChannel | null = null;
+  let video: HTMLVideoElement | null = null;
+  let applyingRemote = false;
+  let applyTimer: number | undefined;
+  let bindTries = 0;
+
   chrome.runtime.onMessage.addListener((msg: TabMessage) => {
-    if (msg.type === 'START_ROOM' || msg.type === 'JOIN_ROOM') showLiveTag();
-    if (msg.type === 'LEAVE_ROOM') removeLiveTag();
+    if (msg.type === 'START_ROOM' || msg.type === 'JOIN_ROOM') {
+      showLiveTag();
+      startSync(msg.code);
+    }
+    if (msg.type === 'LEAVE_ROOM') {
+      removeLiveTag();
+      stopSync();
+    }
   });
+
+  function pickVideo(): HTMLVideoElement | null {
+    const vids = [...document.querySelectorAll('video')];
+    if (vids.length === 0) return null;
+    return vids.map((v) => ({ v, area: v.clientWidth * v.clientHeight })).sort((a, b) => b.area - a.area)[0].v;
+  }
+
+  function startSync(code: string) {
+    if (!channel) channel = joinVideoChannel(code, applyControl);
+    bindTries = 0;
+    attachVideo();
+  }
+
+  function stopSync() {
+    channel?.disconnect();
+    channel = null;
+    detachVideo();
+  }
+
+  function attachVideo() {
+    if (video) return;
+    const v = pickVideo();
+    if (!v) {
+      if (bindTries++ < 20) window.setTimeout(attachVideo, 500);
+      return;
+    }
+    video = v;
+    v.addEventListener('play', onLocal);
+    v.addEventListener('pause', onLocal);
+    v.addEventListener('seeked', onLocal);
+  }
+
+  function detachVideo() {
+    video?.removeEventListener('play', onLocal);
+    video?.removeEventListener('pause', onLocal);
+    video?.removeEventListener('seeked', onLocal);
+    video = null;
+  }
+
+  function onLocal(e: Event) {
+    if (applyingRemote || !channel || !video) return;
+    const action = e.type === 'play' ? 'play' : e.type === 'pause' ? 'pause' : 'seek';
+    channel.send({ action, time: video.currentTime });
+  }
+
+  function applyControl(c: VideoControl) {
+    if (!video) return;
+    applyingRemote = true;
+    window.clearTimeout(applyTimer);
+    if (c.action === 'play') {
+      if (Math.abs(video.currentTime - c.time) > 0.5) video.currentTime = c.time;
+      void video.play();
+    } else if (c.action === 'pause') {
+      video.pause();
+      if (Math.abs(video.currentTime - c.time) > 0.5) video.currentTime = c.time;
+    } else {
+      video.currentTime = c.time;
+    }
+    // let the resulting play/pause/seeked events settle without rebroadcasting
+    applyTimer = window.setTimeout(() => {
+      applyingRemote = false;
+    }, 400);
+  }
 
   function showLiveTag(): void {
     if (document.getElementById('wb-live-tag')) return;
-    const video = document.querySelector('video');
-    if (!video) return;
-    const container = (video.closest('[class]') as HTMLElement | null) ?? video.parentElement;
+    const v = document.querySelector('video');
+    if (!v) return;
+    const container = (v.closest('[class]') as HTMLElement | null) ?? v.parentElement;
     if (!container) return;
 
     const pos = container.style.position;

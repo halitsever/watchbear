@@ -1,22 +1,33 @@
 import { useEffect, useRef, useState } from "react";
 import IconPanelRight from "~icons/lucide/panel-right-open";
 import IconPlay from "~icons/lucide/play";
-import { BearMark } from "@/components/Bear";
+import { BearMark, BearFace } from "@/components/Bear";
 import { useRoomState } from "@/hooks/useRoomState";
-import { getActiveTab, sendToBackground } from "@/lib/messages";
+import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
 import { generateCode } from "@/lib/room";
+import { getIdentity, setIdentityName, type Identity } from "@/lib/identity";
 
 export function Popup() {
   const { inRoom, roomCode } = useRoomState();
   const [code, setCode] = useState("");
+  const [you, setYou] = useState<Identity | null>(null);
+  const [hasVideo, setHasVideo] = useState<boolean | null>(null);
   const activeTab = useRef<chrome.tabs.Tab | undefined>(undefined);
 
   // cache the tab so the open handler stays a sync user gesture
   useEffect(() => {
     getActiveTab().then((t) => {
       activeTab.current = t;
+      if (t?.id != null) getVideoTime(t.id).then((res) => setHasVideo(!!res));
+      else setHasVideo(false);
     });
+    getIdentity().then(setYou);
   }, []);
+
+  function changeName(value: string) {
+    setYou((y) => (y ? { ...y, name: value } : y));
+    void setIdentityName(value);
+  }
 
   async function startRoom() {
     const tab = await getActiveTab();
@@ -93,16 +104,36 @@ export function Popup() {
         <>
           {/* body */}
           <div className="px-4">
+            <div className="mb-[11px] flex items-center gap-2">
+              <BearFace
+                size={30}
+                fur={you?.fur ?? "#B97C43"}
+                furDark={you?.furDark ?? "#9A6230"}
+                ring="var(--color-wb-honey)"
+              />
+              <input
+                value={you?.name ?? ""}
+                onChange={(e) => changeName(e.target.value)}
+                placeholder="your bear name"
+                maxLength={20}
+                autoComplete="off"
+                className="min-w-0 flex-1 rounded-xl border border-wb-line bg-[#1d150f] px-[13px] py-[10px] text-[13.5px] font-bold text-wb-text outline-none transition-colors placeholder:text-wb-faint focus:border-[rgba(255,178,62,.45)]"
+              />
+            </div>
             <button
               type="button"
               onClick={startRoom}
-              className="flex w-full items-center justify-between gap-2 rounded-[14px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-4 py-[14px] text-[14.5px] font-extrabold text-[#3a2410] shadow-[0_8px_20px_rgba(242,145,42,.32)] transition-all hover:-translate-y-px hover:brightness-105 active:translate-y-0"
+              disabled={hasVideo === false}
+              className="flex w-full items-center justify-between gap-2 rounded-[14px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-4 py-[14px] text-[14.5px] font-extrabold text-[#3a2410] shadow-[0_8px_20px_rgba(242,145,42,.32)] transition-all hover:-translate-y-px hover:brightness-105 active:translate-y-0 disabled:cursor-default disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0 disabled:hover:brightness-100"
             >
               <span className="flex items-center gap-[9px]">
                 <IconPlay className="h-[17px] w-[17px]" />
                 Start a party with this video
               </span>
             </button>
+            {hasVideo === false && (
+              <div className="mt-2 text-center text-[12px] font-semibold text-wb-faint">No video found on this page.</div>
+            )}
 
             <div className="mt-[11px] flex gap-2">
               <input

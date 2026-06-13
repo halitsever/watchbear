@@ -1,4 +1,5 @@
 export interface Member {
+  id?: string;
   name: string;
   fur: string;
   furDark: string;

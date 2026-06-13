@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.6.1",

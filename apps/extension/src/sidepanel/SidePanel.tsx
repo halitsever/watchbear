@@ -8,13 +8,14 @@ import { MemberChip } from "@/components/MemberChip";
 import { ChatLine } from "@/components/ChatLine";
 import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
+import { getIdentity, type Identity } from "@/lib/identity";
+import { joinRoom, type RoomConnection } from "@/lib/socket";
 import type { Member, Message } from "@/lib/types";
 
-const YOU: Member = { name: "You", fur: "#C98A4B", furDark: "#A86B30", you: true, host: true };
 const REACTIONS = ["🐻", "😂", "😱", "❤️", "🍿"];
 
 function formatTime(sec: number): string {
-  if (!Number.isFinite(sec) || sec < 0) return "—";
+  if (!Number.isFinite(sec) || sec < 0) return "0:00";
   const total = Math.floor(sec);
   const h = Math.floor(total / 3600);
   const m = Math.floor((total % 3600) / 60);
@@ -25,7 +26,8 @@ function formatTime(sec: number): string {
 
 export function SidePanel() {
   const { inRoom, roomCode } = useRoomState();
-  const [members, setMembers] = useState<Member[]>([YOU]);
+  const [identity, setIdentity] = useState<Identity | null>(null);
+  const [members, setMembers] = useState<Member[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inSync] = useState(true);
   const [draft, setDraft] = useState("");
@@ -33,19 +35,39 @@ export function SidePanel() {
   const [videoTime, setVideoTime] = useState<number | null>(null);
   const msgId = useRef(0);
   const feedRef = useRef<HTMLDivElement>(null);
+  const conn = useRef<RoomConnection | null>(null);
 
   const nextId = () => ++msgId.current;
 
   useEffect(() => {
-    if (inRoom && roomCode) {
+    getIdentity().then(setIdentity);
+  }, []);
+
+  // optimistic local state until the server sends the real roster
+  useEffect(() => {
+    if (inRoom && roomCode && identity) {
       msgId.current = 0;
-      setMembers([YOU]);
+      setMembers([{ ...identity, you: true, host: true }]);
       setMessages([{ id: nextId(), type: "system", text: `🐻 Bear Den opened · code ${roomCode}` }]);
     } else {
-      setMembers([YOU]);
+      setMembers([]);
       setMessages([]);
     }
-  }, [inRoom, roomCode]);
+  }, [inRoom, roomCode, identity]);
+
+  // live room over websocket
+  useEffect(() => {
+    if (!inRoom || !roomCode || !identity) return;
+    conn.current = joinRoom(roomCode, identity, {
+      onMembers: (list, selfId) => setMembers(list.map((m) => ({ ...m, you: m.id === selfId }))),
+      onChat: ({ from, text }) => setMessages((m) => [...m, { id: nextId(), type: "chat", from, text }]),
+      onSystem: (text) => setMessages((m) => [...m, { id: nextId(), type: "system", text }]),
+    });
+    return () => {
+      conn.current?.disconnect();
+      conn.current = null;
+    };
+  }, [inRoom, roomCode, identity]);
 
   useEffect(() => {
     const el = feedRef.current;
@@ -75,16 +97,17 @@ export function SidePanel() {
     };
   }, [inRoom]);
 
-  function appendChat(text: string) {
-    setMessages((m) => [...m, { id: nextId(), type: "chat", from: "You", text, mine: true }]);
+  function postChat(text: string) {
+    const from = identity?.name ?? "You";
+    setMessages((m) => [...m, { id: nextId(), type: "chat", from, text, mine: true }]);
+    conn.current?.sendChat(text);
   }
 
   function send() {
     const text = draft.trim();
     if (!text) return;
-    appendChat(text);
+    postChat(text);
     setDraft("");
-    // TODO: send over WebSocket
   }
 
   function copyCode() {
@@ -142,7 +165,7 @@ export function SidePanel() {
       <div className="border-b border-wb-line px-[14px] py-3">
         <div className="mb-[10px] flex flex-wrap items-center gap-[7px]">
           {members.map((m) => (
-            <MemberChip key={m.name} m={m} />
+            <MemberChip key={m.id ?? m.name} m={m} />
           ))}
           <span className="ml-0.5 text-[12px] font-semibold text-wb-faint">
             {members.length} {members.length === 1 ? "bear" : "bears"}
@@ -171,7 +194,7 @@ export function SidePanel() {
           <button
             type="button"
             key={emoji}
-            onClick={() => appendChat(emoji)}
+            onClick={() => postChat(emoji)}
             className="flex-1 rounded-[11px] border border-wb-line bg-wb-panel py-1.5 text-[15px] transition-colors hover:border-[rgba(255,178,62,.26)] hover:bg-wb-panel2"
           >
             {emoji}

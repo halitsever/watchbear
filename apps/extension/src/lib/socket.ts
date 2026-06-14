@@ -2,8 +2,8 @@ import { io, type Socket } from 'socket.io-client';
 import type { Member } from './types';
 import type { Identity } from './identity';
 
-// TODO: point at the deployed server for production builds
-const SERVER_URL = 'http://localhost:3000';
+// Set VITE_SERVER_URL in .env.production for deployed builds (must be https/wss).
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
 
 interface ChatPayload {
   fromId: string;

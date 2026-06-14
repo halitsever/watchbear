@@ -15,6 +15,7 @@ if (!window.__wbLoaded) {
   let applyingRemote = false;
   let applyTimer: number | undefined;
   let bindTries = 0;
+  let pending: VideoControl | null = null;
 
   chrome.runtime.onMessage.addListener((msg: TabMessage) => {
     if (msg.type === 'START_ROOM' || msg.type === 'JOIN_ROOM') {
@@ -56,6 +57,12 @@ if (!window.__wbLoaded) {
     v.addEventListener('play', onLocal);
     v.addEventListener('pause', onLocal);
     v.addEventListener('seeked', onLocal);
+
+    if (pending) {
+      const p = pending;
+      pending = null;
+      applyControl(p);
+    }
   }
 
   function detachVideo() {
@@ -65,26 +72,22 @@ if (!window.__wbLoaded) {
     video = null;
   }
 
-  function onLocal(e: Event) {
+  function onLocal() {
     if (applyingRemote || !channel || !video) return;
-    const action = e.type === 'play' ? 'play' : e.type === 'pause' ? 'pause' : 'seek';
-    channel.send({ action, time: video.currentTime });
+    channel.send({ time: video.currentTime, paused: video.paused });
   }
 
   function applyControl(c: VideoControl) {
-    if (!video) return;
+    if (!video) {
+      pending = c;
+      return;
+    }
     applyingRemote = true;
     window.clearTimeout(applyTimer);
-    if (c.action === 'play') {
-      if (Math.abs(video.currentTime - c.time) > 0.5) video.currentTime = c.time;
-      void video.play();
-    } else if (c.action === 'pause') {
-      video.pause();
-      if (Math.abs(video.currentTime - c.time) > 0.5) video.currentTime = c.time;
-    } else {
-      video.currentTime = c.time;
-    }
-    // let the resulting play/pause/seeked events settle without rebroadcasting
+    if (Math.abs(video.currentTime - c.time) > 0.5) video.currentTime = c.time;
+    if (c.paused && !video.paused) video.pause();
+    else if (!c.paused && video.paused) void video.play();
+
     applyTimer = window.setTimeout(() => {
       applyingRemote = false;
     }, 400);
@@ -112,4 +115,4 @@ if (!window.__wbLoaded) {
   }
 }
 
-export {};
+export { };

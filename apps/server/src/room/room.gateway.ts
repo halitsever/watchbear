@@ -27,6 +27,7 @@ export class RoomGateway implements OnGatewayDisconnect {
 
   private readonly rooms = new Map<string, Map<string, Member>>();
   private readonly socketRoom = new Map<string, string>();
+  private readonly videoState = new Map<string, { time: number; paused: boolean; updatedAt: number }>();
 
   @SubscribeMessage('room:join')
   handleJoin(@ConnectedSocket() client: Socket, @MessageBody() { code, member }: JoinPayload) {
@@ -57,14 +58,20 @@ export class RoomGateway implements OnGatewayDisconnect {
   @SubscribeMessage('video:subscribe')
   handleVideoSubscribe(@ConnectedSocket() client: Socket, @MessageBody() { code }: { code: string }) {
     void client.join(code);
+    const s = this.videoState.get(code);
+    if (s) {
+      const elapsed = s.paused ? 0 : (Date.now() - s.updatedAt) / 1000;
+      client.emit('video:control', { time: s.time + elapsed, paused: s.paused });
+    }
   }
 
   @SubscribeMessage('video:control')
   handleVideoControl(
     @ConnectedSocket() client: Socket,
-    @MessageBody() { code, action, time }: { code: string; action: string; time: number },
+    @MessageBody() { code, time, paused }: { code: string; time: number; paused: boolean },
   ) {
-    client.to(code).emit('video:control', { action, time });
+    this.videoState.set(code, { time, paused, updatedAt: Date.now() });
+    client.to(code).emit('video:control', { time, paused });
   }
 
   handleDisconnect(client: Socket) {
@@ -85,7 +92,10 @@ export class RoomGateway implements OnGatewayDisconnect {
         const next = room.values().next().value;
         if (next) next.host = true;
       }
-      if (room.size === 0) this.rooms.delete(code);
+      if (room.size === 0) {
+        this.rooms.delete(code);
+        this.videoState.delete(code);
+      }
     }
     this.broadcastMembers(code);
     if (member) client.to(code).emit('room:system', { text: `${member.name} left the den` });

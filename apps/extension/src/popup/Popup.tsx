@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import IconPanelRight from "~icons/lucide/panel-right-open";
 import IconPlay from "~icons/lucide/play";
+import IconVideoOff from "~icons/lucide/video-off";
 import { BearMark, BearFace } from "@/components/Bear";
 import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
 import { generateCode } from "@/lib/room";
 import { getIdentity, setIdentityName, type Identity } from "@/lib/identity";
+import { pingServer } from "@/lib/socket";
 
 export function Popup() {
   const { inRoom, roomCode } = useRoomState();
   const [code, setCode] = useState("");
   const [you, setYou] = useState<Identity | null>(null);
   const [hasVideo, setHasVideo] = useState<boolean | null>(null);
+  const [serverUp, setServerUp] = useState<boolean | null>(null);
   const activeTab = useRef<chrome.tabs.Tab | undefined>(undefined);
 
   // cache the tab so the open handler stays a sync user gesture
@@ -22,6 +25,7 @@ export function Popup() {
       else setHasVideo(false);
     });
     getIdentity().then(setYou);
+    pingServer().then(setServerUp);
   }, []);
 
   function changeName(value: string) {
@@ -29,7 +33,17 @@ export function Popup() {
     void setIdentityName(value);
   }
 
+  // re-verify the server right before acting, so we never close the popup into a
+  // dead connection; on failure we surface the banner instead.
+  async function ensureServer(): Promise<boolean> {
+    if (serverUp === true) return true;
+    const ok = await pingServer();
+    setServerUp(ok);
+    return ok;
+  }
+
   async function startRoom() {
+    if (!(await ensureServer())) return;
     const tab = await getActiveTab();
     if (!tab?.id) return;
     sendToBackground({ type: "WB_START_ROOM", code: generateCode(), tabId: tab.id });
@@ -39,6 +53,7 @@ export function Popup() {
   async function joinRoom() {
     const trimmed = code.trim();
     if (trimmed.length < 3) return;
+    if (!(await ensureServer())) return;
     const tab = await getActiveTab();
     if (!tab?.id) return;
     sendToBackground({ type: "WB_JOIN_ROOM", code: trimmed, tabId: tab.id });
@@ -104,6 +119,11 @@ export function Popup() {
         <>
           {/* body */}
           <div className="px-4">
+            {serverUp === false && (
+              <div className="mb-[11px] rounded-xl border border-[rgba(255,140,107,.25)] bg-[rgba(255,140,107,.1)] px-[13px] py-2.5 text-center text-[12px] font-bold text-wb-coral">
+                Can't reach the server. Try again later.
+              </div>
+            )}
             <div className="mb-[11px] flex items-center gap-2">
               <BearFace
                 size={30}
@@ -123,7 +143,7 @@ export function Popup() {
             <button
               type="button"
               onClick={startRoom}
-              disabled={hasVideo === false}
+              disabled={hasVideo === false || serverUp === false}
               className="flex w-full items-center justify-between gap-2 rounded-[14px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-4 py-[14px] text-[14.5px] font-extrabold text-[#3a2410] shadow-[0_8px_20px_rgba(242,145,42,.32)] transition-all hover:-translate-y-px hover:brightness-105 active:translate-y-0 disabled:cursor-default disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0 disabled:hover:brightness-100"
             >
               <span className="flex items-center gap-[9px]">
@@ -132,7 +152,10 @@ export function Popup() {
               </span>
             </button>
             {hasVideo === false && (
-              <div className="mt-2 text-center text-[12px] font-semibold text-wb-faint">No video found on this page.</div>
+              <div className="mt-2 flex items-center justify-center gap-2 rounded-xl border border-[rgba(255,178,62,.28)] bg-[rgba(255,178,62,.1)] px-[13px] py-2.5 text-[12.5px] font-bold text-wb-honey">
+                <IconVideoOff className="h-[15px] w-[15px] shrink-0" />
+                No video playing on this page
+              </div>
             )}
 
             <div className="mt-[11px] flex gap-2">
@@ -151,7 +174,7 @@ export function Popup() {
               <button
                 type="button"
                 onClick={joinRoom}
-                disabled={code.trim().length < 3}
+                disabled={code.trim().length < 3 || serverUp === false}
                 className="whitespace-nowrap rounded-xl bg-[#3a2c20] px-4 text-[13.5px] font-extrabold text-wb-cream transition-colors hover:bg-[#4a3826] disabled:cursor-default disabled:opacity-40"
               >
                 Join

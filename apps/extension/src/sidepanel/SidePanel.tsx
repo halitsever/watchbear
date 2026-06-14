@@ -9,7 +9,7 @@ import { ChatLine } from "@/components/ChatLine";
 import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
 import { getIdentity, type Identity } from "@/lib/identity";
-import { joinRoom, type RoomConnection } from "@/lib/socket";
+import { joinRoom, type RoomConnection, type ConnStatus } from "@/lib/socket";
 import type { Member, Message } from "@/lib/types";
 
 const REACTIONS = ["🐻", "😂", "😱", "❤️", "🍿"];
@@ -33,6 +33,7 @@ export function SidePanel() {
   const [draft, setDraft] = useState("");
   const [copied, setCopied] = useState(false);
   const [videoTime, setVideoTime] = useState<number | null>(null);
+  const [status, setStatus] = useState<ConnStatus>("connecting");
   const msgId = useRef(0);
   const feedRef = useRef<HTMLDivElement>(null);
   const conn = useRef<RoomConnection | null>(null);
@@ -58,10 +59,12 @@ export function SidePanel() {
   // live room over websocket
   useEffect(() => {
     if (!inRoom || !roomCode || !identity) return;
+    setStatus("connecting");
     conn.current = joinRoom(roomCode, identity, {
       onMembers: (list, selfId) => setMembers(list.map((m) => ({ ...m, you: m.id === selfId }))),
       onChat: ({ from, text }) => setMessages((m) => [...m, { id: nextId(), type: "chat", from, text }]),
       onSystem: (text) => setMessages((m) => [...m, { id: nextId(), type: "system", text }]),
+      onStatus: setStatus,
     });
     return () => {
       conn.current?.disconnect();
@@ -160,6 +163,16 @@ export function SidePanel() {
           Leave
         </button>
       </div>
+
+      {status !== "connected" && (
+        <div
+          className={`px-[14px] py-1.5 text-center text-[11.5px] font-bold ${
+            status === "error" ? "bg-[rgba(255,140,107,.12)] text-wb-coral" : "bg-[rgba(255,178,62,.1)] text-wb-honey"
+          }`}
+        >
+          {status === "error" ? "Can't reach the server, retrying…" : "Connecting to the den…"}
+        </div>
+      )}
 
       {/* members + sync */}
       <div className="border-b border-wb-line px-[14px] py-3">

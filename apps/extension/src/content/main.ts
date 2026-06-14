@@ -1,5 +1,6 @@
 import type { TabMessage } from '@/lib/messages';
 import { joinVideoChannel, type VideoChannel, type VideoControl } from '@/lib/socket';
+import { STORAGE_KEYS } from '@/lib/room';
 
 declare global {
   interface Window {
@@ -25,6 +26,26 @@ if (!window.__wbLoaded) {
     if (msg.type === 'LEAVE_ROOM') {
       removeLiveTag();
       stopSync();
+    }
+  });
+
+  function armFromStorage() {
+    chrome.storage.local.get([STORAGE_KEYS.inRoom, STORAGE_KEYS.roomCode], (d) => {
+      const code = d[STORAGE_KEYS.roomCode];
+      if (d[STORAGE_KEYS.inRoom] && typeof code === 'string') {
+        showLiveTag();
+        startSync(code);
+      } else {
+        removeLiveTag();
+        stopSync();
+      }
+    });
+  }
+
+  armFromStorage();
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && (STORAGE_KEYS.inRoom in changes || STORAGE_KEYS.roomCode in changes)) {
+      armFromStorage();
     }
   });
 

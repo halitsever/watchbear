@@ -9,6 +9,7 @@
     "build:ext": "pnpm --filter @watchbear/extension build",
     "dev:server": "pnpm --filter @watchbear/server start:dev",
     "build:server": "pnpm --filter @watchbear/server build",
+    "cert": "pnpm --filter @watchbear/server cert",
     "build": "pnpm -r --if-present build",
     "typecheck": "pnpm -r --if-present typecheck"
   },

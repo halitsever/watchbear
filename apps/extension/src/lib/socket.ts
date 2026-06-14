@@ -54,11 +54,8 @@ export interface VideoChannel {
 // control events but is not registered as a member.
 export function joinVideoChannel(code: string, onControl: (c: VideoControl) => void): VideoChannel {
   const socket: Socket = io(SERVER_URL, { transports: ['websocket'] });
-  socket.on('connect', () => {
-    console.log('[WB sync] connected');
-    socket.emit('video:subscribe', { code });
-  });
-  socket.on('connect_error', (e) => console.log('[WB sync] connect error:', e.message));
+  socket.on('connect', () => socket.emit('video:subscribe', { code }));
+  socket.on('connect_error', (e) => console.warn('[Watchbear] video sync connection failed:', e.message));
   socket.on('video:control', (c: VideoControl) => onControl(c));
   return {
     send: (c) => socket.emit('video:control', { code, ...c }),

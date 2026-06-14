@@ -133,3 +133,7 @@ dist
 
 # Vite dependency cache
 .vite
+
+# Local TLS certs (mkcert)
+certs/
+*.pem

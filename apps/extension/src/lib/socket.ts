@@ -3,7 +3,7 @@ import type { Member } from './types';
 import type { Identity } from './identity';
 
 // Set VITE_SERVER_URL in .env.production for deployed builds (must be https/wss).
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'https://localhost:3000';
 
 export async function pingServer(timeoutMs = 5000): Promise<boolean> {
   try {
@@ -50,8 +50,8 @@ export interface VideoChannel {
   disconnect: () => void;
 }
 
-// A connection used only to sync the page video. It joins the room to receive
-// control events but is not registered as a member.
+// connection used only to sync the page video. joins the room to receive
+// control events but isn't registered as a member.
 export function joinVideoChannel(code: string, onControl: (c: VideoControl) => void): VideoChannel {
   const socket: Socket = io(SERVER_URL, { transports: ['websocket'] });
   socket.on('connect', () => socket.emit('video:subscribe', { code }));

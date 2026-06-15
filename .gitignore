@@ -137,3 +137,8 @@ dist
 # Local TLS certs (mkcert)
 certs/
 *.pem
+
+# Playwright
+test-results/
+playwright-report/
+.playwright/

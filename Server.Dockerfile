@@ -26,4 +26,5 @@ COPY --from=build /repo/apps/server/dist apps/server/dist
 
 WORKDIR /repo/apps/server
 EXPOSE 3000
+USER node
 CMD ["node", "dist/main.js"]

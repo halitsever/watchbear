@@ -1,3 +1,4 @@
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -7,6 +8,8 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { corsOrigin } from '../cors';
+import { ChatDto, JoinDto, SubscribeDto, VideoControlDto } from './room.dto';
 
 interface Member {
   id: string;
@@ -16,25 +19,53 @@ interface Member {
   host: boolean;
 }
 
-interface JoinPayload {
-  code: string;
-  member: { name: string; fur: string; furDark: string };
-}
+const MAX_ROOMS = 5_000;
+const MAX_MEMBERS_PER_ROOM = 50;
+const RATE_LIMIT = 25;
+const RATE_WINDOW_MS = 1_000;
 
-@WebSocketGateway({ cors: { origin: '*' } })
+@WebSocketGateway({ cors: { origin: corsOrigin }, maxHttpBufferSize: 16 * 1024 })
+@UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }))
 export class RoomGateway implements OnGatewayDisconnect {
   @WebSocketServer() server!: Server;
 
   private readonly rooms = new Map<string, Map<string, Member>>();
   private readonly socketRoom = new Map<string, string>();
   private readonly videoState = new Map<string, { time: number; paused: boolean; updatedAt: number }>();
+  private readonly hits = new Map<string, { count: number; reset: number }>();
+
+  // crude per-socket sliding window so a single client can't flood join/chat/control.
+  // @nestjs/throttler has no first-class ws path (it needs a custom guard subclass
+  // either way), so a small inline limiter is the clearer option here.
+  private withinRate(client: Socket): boolean {
+    const now = Date.now();
+    const h = this.hits.get(client.id);
+    if (!h || now > h.reset) {
+      this.hits.set(client.id, { count: 1, reset: now + RATE_WINDOW_MS });
+      return true;
+    }
+    if (h.count >= RATE_LIMIT) return false;
+    h.count += 1;
+    return true;
+  }
 
   @SubscribeMessage('room:join')
-  handleJoin(@ConnectedSocket() client: Socket, @MessageBody() { code, member }: JoinPayload) {
+  handleJoin(@ConnectedSocket() client: Socket, @MessageBody() { code, member }: JoinDto) {
+    if (!this.withinRate(client)) return;
+    const existing = this.rooms.get(code);
+    if (!existing && this.rooms.size >= MAX_ROOMS) return;
+    const room = existing ?? new Map<string, Member>();
+    if (room.size >= MAX_MEMBERS_PER_ROOM) return;
+
     void client.join(code);
     this.socketRoom.set(client.id, code);
-    const room = this.rooms.get(code) ?? new Map<string, Member>();
-    room.set(client.id, { id: client.id, ...member, host: room.size === 0 });
+    room.set(client.id, {
+      id: client.id,
+      name: member.name,
+      fur: member.fur,
+      furDark: member.furDark,
+      host: room.size === 0,
+    });
     this.rooms.set(code, room);
     this.broadcastMembers(code);
     client.to(code).emit('room:system', { text: `🐻 ${member.name} joined the den` });
@@ -46,18 +77,22 @@ export class RoomGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('chat:send')
-  handleChat(@ConnectedSocket() client: Socket, @MessageBody() { text }: { text: string }) {
+  handleChat(@ConnectedSocket() client: Socket, @MessageBody() { text }: ChatDto) {
+    if (!this.withinRate(client)) return;
     const code = this.socketRoom.get(client.id);
     const member = code ? this.rooms.get(code)?.get(client.id) : undefined;
     if (!code || !member) return;
     client.to(code).emit('chat:message', { fromId: client.id, from: member.name, text });
   }
 
-  // Silent video-sync channel: joins the room to receive control events without
-  // counting as a member.
+  // silent video-sync channel, joins the room to receive control events without
+  // counting as a member. binding the socket to the code here is what later
+  // authorizes its video:control emits.
   @SubscribeMessage('video:subscribe')
-  handleVideoSubscribe(@ConnectedSocket() client: Socket, @MessageBody() { code }: { code: string }) {
+  handleVideoSubscribe(@ConnectedSocket() client: Socket, @MessageBody() { code }: SubscribeDto) {
+    if (!this.withinRate(client)) return;
     void client.join(code);
+    this.socketRoom.set(client.id, code);
     const s = this.videoState.get(code);
     if (s) {
       const elapsed = s.paused ? 0 : (Date.now() - s.updatedAt) / 1000;
@@ -66,16 +101,19 @@ export class RoomGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('video:control')
-  handleVideoControl(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() { code, time, paused }: { code: string; time: number; paused: boolean },
-  ) {
+  handleVideoControl(@ConnectedSocket() client: Socket, @MessageBody() { time, paused }: VideoControlDto) {
+    if (!this.withinRate(client)) return;
+    // trust the server-tracked binding, never the code in the payload, so a client
+    // can only drive the room it actually joined or subscribed to.
+    const code = this.socketRoom.get(client.id);
+    if (!code) return;
     this.videoState.set(code, { time, paused, updatedAt: Date.now() });
     client.to(code).emit('video:control', { time, paused });
   }
 
   handleDisconnect(client: Socket) {
     this.removeFromRoom(client);
+    this.hits.delete(client.id);
   }
 
   private removeFromRoom(client: Socket) {

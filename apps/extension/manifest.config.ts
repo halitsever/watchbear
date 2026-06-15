@@ -23,7 +23,7 @@ export default defineManifest({
     default_path: 'src/sidepanel/index.html',
   },
   background: {
-    service_worker: 'src/background/main.ts',
+    service_worker: 'src/background/service-worker.ts',
     type: 'module',
   },
   content_scripts: [
@@ -34,6 +34,6 @@ export default defineManifest({
       run_at: 'document_idle',
     },
   ],
-  permissions: ['storage', 'activeTab', 'tabs', 'scripting', 'sidePanel'],
+  permissions: ['storage', 'activeTab', 'scripting', 'sidePanel'],
   host_permissions: ['<all_urls>'],
 });

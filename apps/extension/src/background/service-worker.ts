@@ -2,6 +2,7 @@ import { STORAGE_KEYS } from '@/lib/room';
 import type { PopupMessage, ContentMessage } from '@/lib/messages';
 
 chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender) => {
+  if (sender.id !== chrome.runtime.id) return;
   if (msg.type === 'ROOM_STATE') {
     const tabId = sender.tab?.id;
     if (!tabId) return;

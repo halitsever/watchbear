@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Watchbear test video</title>
+    <style>
+      body { margin: 0; background: #111; display: grid; place-items: center; height: 100vh; }
+      video { width: min(90vw, 720px); border-radius: 8px; background: #000; }
+    </style>
+  </head>
+  <body>
+    <!-- no CSP here on purpose, so the content-script sync socket can connect freely.
+         webm/vp8 plays in both real Chrome and Playwright's chromium (which ships no
+         h264). if the network is blocked we fall back to a synthetic canvas stream so
+         the harness still runs fully offline. -->
+    <video id="v" controls playsinline src="https://media.w3.org/2010/05/sintel/trailer.webm"></video>
+    <script>
+      const v = document.getElementById('v');
+      const markReady = () => { window.__wbVideoReady = true; };
+      v.addEventListener('loadeddata', markReady, { once: true });
+      v.addEventListener('error', fallback, { once: true });
+      setTimeout(() => { if (!window.__wbVideoReady && v.readyState < 2) fallback(); }, 4000);
+
+      function fallback() {
+        if (v.srcObject) return;
+        const c = document.createElement('canvas');
+        c.width = 480;
+        c.height = 270;
+        const ctx = c.getContext('2d');
+        let hue = 0;
+        setInterval(() => {
+          hue = (hue + 6) % 360;
+          ctx.fillStyle = 'hsl(' + hue + ',65%,50%)';
+          ctx.fillRect(0, 0, 480, 270);
+        }, 80);
+        v.removeAttribute('src');
+        v.srcObject = c.captureStream(12);
+        markReady();
+      }
+    </script>
+  </body>
+</html>

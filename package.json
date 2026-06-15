@@ -11,7 +11,9 @@
     "build:server": "pnpm --filter @watchbear/server build",
     "cert": "pnpm --filter @watchbear/server cert",
     "build": "pnpm -r --if-present build",
-    "typecheck": "pnpm -r --if-present typecheck"
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test:e2e": "pnpm --filter @watchbear/extension test:e2e",
+    "e2e:manual": "pnpm --filter @watchbear/extension e2e:manual"
   },
   "engines": {
     "node": ">=20",

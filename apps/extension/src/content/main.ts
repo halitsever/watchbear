@@ -18,7 +18,8 @@ if (!window.__wbLoaded) {
   let bindTries = 0;
   let pending: VideoControl | null = null;
 
-  chrome.runtime.onMessage.addListener((msg: TabMessage) => {
+  chrome.runtime.onMessage.addListener((msg: TabMessage, sender) => {
+    if (sender.id !== chrome.runtime.id) return;
     if (msg.type === 'START_ROOM' || msg.type === 'JOIN_ROOM') {
       showLiveTag();
       startSync(msg.code);
@@ -127,7 +128,9 @@ if (!window.__wbLoaded) {
     const tag = document.createElement('div');
     tag.id = 'wb-live-tag';
     tag.className = 'wb-live-tag';
-    tag.innerHTML = '<span class="wb-live-dot"></span> watching together';
+    const dot = document.createElement('span');
+    dot.className = 'wb-live-dot';
+    tag.append(dot, ' watching together');
     container.appendChild(tag);
   }
 

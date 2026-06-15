@@ -7,8 +7,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:test": "vite build --mode test",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "pretest:e2e": "vite build --mode test",
+    "test:e2e": "playwright test",
+    "e2e:manual": "vite build --mode development && node e2e/manual.mjs"
   },
   "dependencies": {
     "react": "^19.2.7",
@@ -17,6 +21,7 @@
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.6.1",
+    "@playwright/test": "^1.49.1",
     "@fontsource/fredoka": "^5.2.10",
     "@fontsource/nunito": "^5.2.7",
     "@iconify-json/lucide": "^1.2.111",

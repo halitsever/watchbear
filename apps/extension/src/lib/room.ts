@@ -9,11 +9,16 @@ export interface RoomState {
 }
 
 const CODE_WORDS = ['BEAR', 'DEN', 'CUB', 'PAW', 'FUR', 'HONEY', 'OAK', 'PINE'];
+// no 0/O/1/I so the code stays easy to read out loud. 32 chars divides 256
+// evenly, so the byte % 32 below is unbiased.
+const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 export function generateCode(): string {
-  const word = CODE_WORDS[Math.floor(Math.random() * CODE_WORDS.length)];
-  const num = String(Math.floor(Math.random() * 900) + 100);
-  return `${word}-${num}`;
+  const word = CODE_WORDS[crypto.getRandomValues(new Uint32Array(1))[0] % CODE_WORDS.length];
+  const bytes = crypto.getRandomValues(new Uint8Array(6));
+  let suffix = '';
+  for (const b of bytes) suffix += ALPHABET[b % ALPHABET.length];
+  return `${word}-${suffix}`;
 }
 
 export async function readRoomState(): Promise<RoomState> {

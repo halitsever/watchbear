@@ -166,7 +166,7 @@ export function Popup() {
                   if (e.key === "Enter") joinRoom();
                 }}
                 placeholder="ROOM CODE"
-                maxLength={9}
+                maxLength={12}
                 autoComplete="off"
                 spellCheck={false}
                 className="min-w-0 flex-1 rounded-xl border border-wb-line bg-[#1d150f] px-[13px] py-[11px] text-[13.5px] font-extrabold uppercase tracking-[1.5px] text-wb-text outline-none transition-colors placeholder:text-wb-faint focus:border-[rgba(255,178,62,.5)]"

@@ -20,24 +20,24 @@ That command:
 
 ## Manual mode
 
-To drive it by hand instead of asserting, first start your normal dev server, then:
+To drive it by hand instead of asserting (run `pnpm cert` once first):
 
 ```bash
-pnpm dev:server                              # https://localhost:3000 (run pnpm cert once)
 pnpm --filter @watchbear/extension e2e:manual
 ```
 
-> Use `pnpm dev:server` (server only), **not** `pnpm dev` / `npm run dev`. The latter
-> also starts the extension's vite HMR dev server, which keeps rewriting `dist` and
-> fights with the static build the two browsers load, so the loaded extension breaks.
+This one command does everything: builds the extension in development mode
+(-> `https://localhost:3000`), serves the local test video page, **starts the
+dev server** on :3000 if one isn't already running (reuses it if it is), and opens
+two browsers (with `--ignore-certificate-errors` for the self-signed cert) that stay
+open. Click the Watchbear toolbar icon in browser A -> "Start a party", copy the code,
+paste it into browser B's Join field, then play/pause in either window. Ctrl+C closes
+everything (including the server it started).
 
-Unlike the automated test, this connects to your real dev server on **:3000** (the
-extension is built in development mode -> `https://localhost:3000`, browsers launch
-with `--ignore-certificate-errors` for the self-signed cert). It serves the local
-test video page, opens two browsers on it, and leaves them open. Click the Watchbear
-toolbar icon in browser A -> "Start a party", copy the code, paste it into browser B's
-Join field, then play/pause in either window. The browsers stay open until you press
-Ctrl+C in the terminal.
+> Don't run the full `pnpm dev` / `npm run dev` alongside this. That also starts the
+> extension's vite HMR dev server, which keeps rewriting `dist` and fights with the
+> static build the two browsers load, so the loaded extension breaks. `e2e:manual`
+> already starts the server it needs.
 
 ## Notes
 

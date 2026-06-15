@@ -2,14 +2,13 @@ import { io, type Socket } from 'socket.io-client';
 import type { Member } from './types';
 import type { Identity } from './identity';
 
-// Set VITE_SERVER_URL in .env.production for deployed builds (must be https/wss).
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'https://localhost:3000';
-
-export async function pingServer(timeoutMs = 5000): Promise<boolean> {
+// the server url is chosen at runtime (self-host), so every entry point takes it
+// as an argument; callers resolve it with getServerUrl() from ./server.
+export async function pingServer(serverUrl: string, timeoutMs = 5000): Promise<boolean> {
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), timeoutMs);
-    const res = await fetch(SERVER_URL, { signal: ctrl.signal });
+    const res = await fetch(serverUrl, { signal: ctrl.signal });
     clearTimeout(t);
     if (!res.ok) return false;
 
@@ -52,8 +51,8 @@ export interface VideoChannel {
 
 // connection used only to sync the page video. joins the room to receive
 // control events but isn't registered as a member.
-export function joinVideoChannel(code: string, onControl: (c: VideoControl) => void): VideoChannel {
-  const socket: Socket = io(SERVER_URL, { transports: ['websocket'] });
+export function joinVideoChannel(serverUrl: string, code: string, onControl: (c: VideoControl) => void): VideoChannel {
+  const socket: Socket = io(serverUrl, { transports: ['websocket'] });
   socket.on('connect', () => socket.emit('video:subscribe', { code }));
   socket.on('connect_error', (e) => console.warn('[Watchbear] video sync connection failed:', e.message));
   socket.on('video:control', (c: VideoControl) => onControl(c));
@@ -63,8 +62,8 @@ export function joinVideoChannel(code: string, onControl: (c: VideoControl) => v
   };
 }
 
-export function joinRoom(code: string, member: Identity, handlers: RoomHandlers): RoomConnection {
-  const socket: Socket = io(SERVER_URL, { transports: ['websocket'] });
+export function joinRoom(serverUrl: string, code: string, member: Identity, handlers: RoomHandlers): RoomConnection {
+  const socket: Socket = io(serverUrl, { transports: ['websocket'] });
 
   socket.on('connect', () => {
     handlers.onStatus('connected');

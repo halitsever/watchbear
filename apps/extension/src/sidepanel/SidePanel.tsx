@@ -9,6 +9,7 @@ import { ChatLine } from "@/components/ChatLine";
 import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
 import { getIdentity, type Identity } from "@/lib/identity";
+import { getServerUrl } from "@/lib/server";
 import { joinRoom, type RoomConnection, type ConnStatus } from "@/lib/socket";
 import type { Member, Message } from "@/lib/types";
 
@@ -27,6 +28,7 @@ function formatTime(sec: number): string {
 export function SidePanel() {
   const { inRoom, roomCode } = useRoomState();
   const [identity, setIdentity] = useState<Identity | null>(null);
+  const [serverUrl, setServerUrl] = useState<string | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inSync] = useState(true);
@@ -42,6 +44,7 @@ export function SidePanel() {
 
   useEffect(() => {
     getIdentity().then(setIdentity);
+    getServerUrl().then(setServerUrl);
   }, []);
 
   // optimistic local state until the server sends the real roster
@@ -58,9 +61,9 @@ export function SidePanel() {
 
   // live room over websocket
   useEffect(() => {
-    if (!inRoom || !roomCode || !identity) return;
+    if (!inRoom || !roomCode || !identity || !serverUrl) return;
     setStatus("connecting");
-    conn.current = joinRoom(roomCode, identity, {
+    conn.current = joinRoom(serverUrl, roomCode, identity, {
       onMembers: (list, selfId) => setMembers(list.map((m) => ({ ...m, you: m.id === selfId }))),
       onChat: ({ from, text }) => setMessages((m) => [...m, { id: nextId(), type: "chat", from, text }]),
       onSystem: (text) => setMessages((m) => [...m, { id: nextId(), type: "system", text }]),
@@ -70,7 +73,7 @@ export function SidePanel() {
       conn.current?.disconnect();
       conn.current = null;
     };
-  }, [inRoom, roomCode, identity]);
+  }, [inRoom, roomCode, identity, serverUrl]);
 
   useEffect(() => {
     const el = feedRef.current;

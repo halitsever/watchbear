@@ -7,7 +7,9 @@ import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
 import { generateCode } from "@/lib/room";
 import { getIdentity, setIdentityName, type Identity } from "@/lib/identity";
+import { getServerUrl } from "@/lib/server";
 import { pingServer } from "@/lib/socket";
+import { ServerSettings } from "@/components/ServerSettings";
 
 export function Popup() {
   const { inRoom, roomCode } = useRoomState();
@@ -25,8 +27,14 @@ export function Popup() {
       else setHasVideo(false);
     });
     getIdentity().then(setYou);
-    pingServer().then(setServerUp);
+    refreshServer();
   }, []);
+
+  function refreshServer() {
+    getServerUrl()
+      .then((u) => pingServer(u))
+      .then(setServerUp);
+  }
 
   function changeName(value: string) {
     setYou((y) => (y ? { ...y, name: value } : y));
@@ -37,7 +45,7 @@ export function Popup() {
   // dead connection; on failure we surface the banner instead.
   async function ensureServer(): Promise<boolean> {
     if (serverUp === true) return true;
-    const ok = await pingServer();
+    const ok = await pingServer(await getServerUrl());
     setServerUp(ok);
     return ok;
   }
@@ -183,11 +191,16 @@ export function Popup() {
           </div>
 
           {/* share hint */}
-          <div className="px-4 pb-[18px] pt-[14px]">
+          <div className="px-4 pt-[14px]">
             <div className="flex items-start gap-[9px] rounded-[13px] border border-wb-line bg-[#1d150f] px-[13px] py-3 text-[12.5px] font-semibold leading-[1.45] text-wb-dim">
               <span className="shrink-0 text-[15px] leading-none">🍯</span>
               <span>You'll get a code when you create a room. Send it to your friends so everyone watches in sync.</span>
             </div>
+          </div>
+
+          {/* server picker (self-host) */}
+          <div className="px-4 pb-[18px] pt-2.5">
+            <ServerSettings onChange={refreshServer} />
           </div>
         </>
       )}

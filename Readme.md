@@ -63,6 +63,18 @@ pnpm dev:server   # nest start --watch
 pnpm build:server
 ```
 
+**Self-hosting**
+
+Watchbear is self-hostable. Run the server wherever you like (the
+[`Server.Dockerfile`](./Server.Dockerfile) and [`server.compose.yaml`](./server.compose.yaml)
+are ready to go), then point the extension at it: open the popup, click the server
+row, **Change**, and enter your address (e.g. `https://watch.example.com`). It pings
+the address to confirm a Watchbear server is there before switching.
+
+The extension origin (`chrome-extension://…`) is allowed by default, so no CORS
+config is needed for the client. To also allow a web origin, set `CORS_ORIGINS`
+(comma-separated) on the server.
+
 **Whole workspace**
 
 ```bash

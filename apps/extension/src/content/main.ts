@@ -1,6 +1,7 @@
 import type { TabMessage } from '@/lib/messages';
 import { joinVideoChannel, type VideoChannel, type VideoControl } from '@/lib/socket';
 import { STORAGE_KEYS } from '@/lib/room';
+import { getServerUrl } from '@/lib/server';
 
 declare global {
   interface Window {
@@ -22,7 +23,7 @@ if (!window.__wbLoaded) {
     if (sender.id !== chrome.runtime.id) return;
     if (msg.type === 'START_ROOM' || msg.type === 'JOIN_ROOM') {
       showLiveTag();
-      startSync(msg.code);
+      void startSync(msg.code);
     }
     if (msg.type === 'LEAVE_ROOM') {
       removeLiveTag();
@@ -35,7 +36,7 @@ if (!window.__wbLoaded) {
       const code = d[STORAGE_KEYS.roomCode];
       if (d[STORAGE_KEYS.inRoom] && typeof code === 'string') {
         showLiveTag();
-        startSync(code);
+        void startSync(code);
       } else {
         removeLiveTag();
         stopSync();
@@ -56,8 +57,11 @@ if (!window.__wbLoaded) {
     return vids.map((v) => ({ v, area: v.clientWidth * v.clientHeight })).sort((a, b) => b.area - a.area)[0].v;
   }
 
-  function startSync(code: string) {
-    if (!channel) channel = joinVideoChannel(code, applyControl);
+  async function startSync(code: string) {
+    if (!channel) {
+      const url = await getServerUrl();
+      if (!channel) channel = joinVideoChannel(url, code, applyControl);
+    }
     bindTries = 0;
     attachVideo();
   }

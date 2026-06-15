@@ -17,6 +17,9 @@ import type { Member, Message } from "@/lib/types";
 
 const REACTIONS = ["🐻", "😂", "😱", "❤️", "🍿"];
 
+// group key for collapsing a run of messages from the same sender
+const sender = (m: Message) => (m.mine ? "me" : m.from);
+
 function formatTime(sec: number): string {
   if (!Number.isFinite(sec) || sec < 0) return "0:00";
   const total = Math.floor(sec);
@@ -237,10 +240,12 @@ export function SidePanel() {
       </div>
 
       {/* chat feed */}
-      <div ref={feedRef} className="flex min-h-0 flex-1 flex-col gap-[10px] overflow-y-auto px-[14px] py-3">
-        {messages.map((msg) => (
-          <ChatLine key={msg.id} msg={msg} members={members} />
-        ))}
+      <div ref={feedRef} className="flex min-h-0 flex-1 flex-col overflow-y-auto px-[14px] py-3">
+        {messages.map((msg, i) => {
+          const prev = messages[i - 1];
+          const grouped = msg.type === "chat" && prev?.type === "chat" && sender(prev) === sender(msg);
+          return <ChatLine key={msg.id} msg={msg} members={members} grouped={grouped} />;
+        })}
       </div>
 
       {/* quick reactions */}

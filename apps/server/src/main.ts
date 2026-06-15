@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { corsOrigin } from './cors';
+import { logger } from './logger';
 
 function httpsOptions() {
   const key = process.env.SSL_KEY ?? join(process.cwd(), 'certs/localhost-key.pem');
@@ -19,7 +20,7 @@ async function bootstrap() {
   app.enableCors({ origin: corsOrigin });
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
-  console.log(`Watchbear server ready: ${https ? 'https' : 'http'}://localhost:${port}`);
+  logger.success(`Watchbear server ready: ${https ? 'https' : 'http'}://localhost:${port}`);
 }
 
 void bootstrap();

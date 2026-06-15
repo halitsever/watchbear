@@ -36,7 +36,6 @@ export function SidePanel() {
   const [serverUrl, setServerUrl] = useState<string | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [inSync] = useState(true);
   const [draft, setDraft] = useState("");
   const [copied, setCopied] = useState(false);
   const [videoTime, setVideoTime] = useState<number | null>(null);
@@ -207,11 +206,7 @@ export function SidePanel() {
             {members.length} {members.length === 1 ? "bear" : "bears"}
           </span>
         </div>
-        <div className={`flex items-center gap-2 text-[12px] font-semibold ${inSync ? "text-wb-online" : "text-wb-honey"}`}>
-          <span className={`h-2 w-2 rounded-full ${inSync ? "animate-wb-pulse bg-wb-online" : "animate-wb-spin border-2 border-wb-honey border-t-transparent"}`} />
-          {inSync ? "Everyone in sync · 🍯 0.0s drift" : "Syncing…"}
-        </div>
-        <div className="mt-2 flex items-center gap-1.5 text-[12px] font-semibold text-wb-dim">
+        <div className="flex items-center gap-1.5 text-[12px] font-semibold text-wb-dim">
           <IconClock className="h-[13px] w-[13px]" />
           {videoTime == null ? "No video playing" : formatTime(videoTime)}
         </div>

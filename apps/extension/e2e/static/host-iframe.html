@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Watchbear test host page</title>
+    <style>
+      body { margin: 0; background: #1b1b1b; display: grid; place-items: center; height: 100vh; }
+      iframe { width: min(92vw, 760px); height: min(70vh, 460px); border: 0; }
+    </style>
+  </head>
+  <body>
+    <!-- the real <video> lives in a cross-origin iframe (different hostname, same
+         server). this is the embedded-player case the bridge has to handle. -->
+    <iframe
+      src="http://localhost:5190/video.html"
+      allow="autoplay; fullscreen"
+      title="embedded player"
+    ></iframe>
+  </body>
+</html>

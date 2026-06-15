@@ -32,6 +32,11 @@ export default defineManifest({
       js: ['src/content/main.ts'],
       css: ['src/content/content.css'],
       run_at: 'document_idle',
+      // the real <video> often lives in a cross-origin iframe (embedded players),
+      // so we run in every frame; about:blank covers players that mount into a
+      // srcdoc/blank frame.
+      all_frames: true,
+      match_about_blank: true,
     },
   ],
   permissions: ['storage', 'activeTab', 'scripting', 'sidePanel'],

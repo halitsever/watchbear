@@ -10,15 +10,179 @@ declare global {
   }
 }
 
+// embedded players put the <video> in a cross-origin iframe, so the script runs
+// in every frame. the top frame owns the socket and the room/overlay state; a
+// child frame just bridges its video to the top over postMessage.
+const MIN_AREA = 120 * 90; // ignore tracking pixels / ad clips
+const SEEK_THRESHOLD = 0.5; // seconds of drift we tolerate before scrubbing
+const REMOTE_GUARD_MS = 400; // suppress echo right after applying a remote change
+
+type WbBridgeMsg =
+  | { __wb: 1; kind: 'announce'; area: number; duration: number }
+  | { __wb: 1; kind: 'state'; time: number; paused: boolean }
+  | { __wb: 1; kind: 'gone' }
+  | { __wb: 1; kind: 'apply'; time: number; paused: boolean }
+  | { __wb: 1; kind: 'liveTag'; show: boolean }
+  | { __wb: 1; kind: 'detach' };
+
+function pickVideo(): HTMLVideoElement | null {
+  const vids = [...document.querySelectorAll('video')];
+  if (vids.length === 0) return null;
+  return vids.map((v) => ({ v, area: v.clientWidth * v.clientHeight })).sort((a, b) => b.area - a.area)[0].v;
+}
+
+function applyTo(v: HTMLVideoElement, c: VideoControl): void {
+  if (Math.abs(v.currentTime - c.time) > SEEK_THRESHOLD) v.currentTime = c.time;
+  if (c.paused && !v.paused) v.pause();
+  else if (!c.paused && v.paused) void v.play();
+}
+
+function showLiveTag(v: HTMLVideoElement | null): void {
+  if (document.getElementById('wb-live-tag')) return;
+  const target = v ?? document.querySelector('video');
+  if (!target) return;
+  const container = (target.closest('[class]') as HTMLElement | null) ?? target.parentElement;
+  if (!container) return;
+
+  const pos = container.style.position;
+  if (!pos || pos === 'static') container.style.position = 'relative';
+
+  const tag = document.createElement('div');
+  tag.id = 'wb-live-tag';
+  tag.className = 'wb-live-tag';
+  const dot = document.createElement('span');
+  dot.className = 'wb-live-dot';
+  tag.append(dot, ' watching together');
+  container.appendChild(tag);
+}
+
+function removeLiveTag(): void {
+  document.getElementById('wb-live-tag')?.remove();
+}
+
+// abstracts away whether the synced video sits in this frame or a child iframe
+interface VideoTarget {
+  getState(): VideoControl | null;
+  apply(c: VideoControl): void;
+  onLocalChange(cb: () => void): void;
+  setLiveTag(show: boolean): void;
+  area(): number;
+  teardown(): void;
+}
+
+class LocalVideoTarget implements VideoTarget {
+  private applyingRemote = false;
+  private timer?: number;
+  private cb: (() => void) | null = null;
+
+  constructor(readonly video: HTMLVideoElement) {
+    video.addEventListener('play', this.onEv);
+    video.addEventListener('pause', this.onEv);
+    video.addEventListener('seeked', this.onEv);
+  }
+
+  private onEv = () => {
+    if (!this.applyingRemote) this.cb?.();
+  };
+
+  getState(): VideoControl {
+    return { time: this.video.currentTime, paused: this.video.paused };
+  }
+
+  apply(c: VideoControl): void {
+    this.applyingRemote = true;
+    window.clearTimeout(this.timer);
+    applyTo(this.video, c);
+    this.timer = window.setTimeout(() => {
+      this.applyingRemote = false;
+    }, REMOTE_GUARD_MS);
+  }
+
+  onLocalChange(cb: () => void): void {
+    this.cb = cb;
+  }
+
+  setLiveTag(show: boolean): void {
+    if (show) showLiveTag(this.video);
+    else removeLiveTag();
+  }
+
+  area(): number {
+    return this.video.clientWidth * this.video.clientHeight;
+  }
+
+  teardown(): void {
+    this.video.removeEventListener('play', this.onEv);
+    this.video.removeEventListener('pause', this.onEv);
+    this.video.removeEventListener('seeked', this.onEv);
+    removeLiveTag();
+  }
+}
+
+class RemoteVideoTarget implements VideoTarget {
+  private last: VideoControl | null = null;
+  private cb: (() => void) | null = null;
+
+  constructor(
+    readonly win: Window,
+    private _area: number,
+  ) {}
+
+  pushState(c: VideoControl): void {
+    this.last = c;
+    this.cb?.();
+  }
+
+  setArea(a: number): void {
+    this._area = a;
+  }
+
+  getState(): VideoControl | null {
+    return this.last;
+  }
+
+  apply(c: VideoControl): void {
+    this.post({ __wb: 1, kind: 'apply', time: c.time, paused: c.paused });
+  }
+
+  onLocalChange(cb: () => void): void {
+    this.cb = cb;
+  }
+
+  setLiveTag(show: boolean): void {
+    this.post({ __wb: 1, kind: 'liveTag', show });
+  }
+
+  area(): number {
+    return this._area;
+  }
+
+  teardown(): void {
+    this.post({ __wb: 1, kind: 'detach' });
+  }
+
+  private post(m: WbBridgeMsg): void {
+    try {
+      this.win.postMessage(m, '*');
+    } catch {
+      // child frame may have unloaded
+    }
+  }
+}
+
 if (!window.__wbLoaded) {
   window.__wbLoaded = true;
+  if (window.top === window) runTop();
+  else runBridge();
+}
 
+// top frame: owns the socket, content identity (this page's url), the diverged
+// callout, and selecting which video (local or in a child frame) to drive.
+function runTop(): void {
   let channel: VideoChannel | null = null;
-  let video: HTMLVideoElement | null = null;
-  let applyingRemote = false;
-  let applyTimer: number | undefined;
-  let bindTries = 0;
+  let target: VideoTarget | null = null;
   let pending: VideoControl | null = null;
+  let targetTimer: number | undefined;
 
   let isAnchor = false;
   let canonical: VideoContentInfo | null = null;
@@ -27,6 +191,9 @@ if (!window.__wbLoaded) {
   let navTimer: number | undefined;
   let lastHref = location.href;
 
+  // child frames that have announced a video, keyed by their window
+  const announced = new Map<Window, { area: number }>();
+
   chrome.runtime.onMessage.addListener((msg: TabMessage, sender) => {
     if (sender.id !== chrome.runtime.id) return;
     if (msg.type === 'START_ROOM' || msg.type === 'JOIN_ROOM') {
@@ -34,6 +201,33 @@ if (!window.__wbLoaded) {
     }
     if (msg.type === 'LEAVE_ROOM') {
       stopSync();
+    }
+  });
+
+  window.addEventListener('message', (e) => {
+    const d = e.data as WbBridgeMsg | undefined;
+    if (!d || d.__wb !== 1) return;
+    const src = e.source as Window | null;
+    if (!src) return;
+    if (d.kind === 'announce') {
+      announced.set(src, { area: d.area });
+      syncTarget();
+    } else if (d.kind === 'state') {
+      if (target instanceof RemoteVideoTarget && target.win === src) target.pushState({ time: d.time, paused: d.paused });
+    } else if (d.kind === 'gone') {
+      announced.delete(src);
+      if (target instanceof RemoteVideoTarget && target.win === src) {
+        target.teardown();
+        target = null;
+      }
+      syncTarget();
+    }
+  });
+
+  armFromStorage();
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && (STORAGE_KEYS.inRoom in changes || STORAGE_KEYS.roomCode in changes)) {
+      armFromStorage();
     }
   });
 
@@ -48,21 +242,8 @@ if (!window.__wbLoaded) {
     });
   }
 
-  armFromStorage();
-  chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'local' && (STORAGE_KEYS.inRoom in changes || STORAGE_KEYS.roomCode in changes)) {
-      armFromStorage();
-    }
-  });
-
   function currentContent(): VideoContentInfo {
     return { key: contentKey(location.href), url: location.href, title: document.title || location.hostname };
-  }
-
-  function pickVideo(): HTMLVideoElement | null {
-    const vids = [...document.querySelectorAll('video')];
-    if (vids.length === 0) return null;
-    return vids.map((v) => ({ v, area: v.clientWidth * v.clientHeight })).sort((a, b) => b.area - a.area)[0].v;
   }
 
   async function startSync(code: string, anchor: boolean) {
@@ -80,8 +261,8 @@ if (!window.__wbLoaded) {
     } else if (anchor) {
       channel.claimAnchor(currentContent());
     }
-    bindTries = 0;
-    attachVideo();
+    syncTarget();
+    startTargetWatch();
     startNavWatch();
     refreshTags();
   }
@@ -89,61 +270,86 @@ if (!window.__wbLoaded) {
   function stopSync() {
     channel?.disconnect();
     channel = null;
-    detachVideo();
+    target?.teardown();
+    target = null;
+    pending = null;
+    announced.clear();
     canonical = null;
     diverged = false;
     isAnchor = false;
+    stopTargetWatch();
     stopNavWatch();
     removeLiveTag();
     hideDivergedCallout();
   }
 
-  function attachVideo() {
-    if (video) return;
-    const v = pickVideo();
-    if (!v) {
-      if (bindTries++ < 20) window.setTimeout(attachVideo, 500);
-      return;
-    }
-    video = v;
-    v.addEventListener('play', onLocal);
-    v.addEventListener('pause', onLocal);
-    v.addEventListener('seeked', onLocal);
+  // pick the largest video across this frame and announcing children, preferring
+  // anything that clears the min-area floor so ad/background clips don't win.
+  function syncTarget() {
+    const local = pickVideo();
+    const localArea = local ? local.clientWidth * local.clientHeight : 0;
 
+    let bestWin: Window | null = null;
+    let bestArea = 0;
+    for (const [win, info] of announced) {
+      if (info.area >= MIN_AREA && info.area > bestArea) {
+        bestWin = win;
+        bestArea = info.area;
+      }
+    }
+
+    let useLocal = false;
+    if (local && localArea >= MIN_AREA && localArea >= bestArea) useLocal = true;
+    else if (!bestWin && local) useLocal = true; // nothing qualified, fall back to a small local video
+
+    if (useLocal && local) {
+      if (target instanceof LocalVideoTarget && target.video === local) return;
+      setTarget(new LocalVideoTarget(local));
+    } else if (bestWin) {
+      if (target instanceof RemoteVideoTarget && target.win === bestWin) {
+        target.setArea(bestArea);
+        return;
+      }
+      setTarget(new RemoteVideoTarget(bestWin, bestArea));
+    }
+  }
+
+  function setTarget(next: VideoTarget) {
+    target?.teardown();
+    target = next;
+    target.onLocalChange(onLocal);
     if (pending) {
       const p = pending;
       pending = null;
-      applyControl(p);
+      target.apply(p);
     }
+    refreshTags();
   }
 
-  function detachVideo() {
-    video?.removeEventListener('play', onLocal);
-    video?.removeEventListener('pause', onLocal);
-    video?.removeEventListener('seeked', onLocal);
-    video = null;
+  function startTargetWatch() {
+    if (targetTimer) return;
+    // a top-frame player can load late; child players announce on their own.
+    targetTimer = window.setInterval(syncTarget, 1000);
+  }
+
+  function stopTargetWatch() {
+    window.clearInterval(targetTimer);
+    targetTimer = undefined;
   }
 
   function onLocal() {
-    if (applyingRemote || diverged || !channel || !video) return;
-    channel.send({ time: video.currentTime, paused: video.paused });
+    if (diverged || !channel || !target) return;
+    const s = target.getState();
+    if (s) channel.send(s);
   }
 
   function applyControl(c: VideoControl) {
     if (diverged) return;
-    if (!video) {
+    if (!target) {
       pending = c;
       return;
     }
-    applyingRemote = true;
-    window.clearTimeout(applyTimer);
-    if (Math.abs(video.currentTime - c.time) > 0.5) video.currentTime = c.time;
-    if (c.paused && !video.paused) video.pause();
-    else if (!c.paused && video.paused) void video.play();
-
-    applyTimer = window.setTimeout(() => {
-      applyingRemote = false;
-    }, 400);
+    target.apply(c);
   }
 
   function onCanonical(c: VideoContentInfo) {
@@ -155,11 +361,11 @@ if (!window.__wbLoaded) {
   function refreshTags() {
     diverged = !!canonical && canonical.key !== contentKey(location.href);
     if (diverged && canonical) {
-      removeLiveTag();
+      target?.setLiveTag(false);
       showDivergedCallout(canonical);
     } else {
       hideDivergedCallout();
-      showLiveTag();
+      target?.setLiveTag(true);
     }
   }
 
@@ -182,34 +388,12 @@ if (!window.__wbLoaded) {
   function onUrlMaybeChanged() {
     if (location.href === lastHref) return;
     lastHref = location.href;
-    detachVideo();
-    bindTries = 0;
-    attachVideo();
+    target?.teardown();
+    target = null;
+    announced.clear();
+    syncTarget();
     channel?.setContent(currentContent());
     refreshTags();
-  }
-
-  function showLiveTag(): void {
-    if (document.getElementById('wb-live-tag')) return;
-    const v = document.querySelector('video');
-    if (!v) return;
-    const container = (v.closest('[class]') as HTMLElement | null) ?? v.parentElement;
-    if (!container) return;
-
-    const pos = container.style.position;
-    if (!pos || pos === 'static') container.style.position = 'relative';
-
-    const tag = document.createElement('div');
-    tag.id = 'wb-live-tag';
-    tag.className = 'wb-live-tag';
-    const dot = document.createElement('span');
-    dot.className = 'wb-live-dot';
-    tag.append(dot, ' watching together');
-    container.appendChild(tag);
-  }
-
-  function removeLiveTag(): void {
-    document.getElementById('wb-live-tag')?.remove();
   }
 
   function showDivergedCallout(c: VideoContentInfo): void {
@@ -236,7 +420,8 @@ if (!window.__wbLoaded) {
     btn.className = 'wb-diverged-btn';
     btn.textContent = 'Open it';
     btn.addEventListener('click', () => {
-      location.href = c.url;
+      // always move the top page, never an embedded player frame
+      if (window.top) window.top.location.href = c.url;
     });
 
     box.append(text, btn);
@@ -245,6 +430,128 @@ if (!window.__wbLoaded) {
   function hideDivergedCallout(): void {
     document.getElementById('wb-diverged')?.remove();
   }
+}
+
+// child frame: no socket, no room state. finds its <video> and relays it to the
+// top frame, applying remote control and showing the live tag on request.
+function runBridge(): void {
+  let v: HTMLVideoElement | null = null;
+  let armed = false;
+  let applyingRemote = false;
+  let applyTimer: number | undefined;
+  let loopTimer: number | undefined;
+  let announcedArea = 0;
+
+  function post(m: WbBridgeMsg): void {
+    try {
+      window.top?.postMessage(m, '*');
+    } catch {
+      // top may be unreachable
+    }
+  }
+
+  function announce(): void {
+    if (!v) return;
+    announcedArea = v.clientWidth * v.clientHeight;
+    post({ __wb: 1, kind: 'announce', area: announcedArea, duration: Number.isFinite(v.duration) ? v.duration : 0 });
+  }
+
+  const onEv = () => {
+    if (applyingRemote || !v) return;
+    post({ __wb: 1, kind: 'state', time: v.currentTime, paused: v.paused });
+  };
+
+  function attach(): void {
+    const found = pickVideo();
+    if (!found || found.clientWidth * found.clientHeight < MIN_AREA) return;
+    v = found;
+    v.addEventListener('play', onEv);
+    v.addEventListener('pause', onEv);
+    v.addEventListener('seeked', onEv);
+    announce();
+  }
+
+  function detach(notify: boolean): void {
+    if (v) {
+      v.removeEventListener('play', onEv);
+      v.removeEventListener('pause', onEv);
+      v.removeEventListener('seeked', onEv);
+      if (notify) post({ __wb: 1, kind: 'gone' });
+    }
+    v = null;
+    announcedArea = 0;
+    removeLiveTag();
+  }
+
+  function tick(): void {
+    if (!armed) return;
+    if (!v) {
+      attach();
+      return;
+    }
+    if (!document.contains(v)) {
+      detach(true);
+      return;
+    }
+    const area = v.clientWidth * v.clientHeight;
+    if (Math.abs(area - announcedArea) > 1000) announce();
+  }
+
+  function applyFromTop(c: VideoControl): void {
+    if (!v) return;
+    applyingRemote = true;
+    window.clearTimeout(applyTimer);
+    applyTo(v, c);
+    applyTimer = window.setTimeout(() => {
+      applyingRemote = false;
+    }, REMOTE_GUARD_MS);
+  }
+
+  window.addEventListener('message', (e) => {
+    const d = e.data as WbBridgeMsg | undefined;
+    if (!d || d.__wb !== 1) return;
+    if (e.source !== window.top) return; // only honor commands from our top frame
+    if (d.kind === 'apply') applyFromTop({ time: d.time, paused: d.paused });
+    else if (d.kind === 'liveTag') {
+      if (d.show) showLiveTag(v);
+      else removeLiveTag();
+    } else if (d.kind === 'detach') {
+      removeLiveTag();
+    }
+  });
+
+  function arm(): void {
+    if (armed) return;
+    armed = true;
+    attach();
+    if (!loopTimer) loopTimer = window.setInterval(tick, 1000);
+  }
+
+  function disarm(): void {
+    armed = false;
+    detach(true);
+    window.clearInterval(loopTimer);
+    loopTimer = undefined;
+  }
+
+  function armFromStorage(): void {
+    chrome.storage.local.get([STORAGE_KEYS.inRoom, STORAGE_KEYS.roomCode], (d) => {
+      if (d[STORAGE_KEYS.inRoom] && typeof d[STORAGE_KEYS.roomCode] === 'string') arm();
+      else disarm();
+    });
+  }
+
+  chrome.runtime.onMessage.addListener((msg: TabMessage, sender) => {
+    if (sender.id !== chrome.runtime.id) return;
+    if (msg.type === 'START_ROOM' || msg.type === 'JOIN_ROOM') arm();
+    if (msg.type === 'LEAVE_ROOM') disarm();
+  });
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && (STORAGE_KEYS.inRoom in changes || STORAGE_KEYS.roomCode in changes)) {
+      armFromStorage();
+    }
+  });
+  armFromStorage();
 }
 
 export {};

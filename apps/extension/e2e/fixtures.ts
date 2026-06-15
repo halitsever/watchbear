@@ -1,4 +1,4 @@
-import { chromium, type BrowserContext, type Page, type Worker } from '@playwright/test';
+import { chromium, type BrowserContext, type Frame, type Page, type Worker } from '@playwright/test';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -6,6 +6,8 @@ const dir = path.dirname(fileURLToPath(import.meta.url));
 const EXT_PATH = path.resolve(dir, '../dist');
 
 export const VIDEO_URL = 'http://127.0.0.1:5190/video.html';
+// host page on one origin embedding the player on another == cross-origin iframe
+export const HOST_IFRAME_URL = 'http://127.0.0.1:5190/host-iframe.html';
 
 export interface User {
   context: BrowserContext;
@@ -19,7 +21,7 @@ export interface User {
 
 // one persistent context == one isolated browser profile == one "bear".
 // launching it twice gives us two independent users sharing a room code.
-export async function launchUser(): Promise<User> {
+export async function launchUser(opts: { url?: string } = {}): Promise<User> {
   const context = await chromium.launchPersistentContext('', {
     headless: process.env.PW_HEADLESS === '1',
     ignoreHTTPSErrors: true,
@@ -36,8 +38,10 @@ export async function launchUser(): Promise<User> {
   const extensionId = worker.url().split('/')[2];
 
   const video = await context.newPage();
-  await video.goto(VIDEO_URL);
-  await video.waitForSelector('video');
+  await video.goto(opts.url ?? VIDEO_URL);
+  // for iframe pages the <video> lives in a child frame, so wait on the frame
+  if (opts.url === HOST_IFRAME_URL) await (await videoFrame(video)).waitForSelector('video');
+  else await video.waitForSelector('video');
 
   // skip the popup UI and drop the room straight into storage; the content
   // script's storage.onChanged listener then arms the video sync.
@@ -56,10 +60,18 @@ export async function launchUser(): Promise<User> {
   return { context, extensionId, worker, video, joinRoom, openSidePanel, close: () => context.close() };
 }
 
-export const videoPaused = (p: Page) =>
+// the player frame embedded in HOST_IFRAME_URL
+export async function videoFrame(p: Page): Promise<Frame> {
+  const handle = await p.waitForSelector('iframe');
+  const frame = await handle.contentFrame();
+  if (!frame) throw new Error('iframe content frame not available');
+  return frame;
+}
+
+export const videoPaused = (p: Page | Frame) =>
   p.evaluate(() => document.querySelector('video')!.paused);
 
-export const setVideo = (p: Page, action: 'play' | 'pause', time?: number) =>
+export const setVideo = (p: Page | Frame, action: 'play' | 'pause', time?: number) =>
   p.evaluate(
     ({ action, time }) => {
       const v = document.querySelector('video')!;

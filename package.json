@@ -13,6 +13,7 @@
     "build": "pnpm -r --if-present build",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",
+    "test:all": "pnpm test && pnpm test:e2e",
     "test:e2e": "pnpm --filter @watchbear/extension test:e2e",
     "e2e:manual": "pnpm --filter @watchbear/extension e2e:manual"
   },

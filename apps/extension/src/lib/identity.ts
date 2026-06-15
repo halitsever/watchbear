@@ -4,7 +4,7 @@ export interface Identity {
   furDark: string;
 }
 
-const BEARS: Identity[] = [
+export const BEARS: Identity[] = [
   { name: 'Cinnamon', fur: '#C06B3A', furDark: '#9E5328' },
   { name: 'Cocoa', fur: '#7A4A2B', furDark: '#5E3720' },
   { name: 'Pumpkin', fur: '#D9A441', furDark: '#B6822A' },
@@ -39,4 +39,9 @@ export async function setIdentityName(name: string): Promise<void> {
   if (!trimmed) return;
   const current = await getIdentity();
   await chrome.storage.local.set({ wb_identity: { ...current, name: trimmed } });
+}
+
+export async function setIdentityCharacter(fur: string, furDark: string): Promise<void> {
+  const current = await getIdentity();
+  await chrome.storage.local.set({ wb_identity: { ...current, fur, furDark } });
 }

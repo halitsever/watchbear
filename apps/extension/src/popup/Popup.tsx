@@ -6,10 +6,11 @@ import { BearMark, BearFace } from "@/components/Bear";
 import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
 import { generateCode } from "@/lib/room";
-import { getIdentity, setIdentityName, type Identity } from "@/lib/identity";
+import { getIdentity, setIdentityName, setIdentityCharacter, type Identity } from "@/lib/identity";
 import { getServerUrl } from "@/lib/server";
 import { pingServer } from "@/lib/socket";
 import { ServerSettings } from "@/components/ServerSettings";
+import { BearPicker } from "@/components/BearPicker";
 
 export function Popup() {
   const { inRoom, roomCode } = useRoomState();
@@ -39,6 +40,11 @@ export function Popup() {
   function changeName(value: string) {
     setYou((y) => (y ? { ...y, name: value } : y));
     void setIdentityName(value);
+  }
+
+  function chooseBear(fur: string, furDark: string) {
+    setYou((y) => (y ? { ...y, fur, furDark } : y));
+    void setIdentityCharacter(fur, furDark);
   }
 
   // re-verify the server right before acting, so we never close the popup into a
@@ -147,6 +153,10 @@ export function Popup() {
                 autoComplete="off"
                 className="min-w-0 flex-1 rounded-xl border border-wb-line bg-[#1d150f] px-[13px] py-[10px] text-[13.5px] font-bold text-wb-text outline-none transition-colors placeholder:text-wb-faint focus:border-[rgba(255,178,62,.45)]"
               />
+            </div>
+            <div className="mb-[11px]">
+              <div className="mb-1.5 text-[11px] font-bold text-wb-faint">Pick your bear</div>
+              <BearPicker selectedFur={you?.fur ?? ""} onPick={chooseBear} />
             </div>
             <button
               type="button"

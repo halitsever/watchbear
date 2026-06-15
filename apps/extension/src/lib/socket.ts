@@ -32,6 +32,7 @@ export interface RoomHandlers {
   onChat: (msg: ChatPayload) => void;
   onSystem: (text: string) => void;
   onStatus: (status: ConnStatus) => void;
+  onContent: (c: VideoContentInfo) => void;
 }
 
 export interface RoomConnection {
@@ -44,20 +45,50 @@ export interface VideoControl {
   paused: boolean;
 }
 
+// what the page is watching, used to keep everyone on the same video
+export interface VideoContentInfo {
+  key: string;
+  url: string;
+  title: string;
+}
+
+export interface VideoChannelOpts {
+  anchor: boolean;
+  content: VideoContentInfo;
+  onControl: (c: VideoControl) => void;
+  onContent: (c: VideoContentInfo) => void;
+}
+
 export interface VideoChannel {
   send: (c: VideoControl) => void;
+  // call after a same-tab (SPA) navigation so the server knows our new content
+  setContent: (c: VideoContentInfo) => void;
+  // promote this socket to anchor (covers the storage-arm vs message race)
+  claimAnchor: (c: VideoContentInfo) => void;
   disconnect: () => void;
 }
 
 // connection used only to sync the page video. joins the room to receive
 // control events but isn't registered as a member.
-export function joinVideoChannel(serverUrl: string, code: string, onControl: (c: VideoControl) => void): VideoChannel {
+export function joinVideoChannel(serverUrl: string, code: string, opts: VideoChannelOpts): VideoChannel {
   const socket: Socket = io(serverUrl, { transports: ['websocket'] });
-  socket.on('connect', () => socket.emit('video:subscribe', { code }));
+  let anchor = opts.anchor;
+  let content = opts.content;
+  socket.on('connect', () => socket.emit('video:subscribe', { code, anchor, ...content }));
   socket.on('connect_error', (e) => console.warn('[Watchbear] video sync connection failed:', e.message));
-  socket.on('video:control', (c: VideoControl) => onControl(c));
+  socket.on('video:control', (c: VideoControl) => opts.onControl(c));
+  socket.on('room:content', (c: VideoContentInfo) => opts.onContent(c));
   return {
     send: (c) => socket.emit('video:control', { code, ...c }),
+    setContent: (c) => {
+      content = c;
+      if (socket.connected) socket.emit('video:content', c);
+    },
+    claimAnchor: (c) => {
+      anchor = true;
+      content = c;
+      if (socket.connected) socket.emit('video:subscribe', { code, anchor: true, ...c });
+    },
     disconnect: () => socket.disconnect(),
   };
 }
@@ -71,9 +102,12 @@ export function joinRoom(serverUrl: string, code: string, member: Identity, hand
   });
   socket.on('connect_error', () => handlers.onStatus('error'));
   socket.on('disconnect', () => handlers.onStatus('connecting'));
+  // server rejected the payload (e.g. malformed code); don't show a fake "connected"
+  socket.on('exception', () => handlers.onStatus('error'));
   socket.on('room:members', (p: { members: Member[] }) => handlers.onMembers(p.members, socket.id));
   socket.on('chat:message', (p: ChatPayload) => handlers.onChat(p));
   socket.on('room:system', (p: { text: string }) => handlers.onSystem(p.text));
+  socket.on('room:content', (c: VideoContentInfo) => handlers.onContent(c));
 
   return {
     sendChat: (text) => socket.emit('chat:send', { text }),

@@ -6,8 +6,8 @@ export type PopupMessage =
 export type ContentMessage = { type: 'ROOM_STATE'; inRoom: boolean; memberCount: number };
 
 export type TabMessage =
-  | { type: 'START_ROOM'; code: string }
-  | { type: 'JOIN_ROOM'; code: string }
+  | { type: 'START_ROOM'; code: string; anchor: boolean }
+  | { type: 'JOIN_ROOM'; code: string; anchor: boolean }
   | { type: 'LEAVE_ROOM' };
 
 export interface VideoState {

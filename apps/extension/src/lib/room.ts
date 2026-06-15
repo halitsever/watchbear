@@ -1,12 +1,18 @@
 export const STORAGE_KEYS = {
   inRoom: 'wb_inRoom',
   roomCode: 'wb_roomCode',
+  anchorTabId: 'wb_anchorTabId',
 } as const;
 
 export interface RoomState {
   inRoom: boolean;
   roomCode: string;
 }
+
+// must mirror the server's CODE regex in apps/server/src/room/room.dto.ts, or the
+// popup accepts codes the server silently rejects (leaving you alone in a phantom room)
+export const ROOM_CODE_RE = /^[A-Z]{2,8}-[A-Z0-9]{4,12}$/;
+export const isValidCode = (code: string): boolean => ROOM_CODE_RE.test(code.trim());
 
 const CODE_WORDS = ['BEAR', 'DEN', 'CUB', 'PAW', 'FUR', 'HONEY', 'OAK', 'PINE'];
 // no 0/O/1/I so the code stays easy to read out loud. 32 chars divides 256

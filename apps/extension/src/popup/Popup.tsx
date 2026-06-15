@@ -5,7 +5,7 @@ import IconVideoOff from "~icons/lucide/video-off";
 import { BearMark, BearFace } from "@/components/Bear";
 import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
-import { generateCode } from "@/lib/room";
+import { generateCode, isValidCode } from "@/lib/room";
 import { getIdentity, setIdentityName, setIdentityCharacter, type Identity } from "@/lib/identity";
 import { getServerUrl } from "@/lib/server";
 import { pingServer } from "@/lib/socket";
@@ -66,7 +66,7 @@ export function Popup() {
 
   async function joinRoom() {
     const trimmed = code.trim();
-    if (trimmed.length < 3) return;
+    if (!isValidCode(trimmed)) return;
     if (!(await ensureServer())) return;
     const tab = await getActiveTab();
     if (!tab?.id) return;
@@ -192,12 +192,17 @@ export function Popup() {
               <button
                 type="button"
                 onClick={joinRoom}
-                disabled={code.trim().length < 3 || serverUp === false}
+                disabled={!isValidCode(code) || serverUp === false}
                 className="whitespace-nowrap rounded-xl bg-[#3a2c20] px-4 text-[13.5px] font-extrabold text-wb-cream transition-colors hover:bg-[#4a3826] disabled:cursor-default disabled:opacity-40"
               >
                 Join
               </button>
             </div>
+            {code.trim().length > 0 && !isValidCode(code) && (
+              <div className="mt-2 rounded-xl border border-[rgba(255,140,107,.25)] bg-[rgba(255,140,107,.1)] px-[13px] py-2.5 text-center text-[12px] font-bold text-wb-coral">
+                That doesn't look like a room code (like BEAR-AB12CD)
+              </div>
+            )}
           </div>
 
           {/* share hint */}

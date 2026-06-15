@@ -3,6 +3,7 @@ import IconSend from "~icons/lucide/send";
 import IconCopy from "~icons/lucide/copy";
 import IconCheck from "~icons/lucide/check";
 import IconClock from "~icons/lucide/clock";
+import IconTv from "~icons/lucide/tv";
 import { BearMark } from "@/components/Bear";
 import { MemberChip } from "@/components/MemberChip";
 import { ChatLine } from "@/components/ChatLine";
@@ -10,7 +11,8 @@ import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
 import { getIdentity, type Identity } from "@/lib/identity";
 import { getServerUrl } from "@/lib/server";
-import { joinRoom, type RoomConnection, type ConnStatus } from "@/lib/socket";
+import { joinRoom, type RoomConnection, type ConnStatus, type VideoContentInfo } from "@/lib/socket";
+import { contentKey } from "@/lib/content";
 import type { Member, Message } from "@/lib/types";
 
 const REACTIONS = ["🐻", "😂", "😱", "❤️", "🍿"];
@@ -36,9 +38,14 @@ export function SidePanel() {
   const [copied, setCopied] = useState(false);
   const [videoTime, setVideoTime] = useState<number | null>(null);
   const [status, setStatus] = useState<ConnStatus>("connecting");
+  const [content, setContent] = useState<VideoContentInfo | null>(null);
+  const [activeUrl, setActiveUrl] = useState<string | null>(null);
+  const activeTabId = useRef<number | null>(null);
   const msgId = useRef(0);
   const feedRef = useRef<HTMLDivElement>(null);
   const conn = useRef<RoomConnection | null>(null);
+
+  const diverged = !!content && !!activeUrl && contentKey(activeUrl) !== content.key;
 
   const nextId = () => ++msgId.current;
 
@@ -56,6 +63,7 @@ export function SidePanel() {
     } else {
       setMembers([]);
       setMessages([]);
+      setContent(null);
     }
   }, [inRoom, roomCode, identity]);
 
@@ -68,6 +76,7 @@ export function SidePanel() {
       onChat: ({ from, text }) => setMessages((m) => [...m, { id: nextId(), type: "chat", from, text }]),
       onSystem: (text) => setMessages((m) => [...m, { id: nextId(), type: "system", text }]),
       onStatus: setStatus,
+      onContent: setContent,
     });
     return () => {
       conn.current?.disconnect();
@@ -88,6 +97,8 @@ export function SidePanel() {
     let active = true;
     const poll = async () => {
       const tab = await getActiveTab();
+      activeTabId.current = tab?.id ?? null;
+      setActiveUrl(tab?.url ?? null);
       const res = tab?.id != null ? await getVideoTime(tab.id) : undefined;
       if (!active || res === undefined) return; // unreachable: keep last value
       setVideoTime(res?.currentTime ?? null);
@@ -125,6 +136,12 @@ export function SidePanel() {
   async function leave() {
     const tab = await getActiveTab();
     sendToBackground({ type: "WB_LEAVE_ROOM", tabId: tab?.id });
+  }
+
+  function openContent() {
+    if (content && activeTabId.current != null) {
+      chrome.tabs.update(activeTabId.current, { url: content.url }).catch(() => {});
+    }
   }
 
   if (!inRoom) {
@@ -195,6 +212,28 @@ export function SidePanel() {
           <IconClock className="h-[13px] w-[13px]" />
           {videoTime == null ? "No video playing" : formatTime(videoTime)}
         </div>
+
+        {content &&
+          (diverged ? (
+            <div className="mt-2.5 flex items-center gap-2 rounded-xl border border-[rgba(255,178,62,.3)] bg-[rgba(255,178,62,.1)] px-[11px] py-2.5">
+              <div className="min-w-0 flex-1">
+                <div className="text-[11px] font-bold text-wb-honey">You're watching something else</div>
+                <div className="truncate text-[12px] font-semibold text-wb-dim">The den: {content.title || content.url}</div>
+              </div>
+              <button
+                type="button"
+                onClick={openContent}
+                className="shrink-0 rounded-[10px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-3 py-1.5 text-xs font-extrabold text-[#3a2410] transition-all hover:brightness-105"
+              >
+                Open it
+              </button>
+            </div>
+          ) : (
+            <div className="mt-2 flex items-center gap-1.5 text-[12px] font-semibold text-wb-dim">
+              <IconTv className="h-[13px] w-[13px] shrink-0" />
+              <span className="truncate">Now playing: {content.title || content.url}</span>
+            </div>
+          ))}
       </div>
 
       {/* chat feed */}

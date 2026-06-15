@@ -19,7 +19,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    "types": ["chrome", "vite/client", "node"],
+    "types": ["chrome", "vite/client", "node", "vitest/globals"],
     "paths": {
       "@/*": ["./src/*"]
     }

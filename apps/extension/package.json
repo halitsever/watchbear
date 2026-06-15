@@ -10,6 +10,8 @@
     "build:test": "vite build --mode test",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "pretest:e2e": "vite build --mode test",
     "test:e2e": "playwright test",
     "e2e:manual": "vite build --mode development && node e2e/manual.mjs"
@@ -21,10 +23,10 @@
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.6.1",
-    "@playwright/test": "^1.49.1",
     "@fontsource/fredoka": "^5.2.10",
     "@fontsource/nunito": "^5.2.7",
     "@iconify-json/lucide": "^1.2.111",
+    "@playwright/test": "^1.49.1",
     "@svgr/core": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
     "@tailwindcss/vite": "^4.3.1",
@@ -36,6 +38,7 @@
     "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3",
     "unplugin-icons": "^23.0.1",
-    "vite": "^8.0.16"
+    "vite": "^8.0.16",
+    "vitest": "^4.1.8"
   }
 }

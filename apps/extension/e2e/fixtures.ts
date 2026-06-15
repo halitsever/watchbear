@@ -16,6 +16,7 @@ export interface User {
   video: Page;
   joinRoom: (code: string) => Promise<void>;
   openSidePanel: () => Promise<Page>;
+  openPopup: () => Promise<Page>;
   close: () => Promise<void>;
 }
 
@@ -57,7 +58,17 @@ export async function launchUser(opts: { url?: string } = {}): Promise<User> {
     return p;
   };
 
-  return { context, extensionId, worker, video, joinRoom, openSidePanel, close: () => context.close() };
+  // the toolbar popup is a normal extension page, so we can just open it in a tab
+  const openPopup = async () => {
+    const url = await worker.evaluate(() =>
+      chrome.runtime.getURL(chrome.runtime.getManifest().action!.default_popup!),
+    );
+    const p = await context.newPage();
+    await p.goto(url);
+    return p;
+  };
+
+  return { context, extensionId, worker, video, joinRoom, openSidePanel, openPopup, close: () => context.close() };
 }
 
 // the player frame embedded in HOST_IFRAME_URL

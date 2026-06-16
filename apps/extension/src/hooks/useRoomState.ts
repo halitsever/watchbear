@@ -6,14 +6,14 @@ export function useRoomState(): RoomState {
 
   useEffect(() => {
     let active = true;
-    readRoomState().then((s) => {
+    void readRoomState().then((s) => {
       if (active) setState(s);
     });
 
     const onChanged = (changes: Record<string, chrome.storage.StorageChange>, area: string) => {
       if (area !== 'local') return;
       if (STORAGE_KEYS.inRoom in changes || STORAGE_KEYS.roomCode in changes) {
-        readRoomState().then((s) => {
+        void readRoomState().then((s) => {
           if (active) setState(s);
         });
       }

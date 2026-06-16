@@ -22,17 +22,17 @@ export function Popup() {
 
   // cache the tab so the open handler stays a sync user gesture
   useEffect(() => {
-    getActiveTab().then((t) => {
+    void getActiveTab().then((t) => {
       activeTab.current = t;
-      if (t?.id != null) getVideoTime(t.id).then((res) => setHasVideo(!!res));
+      if (t?.id != null) void getVideoTime(t.id).then((res) => setHasVideo(!!res));
       else setHasVideo(false);
     });
-    getIdentity().then(setYou);
+    void getIdentity().then(setYou);
     refreshServer();
   }, []);
 
   function refreshServer() {
-    getServerUrl()
+    void getServerUrl()
       .then((u) => pingServer(u))
       .then(setServerUp);
   }
@@ -160,7 +160,7 @@ export function Popup() {
             </div>
             <button
               type="button"
-              onClick={startRoom}
+              onClick={() => void startRoom()}
               disabled={hasVideo === false || serverUp === false}
               className="flex w-full items-center justify-between gap-2 rounded-[14px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-4 py-[14px] text-[14.5px] font-extrabold text-[#3a2410] shadow-[0_8px_20px_rgba(242,145,42,.32)] transition-all hover:-translate-y-px hover:brightness-105 active:translate-y-0 disabled:cursor-default disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0 disabled:hover:brightness-100"
             >
@@ -181,7 +181,7 @@ export function Popup() {
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, ""))}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") joinRoom();
+                  if (e.key === "Enter") void joinRoom();
                 }}
                 placeholder="ROOM CODE"
                 maxLength={12}
@@ -191,7 +191,7 @@ export function Popup() {
               />
               <button
                 type="button"
-                onClick={joinRoom}
+                onClick={() => void joinRoom()}
                 disabled={!isValidCode(code) || serverUp === false}
                 className="whitespace-nowrap rounded-xl bg-[#3a2c20] px-4 text-[13.5px] font-extrabold text-wb-cream transition-colors hover:bg-[#4a3826] disabled:cursor-default disabled:opacity-40"
               >

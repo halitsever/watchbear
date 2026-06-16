@@ -11,6 +11,8 @@
     "build:server": "pnpm --filter @watchbear/server build",
     "cert": "pnpm --filter @watchbear/server cert",
     "build": "pnpm -r --if-present build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",
     "test:all": "pnpm test && pnpm test:e2e",
@@ -21,5 +23,14 @@
     "node": ">=20",
     "pnpm": ">=10"
   },
-  "packageManager": "pnpm@11.4.0"
+  "packageManager": "pnpm@11.4.0",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.5.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.6.0",
+    "typescript-eslint": "^8.61.0"
+  }
 }

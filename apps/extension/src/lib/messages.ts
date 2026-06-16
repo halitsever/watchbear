@@ -32,7 +32,7 @@ export async function getActiveTab(): Promise<chrome.tabs.Tab | undefined> {
 }
 
 function readBestVideoInPage(): { currentTime: number; duration: number; paused: boolean } | null {
-  let videos = [...document.querySelectorAll('video')];
+  const videos = [...document.querySelectorAll('video')];
   if (videos.length === 0) {
     const collect = (root: Document | ShadowRoot) => {
       root.querySelectorAll('*').forEach((el) => {

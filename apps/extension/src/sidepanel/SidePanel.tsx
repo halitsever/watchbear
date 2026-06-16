@@ -64,8 +64,8 @@ export function SidePanel() {
   const nextId = () => ++msgId.current;
 
   useEffect(() => {
-    getIdentity().then(setIdentity);
-    getServerUrl().then(setServerUrl);
+    void getIdentity().then(setIdentity);
+    void getServerUrl().then(setServerUrl);
   }, []);
 
   // optimistic local state until the server sends the real roster
@@ -122,8 +122,8 @@ export function SidePanel() {
       if (!active || res === undefined) return; // unreachable: keep last value
       setVideoTime(res?.currentTime ?? null);
     };
-    poll();
-    const iv = setInterval(poll, 500);
+    void poll();
+    const iv = setInterval(() => void poll(), 500);
     const onActivated = () => void poll();
     chrome.tabs.onActivated.addListener(onActivated);
     return () => {
@@ -250,7 +250,7 @@ export function SidePanel() {
         </div>
         <button
           type="button"
-          onClick={leave}
+          onClick={() => void leave()}
           title="leave room"
           className="shrink-0 rounded-[10px] border border-wb-line bg-[#2e2018] px-3 py-1.5 text-xs font-bold text-wb-dim transition-all hover:border-[rgba(255,140,107,.3)] hover:bg-[#3a2418] hover:text-wb-coral"
         >

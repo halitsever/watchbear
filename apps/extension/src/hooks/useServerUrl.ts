@@ -7,13 +7,13 @@ export function useServerUrl(): string | null {
 
   useEffect(() => {
     let active = true;
-    getServerUrl().then((u) => {
+    void getServerUrl().then((u) => {
       if (active) setUrl(u);
     });
 
     const onChanged = (changes: Record<string, chrome.storage.StorageChange>, area: string) => {
       if (area !== 'local' || !(SERVER_KEY in changes)) return;
-      getServerUrl().then((u) => {
+      void getServerUrl().then((u) => {
         if (active) setUrl(u);
       });
     };

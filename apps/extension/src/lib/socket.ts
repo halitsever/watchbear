@@ -12,7 +12,7 @@ export async function pingServer(serverUrl: string, timeoutMs = 5000): Promise<b
     clearTimeout(t);
     if (!res.ok) return false;
 
-    const data = await res.json().catch(() => null);
+    const data = (await res.json().catch(() => null)) as { name?: string } | null;
     return data?.name === 'watchbear-server';
   } catch {
     return false;

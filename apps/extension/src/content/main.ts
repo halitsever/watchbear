@@ -41,7 +41,7 @@ function showLiveTag(v: HTMLVideoElement | null): void {
   if (document.getElementById('wb-live-tag')) return;
   const target = v ?? document.querySelector('video');
   if (!target) return;
-  const container = (target.closest('[class]') as HTMLElement | null) ?? target.parentElement;
+  const container = target.closest<HTMLElement>('[class]') ?? target.parentElement;
   if (!container) return;
 
   const pos = container.style.position;

@@ -61,7 +61,7 @@ export async function launchUser(opts: { url?: string } = {}): Promise<User> {
   // the toolbar popup is a normal extension page, so we can just open it in a tab
   const openPopup = async () => {
     const url = await worker.evaluate(() =>
-      chrome.runtime.getURL(chrome.runtime.getManifest().action!.default_popup!),
+      chrome.runtime.getURL(chrome.runtime.getManifest().action!.default_popup),
     );
     const p = await context.newPage();
     await p.goto(url);

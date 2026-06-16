@@ -1,5 +1,10 @@
 import { STORAGE_KEYS } from '@/lib/room';
+import { PANEL_PORT_NAME } from '@/lib/panelPort';
 import type { PopupMessage, ContentMessage } from '@/lib/messages';
+
+function clearRoomState() {
+  void chrome.storage.local.set({ [STORAGE_KEYS.inRoom]: false, [STORAGE_KEYS.roomCode]: '', [STORAGE_KEYS.anchorTabId]: null });
+}
 
 chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender) => {
   if (sender.id !== chrome.runtime.id) return;
@@ -33,10 +38,21 @@ chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender
   }
 
   if (msg.type === 'WB_LEAVE_ROOM') {
-    void chrome.storage.local.set({ [STORAGE_KEYS.inRoom]: false, [STORAGE_KEYS.roomCode]: '', [STORAGE_KEYS.anchorTabId]: null });
+    clearRoomState();
     if (msg.tabId) chrome.tabs.sendMessage(msg.tabId, { type: 'LEAVE_ROOM' }).catch(() => {});
     return;
   }
+});
+
+// closing the side panel drops this port; treat it as leaving the room so the
+// content script disarms (it follows wb_inRoom via storage.onChanged).
+chrome.runtime.onConnect.addListener((port) => {
+  if (port.name !== PANEL_PORT_NAME) return;
+  port.onDisconnect.addListener(() => {
+    chrome.storage.local.get(STORAGE_KEYS.inRoom, (d) => {
+      if (d[STORAGE_KEYS.inRoom]) clearRoomState();
+    });
+  });
 });
 
 // re-arm the anchor after it navigates to a new page, so the freshly injected

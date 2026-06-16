@@ -12,7 +12,7 @@ export default defineManifest({
   name: 'Watchbear',
   short_name: 'Watchbear',
   description: 'The sweet way to watch together',
-  version: '0.1.2',
+  version: '0.1.3',
   icons,
   action: {
     default_popup: 'src/popup/index.html',

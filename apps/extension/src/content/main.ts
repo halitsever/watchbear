@@ -221,6 +221,7 @@ function runTop(): void {
           name,
           onControl: applyControl,
           onContent: onCanonical,
+          onReaction: (p) => spawnReaction(p.emoji),
         });
       }
     } else if (anchor) {
@@ -245,6 +246,32 @@ function runTop(): void {
     stopTargetWatch();
     stopNavWatch();
     hideDivergedCallout();
+    document.getElementById('wb-reactions')?.remove();
+  }
+
+  // big emoji that floats up over the video and fades, teleparty-style. anchored
+  // to the synced video's box when we can see it, else the viewport.
+  function spawnReaction(emoji: string): void {
+    let layer = document.getElementById('wb-reactions');
+    if (!layer) {
+      layer = document.createElement('div');
+      layer.id = 'wb-reactions';
+      layer.className = 'wb-reactions';
+      document.documentElement.appendChild(layer);
+    }
+
+    const v = pickVideo();
+    const rect = v && v.clientWidth * v.clientHeight >= MIN_AREA ? v.getBoundingClientRect() : null;
+    const zone = rect ?? { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+
+    const el = document.createElement('div');
+    el.className = 'wb-reaction';
+    el.textContent = emoji;
+    el.style.left = `${zone.left + zone.width * (0.2 + Math.random() * 0.6)}px`;
+    el.style.top = `${zone.top + zone.height * 0.88}px`;
+    el.style.setProperty('--wb-drift', `${Math.round(Math.random() * 80 - 40)}px`);
+    el.addEventListener('animationend', () => el.remove());
+    layer.appendChild(el);
   }
 
   // pick the largest video across this frame and announcing children, preferring

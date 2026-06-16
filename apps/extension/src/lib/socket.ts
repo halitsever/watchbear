@@ -45,6 +45,7 @@ export interface RoomHandlers {
 export interface RoomConnection {
   sendChat: (text: string) => void;
   sendTyping: (typing: boolean) => void;
+  sendReaction: (emoji: string) => void;
   disconnect: () => void;
 }
 
@@ -67,6 +68,7 @@ export interface VideoChannelOpts {
   name: string;
   onControl: (c: VideoControl) => void;
   onContent: (c: VideoContentInfo) => void;
+  onReaction: (p: { emoji: string }) => void;
 }
 
 export interface VideoChannel {
@@ -89,6 +91,7 @@ export function joinVideoChannel(serverUrl: string, code: string, opts: VideoCha
   socket.on('connect_error', (e) => console.warn('[Watchbear] video sync connection failed:', e.message));
   socket.on('video:control', (c: VideoControl) => opts.onControl(c));
   socket.on('room:content', (c: VideoContentInfo) => opts.onContent(c));
+  socket.on('reaction:show', (p: { emoji: string }) => opts.onReaction(p));
   return {
     send: (c) => socket.emit('video:control', { code, ...c }),
     setContent: (c) => {
@@ -124,6 +127,7 @@ export function joinRoom(serverUrl: string, code: string, member: Identity, hand
   return {
     sendChat: (text) => socket.emit('chat:send', { text }),
     sendTyping: (typing) => socket.emit('chat:typing', { typing }),
+    sendReaction: (emoji) => socket.emit('reaction:send', { emoji }),
     disconnect: () => {
       socket.emit('room:leave');
       socket.disconnect();

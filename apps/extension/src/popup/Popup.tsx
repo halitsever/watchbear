@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import IconPanelRight from "~icons/lucide/panel-right-open";
 import IconPlay from "~icons/lucide/play";
 import IconVideoOff from "~icons/lucide/video-off";
+import IconChevronDown from "~icons/lucide/chevron-down";
 import { BearMark, BearFace } from "@/components/Bear";
 import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
@@ -18,7 +19,11 @@ export function Popup() {
   const [you, setYou] = useState<Identity | null>(null);
   const [hasVideo, setHasVideo] = useState<boolean | null>(null);
   const [serverUp, setServerUp] = useState<boolean | null>(null);
+  const [bearOpen, setBearOpen] = useState(false);
+  const [bearClosing, setBearClosing] = useState(false);
   const activeTab = useRef<chrome.tabs.Tab | undefined>(undefined);
+  const bearRef = useRef<HTMLDivElement>(null);
+  const bearTimer = useRef<number>(0);
 
   // cache the tab so the open handler stays a sync user gesture
   useEffect(() => {
@@ -30,6 +35,38 @@ export function Popup() {
     void getIdentity().then(setYou);
     refreshServer();
   }, []);
+
+  // play the exit animation, then unmount once it finishes
+  function closeBear() {
+    setBearClosing(true);
+    window.clearTimeout(bearTimer.current);
+    bearTimer.current = window.setTimeout(() => {
+      setBearOpen(false);
+      setBearClosing(false);
+    }, 200);
+  }
+
+  function openBear() {
+    window.clearTimeout(bearTimer.current);
+    setBearClosing(false);
+    setBearOpen(true);
+  }
+
+  useEffect(() => {
+    if (!bearOpen) return;
+    function onDown(e: MouseEvent) {
+      if (!bearRef.current?.contains(e.target as Node)) closeBear();
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") closeBear();
+    }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [bearOpen]);
 
   function refreshServer() {
     void getServerUrl()
@@ -138,25 +175,50 @@ export function Popup() {
                 Can't reach the server. Try again later.
               </div>
             )}
-            <div className="mb-[11px] flex items-center gap-2">
-              <BearFace
-                size={30}
-                fur={you?.fur ?? "#B97C43"}
-                furDark={you?.furDark ?? "#9A6230"}
-                ring="var(--color-wb-honey)"
-              />
-              <input
-                value={you?.name ?? ""}
-                onChange={(e) => changeName(e.target.value)}
-                placeholder="your bear name"
-                maxLength={20}
-                autoComplete="off"
-                className="min-w-0 flex-1 rounded-xl border border-wb-line bg-[#1d150f] px-[13px] py-[10px] text-[13.5px] font-bold text-wb-text outline-none transition-colors placeholder:text-wb-faint focus:border-[rgba(255,178,62,.45)]"
-              />
-            </div>
-            <div className="mb-[11px]">
-              <div className="mb-1.5 text-[11px] font-bold text-wb-faint">Pick your bear</div>
-              <BearPicker selectedFur={you?.fur ?? ""} onPick={chooseBear} />
+            <div ref={bearRef} className="mb-[11px]">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => (bearOpen && !bearClosing ? closeBear() : openBear())}
+                  title="Change your bear"
+                  aria-label="Change your bear"
+                  aria-haspopup="true"
+                  aria-expanded={bearOpen && !bearClosing}
+                  className="group relative shrink-0 rounded-full transition-transform hover:-translate-y-px"
+                >
+                  <BearFace
+                    size={30}
+                    fur={you?.fur ?? "#B97C43"}
+                    furDark={you?.furDark ?? "#9A6230"}
+                    ring="var(--color-wb-honey)"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute -bottom-0.5 -right-0.5 flex h-[14px] w-[14px] items-center justify-center rounded-full bg-[#2c211a] text-wb-honey shadow-[0_0_0_1.5px_#2c211a] transition-colors group-hover:bg-[#3a2a1d]"
+                  >
+                    <IconChevronDown className={`h-[10px] w-[10px] transition-transform ${bearOpen && !bearClosing ? "rotate-180" : ""}`} />
+                  </span>
+                </button>
+                <input
+                  value={you?.name ?? ""}
+                  onChange={(e) => changeName(e.target.value)}
+                  placeholder="your bear name"
+                  maxLength={20}
+                  autoComplete="off"
+                  className="min-w-0 flex-1 rounded-xl border border-wb-line bg-[#1d150f] px-[13px] py-[10px] text-[13.5px] font-bold text-wb-text outline-none transition-colors placeholder:text-wb-faint focus:border-[rgba(255,178,62,.45)]"
+                />
+              </div>
+              {(bearOpen || bearClosing) && (
+                <div className={`mt-2 origin-top ${bearClosing ? "animate-wb-pop-out" : "animate-wb-pop-in"}`}>
+                  <BearPicker
+                    selectedFur={you?.fur ?? ""}
+                    onPick={(fur, furDark) => {
+                      chooseBear(fur, furDark);
+                      closeBear();
+                    }}
+                  />
+                </div>
+              )}
             </div>
             <button
               type="button"

@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { corsOrigin } from '../cors';
-import { ChatDto, JoinDto, SubscribeDto, TypingDto, VideoContentDto, VideoControlDto } from './room.dto';
+import { ChatDto, JoinDto, ReactionDto, SubscribeDto, TypingDto, VideoContentDto, VideoControlDto } from './room.dto';
 
 interface Member {
   id: string;
@@ -25,6 +25,7 @@ interface Content {
   title: string;
 }
 
+const REACTIONS = new Set(['🐻', '😂', '❤️', '😱', '😢', '😍', '😡']);
 const MAX_ROOMS = 5_000;
 const MAX_MEMBERS_PER_ROOM = 50;
 const RATE_LIMIT = 25;
@@ -130,6 +131,14 @@ export class RoomGateway implements OnGatewayDisconnect {
     const member = code ? this.rooms.get(code)?.get(client.id) : undefined;
     if (!code || !member) return;
     client.to(code).emit('chat:message', { fromId: client.id, from: member.name, text });
+  }
+
+  @SubscribeMessage('reaction:send')
+  handleReaction(@ConnectedSocket() client: Socket, @MessageBody() { emoji }: ReactionDto) {
+    if (!this.withinRate(client)) return;
+    const code = this.socketRoom.get(client.id);
+    if (!code || !REACTIONS.has(emoji)) return;
+    this.server.to(code).emit('reaction:show', { emoji });
   }
 
   @SubscribeMessage('chat:typing')

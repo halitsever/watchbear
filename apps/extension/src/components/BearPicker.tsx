@@ -9,7 +9,7 @@ export function BearPicker({
   onPick: (fur: string, furDark: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className="grid grid-cols-4 gap-1.5 rounded-[13px] border border-wb-line bg-[#1d150f] p-2">
       {BEARS.map((bear) => {
         const selected = bear.fur === selectedFur;
         return (
@@ -20,9 +20,7 @@ export function BearPicker({
             title={bear.name}
             aria-label={bear.name}
             aria-pressed={selected}
-            className={`rounded-full p-0.5 transition-transform hover:-translate-y-px ${
-              selected ? "bg-[rgba(255,178,62,.16)]" : ""
-            }`}
+            className="flex justify-center rounded-full p-0.5 transition-transform hover:-translate-y-px"
           >
             <BearFace size={28} fur={bear.fur} furDark={bear.furDark} ring={selected ? "var(--color-wb-honey)" : undefined} />
           </button>

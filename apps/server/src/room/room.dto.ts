@@ -85,6 +85,12 @@ export class TypingDto {
   typing!: boolean;
 }
 
+export class ReactionDto {
+  @IsString()
+  @MaxLength(8)
+  emoji!: string;
+}
+
 export class VideoControlDto {
   @IsString()
   @Matches(CODE)

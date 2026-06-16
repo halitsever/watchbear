@@ -55,3 +55,36 @@
 .wb-diverged-btn:hover {
   filter: brightness(1.05);
 }
+
+.wb-reactions {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2147483646;
+  overflow: hidden;
+}
+
+.wb-reaction {
+  position: fixed;
+  font-size: 56px;
+  line-height: 1;
+  pointer-events: none;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.45));
+  animation: wb-react-float 2.6s ease-out forwards;
+}
+
+@keyframes wb-react-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.4);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, -16px) scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--wb-drift, 0px)), -240px) scale(1);
+  }
+}

@@ -28,6 +28,30 @@
 
   --animate-wb-pulse: wb-pulse 1.8s infinite;
   --animate-wb-spin: wb-spin 0.7s linear infinite;
+  --animate-wb-pop-in: wb-pop-in 0.14s ease-out;
+  --animate-wb-pop-out: wb-pop-out 0.2s ease-in forwards;
+
+  @keyframes wb-pop-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes wb-pop-out {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+    }
+  }
 
   @keyframes wb-pulse {
     0% {

@@ -15,7 +15,7 @@ import { joinRoom, type RoomConnection, type ConnStatus, type VideoContentInfo }
 import { contentKey } from "@/lib/content";
 import type { Member, Message } from "@/lib/types";
 
-const REACTIONS = ["🐻", "😂", "😱", "❤️", "🍿"];
+const REACTIONS = ["🐻", "😂", "❤️", "😱", "😢", "😍", "😡"];
 
 // group key for collapsing a run of messages from the same sender
 const sender = (m: Message) => (m.mine ? "me" : m.from);
@@ -335,7 +335,7 @@ export function SidePanel() {
           <button
             type="button"
             key={emoji}
-            onClick={() => postChat(emoji)}
+            onClick={() => conn.current?.sendReaction(emoji)}
             className="flex-1 rounded-[11px] border border-wb-line bg-wb-panel py-1.5 text-[15px] transition-colors hover:border-[rgba(255,178,62,.26)] hover:bg-wb-panel2"
           >
             {emoji}

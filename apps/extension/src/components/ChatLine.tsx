@@ -22,8 +22,8 @@ export function ChatLine({ msg, members, grouped }: { msg: Message; members: Mem
         <div
           className={
             mine
-              ? `${grouped ? 'rounded-[14px]' : tail} bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-3 py-2 text-[13px] font-semibold leading-[1.42] text-[#3a2410]`
-              : `${grouped ? 'rounded-[14px]' : tail} bg-wb-panel2 px-3 py-2 text-[13px] font-medium leading-[1.42] text-wb-text`
+              ? `${grouped ? 'rounded-[14px]' : tail} break-words bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-3 py-2 text-[13px] font-semibold leading-[1.42] text-[#3a2410]`
+              : `${grouped ? 'rounded-[14px]' : tail} break-words bg-wb-panel2 px-3 py-2 text-[13px] font-medium leading-[1.42] text-wb-text`
           }
         >
           {msg.text}

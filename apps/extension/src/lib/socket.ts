@@ -67,7 +67,6 @@ export interface VideoChannelOpts {
   // attributes control events (pause/play/seek) to a bear in the chat feed
   name: string;
   onControl: (c: VideoControl) => void;
-  onContent: (c: VideoContentInfo) => void;
   onReaction: (p: { emoji: string }) => void;
 }
 
@@ -90,7 +89,6 @@ export function joinVideoChannel(serverUrl: string, code: string, opts: VideoCha
   socket.on('connect', () => socket.emit('video:subscribe', { code, anchor, name, ...content }));
   socket.on('connect_error', (e) => console.warn('[Watchbear] video sync connection failed:', e.message));
   socket.on('video:control', (c: VideoControl) => opts.onControl(c));
-  socket.on('room:content', (c: VideoContentInfo) => opts.onContent(c));
   socket.on('reaction:show', (p: { emoji: string }) => opts.onReaction(p));
   return {
     send: (c) => socket.emit('video:control', { code, ...c }),

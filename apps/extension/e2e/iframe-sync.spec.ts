@@ -39,30 +39,30 @@ test('play/pause syncs when the video is in a cross-origin iframe', async () => 
   }
 });
 
-test('a user off the den page is flagged at the top level', async () => {
+// no content matching: A in an iframe still drives B's plain top-frame video
+test('a user off the den page still syncs with no callout', async () => {
   let a: User | undefined;
   let b: User | undefined;
   try {
     a = await launchUser({ url: HOST_IFRAME_URL });
-    b = await launchUser(); // plain top-frame video page == different content key
+    b = await launchUser(); // plain top-frame video page, different url
 
     const af = await videoFrame(a.video);
     await frameReady(af);
     await b.video.waitForFunction(() => (window as { __wbVideoReady?: boolean }).__wbVideoReady === true);
 
-    // A subscribes first, so the iframe host page becomes the den's canonical content
     await a.joinRoom(CODE);
     await a.video.waitForTimeout(1500);
     await b.joinRoom(CODE);
+    await b.video.waitForTimeout(2000);
 
-    // B is on a different page -> the diverged callout shows in B's top frame
-    await expect(b.video.locator('#wb-diverged')).toBeVisible({ timeout: 8000 });
+    // no diverged callout exists anymore
+    await expect(b.video.locator('#wb-diverged')).toHaveCount(0);
 
-    // A playing must not move B, since they are not on the same video
+    // A playing inside its iframe still moves B's top-frame video
     await setVideo(b.video, 'pause');
     await setVideo(af, 'play', 5);
-    await b.video.waitForTimeout(3000);
-    expect(await videoPaused(b.video)).toBe(true);
+    await expect.poll(() => videoPaused(b!.video), { timeout: 8000 }).toBe(false);
   } finally {
     await a?.close();
     await b?.close();

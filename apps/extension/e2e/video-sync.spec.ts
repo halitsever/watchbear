@@ -38,39 +38,32 @@ test('play/pause stays in sync between two users', async () => {
   }
 });
 
-test('a user on a different video is flagged and not cross-synced', async () => {
+// no content matching: a user on a different url still syncs, no callout
+test('a user on a different url still syncs and shows no callout', async () => {
   let a: User | undefined;
   let b: User | undefined;
   try {
     a = await launchUser();
     b = await launchUser();
 
-    // B watches a different url (same page, distinct content key via query)
+    // B watches a different url (same page, distinct query)
     await b.video.goto(`${VIDEO_URL}?other=1`);
     await b.video.waitForSelector('video');
 
     await a.video.waitForFunction(() => (window as { __wbVideoReady?: boolean }).__wbVideoReady === true);
     await b.video.waitForFunction(() => (window as { __wbVideoReady?: boolean }).__wbVideoReady === true);
 
-    // A subscribes first, so A's video becomes the den's canonical content
     await a.joinRoom(CODE);
     await a.video.waitForTimeout(1000);
     await b.joinRoom(CODE);
+    await b.video.waitForTimeout(2000);
 
-    // B is on the wrong video -> gets the prominent "open it" callout
-    await expect(b.video.locator('#wb-diverged')).toBeVisible({ timeout: 8000 });
+    // no diverged callout exists anymore
+    await expect(b.video.locator('#wb-diverged')).toHaveCount(0);
 
-    // A starts playing -> B must NOT follow, since they're not on the same video
+    // A starts playing -> B follows even though it's a different url
     await setVideo(b.video, 'pause');
     await setVideo(a.video, 'play', 5);
-    await b.video.waitForTimeout(3000);
-    expect(await videoPaused(b.video)).toBe(true);
-
-    // clicking "open it" moves B onto the den's video, then sync resumes
-    await b.video.locator('.wb-diverged-btn').click();
-    await b.video.waitForFunction(() => (window as { __wbVideoReady?: boolean }).__wbVideoReady === true);
-    await expect(b.video.locator('#wb-diverged')).toHaveCount(0, { timeout: 8000 });
-    await setVideo(a.video, 'play', 7);
     await expect.poll(() => videoPaused(b!.video), { timeout: 8000 }).toBe(false);
   } finally {
     await a?.close();

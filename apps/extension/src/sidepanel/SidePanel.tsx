@@ -12,7 +12,6 @@ import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
 import { getIdentity, type Identity } from "@/lib/identity";
 import { getServerUrl } from "@/lib/server";
 import { joinRoom, type RoomConnection, type ConnStatus, type VideoContentInfo } from "@/lib/socket";
-import { contentKey } from "@/lib/content";
 import type { Member, Message } from "@/lib/types";
 
 const REACTIONS = ["🐻", "😂", "❤️", "😱", "😢", "😍", "😡"];
@@ -49,7 +48,6 @@ export function SidePanel() {
   const [videoTime, setVideoTime] = useState<number | null>(null);
   const [status, setStatus] = useState<ConnStatus>("connecting");
   const [content, setContent] = useState<VideoContentInfo | null>(null);
-  const [activeUrl, setActiveUrl] = useState<string | null>(null);
   const activeTabId = useRef<number | null>(null);
   const msgId = useRef(0);
   const feedRef = useRef<HTMLDivElement>(null);
@@ -58,8 +56,6 @@ export function SidePanel() {
   const typerTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const lastTypingSent = useRef(0);
   const typingStopTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const diverged = !!content && !!activeUrl && contentKey(activeUrl) !== content.key;
 
   const nextId = () => ++msgId.current;
 
@@ -117,7 +113,6 @@ export function SidePanel() {
     const poll = async () => {
       const tab = await getActiveTab();
       activeTabId.current = tab?.id ?? null;
-      setActiveUrl(tab?.url ?? null);
       const res = tab?.id != null ? await getVideoTime(tab.id) : undefined;
       if (!active || res === undefined) return; // unreachable: keep last value
       setVideoTime(res?.currentTime ?? null);
@@ -212,12 +207,6 @@ export function SidePanel() {
     sendToBackground({ type: "WB_LEAVE_ROOM", tabId: tab?.id });
   }
 
-  function openContent() {
-    if (content && activeTabId.current != null) {
-      chrome.tabs.update(activeTabId.current, { url: content.url }).catch(() => {});
-    }
-  }
-
   if (!inRoom) {
     return (
       <div className="flex h-full flex-col items-center justify-center px-6 text-center font-nunito">
@@ -283,27 +272,12 @@ export function SidePanel() {
           {videoTime == null ? "No video playing" : formatTime(videoTime)}
         </div>
 
-        {content &&
-          (diverged ? (
-            <div className="mt-2.5 flex items-center gap-2 rounded-xl border border-[rgba(255,178,62,.3)] bg-[rgba(255,178,62,.1)] px-[11px] py-2.5">
-              <div className="min-w-0 flex-1">
-                <div className="text-[11px] font-bold text-wb-honey">You're watching something else</div>
-                <div className="truncate text-[12px] font-semibold text-wb-dim">The den: {content.title || content.url}</div>
-              </div>
-              <button
-                type="button"
-                onClick={openContent}
-                className="shrink-0 rounded-[10px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-3 py-1.5 text-xs font-extrabold text-[#3a2410] transition-all hover:brightness-105"
-              >
-                Open it
-              </button>
-            </div>
-          ) : (
-            <div className="mt-2 flex items-center gap-1.5 text-[12px] font-semibold text-wb-dim">
-              <IconTv className="h-[13px] w-[13px] shrink-0" />
-              <span className="truncate">Now playing: {content.title || content.url}</span>
-            </div>
-          ))}
+        {content && (
+          <div className="mt-2 flex items-center gap-1.5 text-[12px] font-semibold text-wb-dim">
+            <IconTv className="h-[13px] w-[13px] shrink-0" />
+            <span className="truncate">Now playing: {content.title || content.url}</span>
+          </div>
+        )}
       </div>
 
       {/* chat feed */}

@@ -139,8 +139,8 @@ if (!window.__wbLoaded) {
   else runBridge();
 }
 
-// top frame: owns the socket, content identity (this page's url), the diverged
-// callout, and selecting which video (local or in a child frame) to drive.
+// top frame: owns the socket, content identity (this page's url), and selecting
+// which video (local or in a child frame) to drive.
 function runTop(): void {
   let channel: VideoChannel | null = null;
   let target: VideoTarget | null = null;
@@ -148,8 +148,6 @@ function runTop(): void {
   let targetTimer: number | undefined;
 
   let isAnchor = false;
-  let canonical: VideoContentInfo | null = null;
-  let diverged = false;
   let navWatching = false;
   let navTimer: number | undefined;
   let lastHref = location.href;
@@ -220,7 +218,6 @@ function runTop(): void {
           content: currentContent(),
           name,
           onControl: applyControl,
-          onContent: onCanonical,
           onReaction: (p) => spawnReaction(p.emoji),
         });
       }
@@ -230,7 +227,6 @@ function runTop(): void {
     syncTarget();
     startTargetWatch();
     startNavWatch();
-    refreshTags();
   }
 
   function stopSync() {
@@ -240,12 +236,9 @@ function runTop(): void {
     target = null;
     pending = null;
     announced.clear();
-    canonical = null;
-    diverged = false;
     isAnchor = false;
     stopTargetWatch();
     stopNavWatch();
-    hideDivergedCallout();
     document.getElementById('wb-reactions')?.remove();
   }
 
@@ -314,7 +307,6 @@ function runTop(): void {
       pending = null;
       target.apply(p);
     }
-    refreshTags();
   }
 
   function startTargetWatch() {
@@ -329,33 +321,17 @@ function runTop(): void {
   }
 
   function onLocal() {
-    if (diverged || !channel || !target) return;
+    if (!channel || !target) return;
     const s = target.getState();
     if (s) channel.send(s);
   }
 
   function applyControl(c: VideoControl) {
-    if (diverged) return;
     if (!target) {
       pending = c;
       return;
     }
     target.apply(c);
-  }
-
-  function onCanonical(c: VideoContentInfo) {
-    canonical = c;
-    refreshTags();
-  }
-
-  // recompute whether we're on the den's video and show the right overlay
-  function refreshTags() {
-    diverged = !!canonical && canonical.key !== contentKey(location.href);
-    if (diverged && canonical) {
-      showDivergedCallout(canonical);
-    } else {
-      hideDivergedCallout();
-    }
   }
 
   function startNavWatch() {
@@ -382,42 +358,6 @@ function runTop(): void {
     announced.clear();
     syncTarget();
     channel?.setContent(currentContent());
-    refreshTags();
-  }
-
-  function showDivergedCallout(c: VideoContentInfo): void {
-    let box = document.getElementById('wb-diverged');
-    if (!box) {
-      box = document.createElement('div');
-      box.id = 'wb-diverged';
-      box.className = 'wb-diverged';
-      document.documentElement.appendChild(box);
-    }
-    box.replaceChildren();
-
-    const text = document.createElement('div');
-    text.className = 'wb-diverged-text';
-    const small = document.createElement('div');
-    small.className = 'wb-diverged-small';
-    small.textContent = "You're watching something else";
-    const title = document.createElement('div');
-    title.className = 'wb-diverged-title';
-    title.textContent = `The den is watching: ${c.title || c.url}`;
-    text.append(small, title);
-
-    const btn = document.createElement('button');
-    btn.className = 'wb-diverged-btn';
-    btn.textContent = 'Open it';
-    btn.addEventListener('click', () => {
-      // always move the top page, never an embedded player frame
-      if (window.top) window.top.location.href = c.url;
-    });
-
-    box.append(text, btn);
-  }
-
-  function hideDivergedCallout(): void {
-    document.getElementById('wb-diverged')?.remove();
   }
 }
 

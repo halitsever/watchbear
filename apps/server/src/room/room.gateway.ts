@@ -49,8 +49,7 @@ export class RoomGateway implements OnGatewayDisconnect {
 
   private readonly rooms = new Map<string, Map<string, Member>>();
   private readonly socketRoom = new Map<string, string>();
-  // playback state keyed per room AND content (`${code}::${key}`) so a control
-  // event can never bleed across two different videos in the same room.
+  // one playback state per room, keyed by code; control relays to everyone in it
   private readonly videoState = new Map<string, { time: number; paused: boolean; updatedAt: number }>();
   private readonly socketContent = new Map<string, Content>();
   // the bear name carried on a video socket, used to attribute control events in chat
@@ -59,15 +58,6 @@ export class RoomGateway implements OnGatewayDisconnect {
   private readonly roomContent = new Map<string, Content>();
   private readonly roomAnchor = new Map<string, string>();
   private readonly hits = new Map<string, { count: number; reset: number }>();
-
-  private vkey(code: string, key: string): string {
-    return `${code}::${key}`;
-  }
-
-  // socket.io sub-room scoping a control broadcast to people on the same video
-  private vroom(code: string, key: string): string {
-    return `v|${code}|${key}`;
-  }
 
   private setRoomContent(code: string, content: Content): void {
     this.roomContent.set(code, content);
@@ -163,7 +153,6 @@ export class RoomGateway implements OnGatewayDisconnect {
     if (key && url) {
       const content: Content = { key, url, title: title ?? '' };
       this.socketContent.set(client.id, content);
-      void client.join(this.vroom(code, key));
       // the anchor defines what the den watches; otherwise seed it if no one has yet
       if (anchor || !this.roomContent.has(code)) {
         if (anchor) this.roomAnchor.set(code, client.id);
@@ -177,28 +166,22 @@ export class RoomGateway implements OnGatewayDisconnect {
       if (canonical) client.emit('room:content', canonical);
     }
 
-    // hand over current playback only if they're actually on the canonical video
-    const canonical = this.roomContent.get(code);
-    if (canonical && key === canonical.key) {
-      const s = this.videoState.get(this.vkey(code, canonical.key));
-      if (s) {
-        const elapsed = s.paused ? 0 : (Date.now() - s.updatedAt) / 1000;
-        client.emit('video:control', { time: s.time + elapsed, paused: s.paused });
-      }
+    // hand over the room's current playback to any newcomer
+    const s = this.videoState.get(code);
+    if (s) {
+      const elapsed = s.paused ? 0 : (Date.now() - s.updatedAt) / 1000;
+      client.emit('video:control', { time: s.time + elapsed, paused: s.paused });
     }
   }
 
-  // a client navigated to a different page/video. only the anchor moves the den.
+  // a client navigated to a different page/video; only the anchor moves the den label.
   @SubscribeMessage('video:content')
   handleVideoContent(@ConnectedSocket() client: Socket, @MessageBody() { key, url, title }: VideoContentDto) {
     if (!this.withinRate(client)) return;
     const code = this.socketRoom.get(client.id);
     if (!code) return;
-    const prev = this.socketContent.get(client.id);
-    if (prev && prev.key !== key) void client.leave(this.vroom(code, prev.key));
     const content: Content = { key, url, title };
     this.socketContent.set(client.id, content);
-    void client.join(this.vroom(code, key));
     if (this.roomAnchor.get(code) === client.id) this.setRoomContent(code, content);
   }
 
@@ -209,18 +192,12 @@ export class RoomGateway implements OnGatewayDisconnect {
     // can only drive the room it actually joined or subscribed to.
     const code = this.socketRoom.get(client.id);
     if (!code) return;
-    // only the canonical video drives sync, so someone on a different page can't
-    // scrub everyone else's video.
-    const canonical = this.roomContent.get(code);
-    const mine = this.socketContent.get(client.id);
-    if (!canonical || !mine || mine.key !== canonical.key) return;
 
-    const vk = this.vkey(code, canonical.key);
-    const text = this.describeControl(this.videoState.get(vk), { time, paused }, this.socketName.get(client.id));
+    const text = this.describeControl(this.videoState.get(code), { time, paused }, this.socketName.get(client.id));
     if (text) this.server.to(code).emit('room:system', { text });
 
-    this.videoState.set(vk, { time, paused, updatedAt: Date.now() });
-    client.to(this.vroom(code, canonical.key)).emit('video:control', { time, paused });
+    this.videoState.set(code, { time, paused, updatedAt: Date.now() });
+    client.to(code).emit('video:control', { time, paused });
   }
 
   // turn a control event into a chat line ("Maple paused the video"), or undefined
@@ -283,9 +260,7 @@ export class RoomGateway implements OnGatewayDisconnect {
     if (remaining.length === 0) {
       this.roomContent.delete(code);
       this.roomAnchor.delete(code);
-      for (const k of this.videoState.keys()) {
-        if (k.startsWith(`${code}::`)) this.videoState.delete(k);
-      }
+      this.videoState.delete(code);
     }
 
     this.broadcastMembers(code);

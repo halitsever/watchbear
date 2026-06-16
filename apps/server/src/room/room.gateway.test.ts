@@ -113,21 +113,20 @@ describe('RoomGateway video sync', () => {
   const roomContent = () =>
     (gw as unknown as { roomContent: Map<string, { key: string }> }).roomContent;
 
-  it('only lets the canonical video drive control events', () => {
+  it('relays control to the whole room regardless of content key', () => {
     const a = makeClient(sink);
     const b = makeClient(sink);
-    // A anchors the den on video K1
+    // A and B are on different videos (different keys), no content gate anymore
     gw.handleVideoSubscribe(a, { code: CODE, anchor: true, key: 'K1', url: 'https://x/1' });
-    // B is watching a different video K2
     gw.handleVideoSubscribe(b, { code: CODE, key: 'K2', url: 'https://x/2' });
 
     sink.length = 0;
     gw.handleVideoControl(a, { code: CODE, time: 10, paused: false });
-    expect(sink.some((e) => e.event === 'video:control')).toBe(true);
+    expect(sink).toContainEqual({ room: CODE, event: 'video:control', payload: { time: 10, paused: false } });
 
     sink.length = 0;
     gw.handleVideoControl(b, { code: CODE, time: 99, paused: true });
-    expect(sink.some((e) => e.event === 'video:control')).toBe(false);
+    expect(sink).toContainEqual({ room: CODE, event: 'video:control', payload: { time: 99, paused: true } });
   });
 
   const systemTexts = () =>

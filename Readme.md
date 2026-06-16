@@ -27,6 +27,10 @@ in a side panel right next to the video.
 - **Side-panel chat:** live messages and quick reactions next to the video.
 - **Live position:** the panel shows the current second of the active tab's video.
 
+<p align="center">
+<img src="/.github/assets/screenshot-rounded.png"/>
+</p>
+
 <p align="center" >
 <img src="https://halitsever-api.vercel.app/api/installation"/>
 </p>

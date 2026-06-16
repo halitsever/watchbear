@@ -130,6 +130,41 @@ describe('RoomGateway video sync', () => {
     expect(sink.some((e) => e.event === 'video:control')).toBe(false);
   });
 
+  const systemTexts = () =>
+    sink.filter((e) => e.event === 'room:system').map((e) => (e.payload as { text: string }).text);
+
+  it('announces pause and resume to the whole den with the bear name', () => {
+    const a = makeClient(sink);
+    gw.handleVideoSubscribe(a, { code: CODE, anchor: true, key: 'K1', url: 'https://x/1', name: 'Maple' });
+
+    sink.length = 0;
+    gw.handleVideoControl(a, { code: CODE, time: 30, paused: true });
+    expect(sink).toContainEqual({ room: CODE, event: 'room:system', payload: { text: 'Maple paused the video' } });
+
+    sink.length = 0;
+    gw.handleVideoControl(a, { code: CODE, time: 30, paused: false });
+    expect(systemTexts()).toContain('Maple resumed the video');
+  });
+
+  it('announces a forward seek with direction and timestamp', () => {
+    const a = makeClient(sink);
+    gw.handleVideoSubscribe(a, { code: CODE, anchor: true, key: 'K1', url: 'https://x/1', name: 'Maple' });
+    gw.handleVideoControl(a, { code: CODE, time: 10, paused: false });
+
+    sink.length = 0;
+    gw.handleVideoControl(a, { code: CODE, time: 100, paused: false });
+    expect(systemTexts()).toContain('Maple skipped ahead to 1:40');
+  });
+
+  it('stays silent when the video socket carries no name', () => {
+    const a = makeClient(sink);
+    gw.handleVideoSubscribe(a, { code: CODE, anchor: true, key: 'K1', url: 'https://x/1' });
+
+    sink.length = 0;
+    gw.handleVideoControl(a, { code: CODE, time: 30, paused: true });
+    expect(sink.some((e) => e.event === 'room:system')).toBe(false);
+  });
+
   it('reseats the anchor to a remaining watcher when the anchor disconnects', () => {
     const a = makeClient(sink);
     const b = makeClient(sink);

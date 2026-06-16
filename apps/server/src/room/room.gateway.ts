@@ -29,6 +29,17 @@ const MAX_ROOMS = 5_000;
 const MAX_MEMBERS_PER_ROOM = 50;
 const RATE_LIMIT = 25;
 const RATE_WINDOW_MS = 1_000;
+// drift past this (seconds) counts as a deliberate seek, not normal playback advance
+const SEEK_NOTICE = 1.5;
+
+function formatTime(t: number): string {
+  const total = Math.max(0, Math.floor(t));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+}
 
 @WebSocketGateway({ cors: { origin: corsOrigin }, maxHttpBufferSize: 16 * 1024 })
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }))
@@ -41,6 +52,8 @@ export class RoomGateway implements OnGatewayDisconnect {
   // event can never bleed across two different videos in the same room.
   private readonly videoState = new Map<string, { time: number; paused: boolean; updatedAt: number }>();
   private readonly socketContent = new Map<string, Content>();
+  // the bear name carried on a video socket, used to attribute control events in chat
+  private readonly socketName = new Map<string, string>();
   // the den's canonical "now playing", defined by the anchor (party starter).
   private readonly roomContent = new Map<string, Content>();
   private readonly roomAnchor = new Map<string, string>();
@@ -132,10 +145,11 @@ export class RoomGateway implements OnGatewayDisconnect {
   // counting as a member. binding the socket to the code here is what later
   // authorizes its video:control emits.
   @SubscribeMessage('video:subscribe')
-  handleVideoSubscribe(@ConnectedSocket() client: Socket, @MessageBody() { code, anchor, key, url, title }: SubscribeDto) {
+  handleVideoSubscribe(@ConnectedSocket() client: Socket, @MessageBody() { code, anchor, key, url, title, name }: SubscribeDto) {
     if (!this.withinRate(client)) return;
     void client.join(code);
     this.socketRoom.set(client.id, code);
+    if (name) this.socketName.set(client.id, name);
 
     if (key && url) {
       const content: Content = { key, url, title: title ?? '' };
@@ -191,8 +205,31 @@ export class RoomGateway implements OnGatewayDisconnect {
     const canonical = this.roomContent.get(code);
     const mine = this.socketContent.get(client.id);
     if (!canonical || !mine || mine.key !== canonical.key) return;
-    this.videoState.set(this.vkey(code, canonical.key), { time, paused, updatedAt: Date.now() });
+
+    const vk = this.vkey(code, canonical.key);
+    const text = this.describeControl(this.videoState.get(vk), { time, paused }, this.socketName.get(client.id));
+    if (text) this.server.to(code).emit('room:system', { text });
+
+    this.videoState.set(vk, { time, paused, updatedAt: Date.now() });
     client.to(this.vroom(code, canonical.key)).emit('video:control', { time, paused });
+  }
+
+  // turn a control event into a chat line ("Maple paused the video"), or undefined
+  // when the socket has no name or the move is too small to bother announcing.
+  private describeControl(
+    prev: { time: number; paused: boolean; updatedAt: number } | undefined,
+    next: { time: number; paused: boolean },
+    name: string | undefined,
+  ): string | undefined {
+    if (!name) return undefined;
+    if (!prev || prev.paused !== next.paused) {
+      return next.paused ? `${name} paused the video` : `${name} resumed the video`;
+    }
+    const expected = prev.time + (prev.paused ? 0 : (Date.now() - prev.updatedAt) / 1000);
+    const delta = next.time - expected;
+    if (Math.abs(delta) <= SEEK_NOTICE) return undefined;
+    const dir = delta > 0 ? 'skipped ahead to' : 'skipped back to';
+    return `${name} ${dir} ${formatTime(next.time)}`;
   }
 
   handleDisconnect(client: Socket) {
@@ -204,10 +241,12 @@ export class RoomGateway implements OnGatewayDisconnect {
     const code = this.socketRoom.get(client.id);
     if (!code) {
       this.socketContent.delete(client.id);
+      this.socketName.delete(client.id);
       return;
     }
     this.socketRoom.delete(client.id);
     this.socketContent.delete(client.id);
+    this.socketName.delete(client.id);
     void client.leave(code);
     const room = this.rooms.get(code);
     const member = room?.get(client.id);

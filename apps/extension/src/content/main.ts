@@ -3,6 +3,7 @@ import { joinVideoChannel, type VideoChannel, type VideoContentInfo, type VideoC
 import { STORAGE_KEYS } from '@/lib/room';
 import { getServerUrl } from '@/lib/server';
 import { contentKey } from '@/lib/content';
+import { getIdentity } from '@/lib/identity';
 
 declare global {
   interface Window {
@@ -21,9 +22,7 @@ type WbBridgeMsg =
   | { __wb: 1; kind: 'announce'; area: number; duration: number }
   | { __wb: 1; kind: 'state'; time: number; paused: boolean }
   | { __wb: 1; kind: 'gone' }
-  | { __wb: 1; kind: 'apply'; time: number; paused: boolean }
-  | { __wb: 1; kind: 'liveTag'; show: boolean }
-  | { __wb: 1; kind: 'detach' };
+  | { __wb: 1; kind: 'apply'; time: number; paused: boolean };
 
 function pickVideo(): HTMLVideoElement | null {
   const vids = [...document.querySelectorAll('video')];
@@ -37,35 +36,11 @@ function applyTo(v: HTMLVideoElement, c: VideoControl): void {
   else if (!c.paused && v.paused) void v.play();
 }
 
-function showLiveTag(v: HTMLVideoElement | null): void {
-  if (document.getElementById('wb-live-tag')) return;
-  const target = v ?? document.querySelector('video');
-  if (!target) return;
-  const container = target.closest<HTMLElement>('[class]') ?? target.parentElement;
-  if (!container) return;
-
-  const pos = container.style.position;
-  if (!pos || pos === 'static') container.style.position = 'relative';
-
-  const tag = document.createElement('div');
-  tag.id = 'wb-live-tag';
-  tag.className = 'wb-live-tag';
-  const dot = document.createElement('span');
-  dot.className = 'wb-live-dot';
-  tag.append(dot, ' watching together');
-  container.appendChild(tag);
-}
-
-function removeLiveTag(): void {
-  document.getElementById('wb-live-tag')?.remove();
-}
-
 // abstracts away whether the synced video sits in this frame or a child iframe
 interface VideoTarget {
   getState(): VideoControl | null;
   apply(c: VideoControl): void;
   onLocalChange(cb: () => void): void;
-  setLiveTag(show: boolean): void;
   area(): number;
   teardown(): void;
 }
@@ -102,11 +77,6 @@ class LocalVideoTarget implements VideoTarget {
     this.cb = cb;
   }
 
-  setLiveTag(show: boolean): void {
-    if (show) showLiveTag(this.video);
-    else removeLiveTag();
-  }
-
   area(): number {
     return this.video.clientWidth * this.video.clientHeight;
   }
@@ -115,7 +85,6 @@ class LocalVideoTarget implements VideoTarget {
     this.video.removeEventListener('play', this.onEv);
     this.video.removeEventListener('pause', this.onEv);
     this.video.removeEventListener('seeked', this.onEv);
-    removeLiveTag();
   }
 }
 
@@ -149,17 +118,11 @@ class RemoteVideoTarget implements VideoTarget {
     this.cb = cb;
   }
 
-  setLiveTag(show: boolean): void {
-    this.post({ __wb: 1, kind: 'liveTag', show });
-  }
-
   area(): number {
     return this._area;
   }
 
-  teardown(): void {
-    this.post({ __wb: 1, kind: 'detach' });
-  }
+  teardown(): void {}
 
   private post(m: WbBridgeMsg): void {
     try {
@@ -250,10 +213,12 @@ function runTop(): void {
     if (anchor) isAnchor = true; // the explicit message wins over the storage-arm path
     if (!channel) {
       const url = await getServerUrl();
+      const { name } = await getIdentity();
       if (!channel) {
         channel = joinVideoChannel(url, code, {
           anchor: isAnchor,
           content: currentContent(),
+          name,
           onControl: applyControl,
           onContent: onCanonical,
         });
@@ -279,7 +244,6 @@ function runTop(): void {
     isAnchor = false;
     stopTargetWatch();
     stopNavWatch();
-    removeLiveTag();
     hideDivergedCallout();
   }
 
@@ -361,11 +325,9 @@ function runTop(): void {
   function refreshTags() {
     diverged = !!canonical && canonical.key !== contentKey(location.href);
     if (diverged && canonical) {
-      target?.setLiveTag(false);
       showDivergedCallout(canonical);
     } else {
       hideDivergedCallout();
-      target?.setLiveTag(true);
     }
   }
 
@@ -480,7 +442,6 @@ function runBridge(): void {
     }
     v = null;
     announcedArea = 0;
-    removeLiveTag();
   }
 
   function tick(): void {
@@ -512,12 +473,6 @@ function runBridge(): void {
     if (!d || d.__wb !== 1) return;
     if (e.source !== window.top) return; // only honor commands from our top frame
     if (d.kind === 'apply') applyFromTop({ time: d.time, paused: d.paused });
-    else if (d.kind === 'liveTag') {
-      if (d.show) showLiveTag(v);
-      else removeLiveTag();
-    } else if (d.kind === 'detach') {
-      removeLiveTag();
-    }
   });
 
   function arm(): void {

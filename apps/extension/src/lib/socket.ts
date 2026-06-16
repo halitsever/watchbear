@@ -63,6 +63,8 @@ export interface VideoContentInfo {
 export interface VideoChannelOpts {
   anchor: boolean;
   content: VideoContentInfo;
+  // attributes control events (pause/play/seek) to a bear in the chat feed
+  name: string;
   onControl: (c: VideoControl) => void;
   onContent: (c: VideoContentInfo) => void;
 }
@@ -82,7 +84,8 @@ export function joinVideoChannel(serverUrl: string, code: string, opts: VideoCha
   const socket: Socket = io(serverUrl, { transports: ['websocket'] });
   let anchor = opts.anchor;
   let content = opts.content;
-  socket.on('connect', () => socket.emit('video:subscribe', { code, anchor, ...content }));
+  const name = opts.name;
+  socket.on('connect', () => socket.emit('video:subscribe', { code, anchor, name, ...content }));
   socket.on('connect_error', (e) => console.warn('[Watchbear] video sync connection failed:', e.message));
   socket.on('video:control', (c: VideoControl) => opts.onControl(c));
   socket.on('room:content', (c: VideoContentInfo) => opts.onContent(c));
@@ -95,7 +98,7 @@ export function joinVideoChannel(serverUrl: string, code: string, opts: VideoCha
     claimAnchor: (c) => {
       anchor = true;
       content = c;
-      if (socket.connected) socket.emit('video:subscribe', { code, anchor: true, ...c });
+      if (socket.connected) socket.emit('video:subscribe', { code, anchor: true, name, ...c });
     },
     disconnect: () => socket.disconnect(),
   };

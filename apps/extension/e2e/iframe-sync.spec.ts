@@ -39,30 +39,6 @@ test('play/pause syncs when the video is in a cross-origin iframe', async () => 
   }
 });
 
-test('the live tag renders inside the iframe, not the top frame', async () => {
-  let a: User | undefined;
-  let b: User | undefined;
-  try {
-    a = await launchUser({ url: HOST_IFRAME_URL });
-    b = await launchUser({ url: HOST_IFRAME_URL });
-
-    const af = await videoFrame(a.video);
-    const bf = await videoFrame(b.video);
-    await frameReady(af);
-    await frameReady(bf);
-
-    await a.joinRoom(CODE);
-    await b.joinRoom(CODE);
-
-    // the "watching together" tag is shown over the video, which lives in the iframe
-    await expect(af.locator('#wb-live-tag')).toBeVisible({ timeout: 8000 });
-    await expect(a.video.locator('#wb-live-tag')).toHaveCount(0);
-  } finally {
-    await a?.close();
-    await b?.close();
-  }
-});
-
 test('a user off the den page is flagged at the top level', async () => {
   let a: User | undefined;
   let b: User | undefined;

@@ -27,15 +27,6 @@ in a side panel right next to the video.
 - **Side-panel chat:** live messages and quick reactions next to the video.
 - **Live position:** the panel shows the current second of the active tab's video.
 
-This repo is a pnpm monorepo:
-
-```
-apps/
-  extension/   browser extension (MV3, React + TypeScript + Tailwind, Vite + CRXjs)
-  server/      backend (NestJS)
-  landing/     static landing page
-```
-
 <p align="center" >
 <img src="https://halitsever-api.vercel.app/api/installation"/>
 </p>
@@ -95,5 +86,5 @@ pnpm typecheck    # type-check every app
 </p>
 
 <p align="center">
-  MIT LICENSE
+  MIT LICENSE - Halit Sever 
 </p>

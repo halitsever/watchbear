@@ -53,6 +53,11 @@ export class SubscribeDto {
   @MaxLength(300)
   @IsOptional()
   title?: string;
+
+  @IsString()
+  @MaxLength(24)
+  @IsOptional()
+  name?: string;
 }
 
 export class VideoContentDto {

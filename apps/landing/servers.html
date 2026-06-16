@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Watchbear Servers · Public Watch Party Server &amp; Self-Hosting</title>
+    <meta
+      name="description"
+      content="The public Watchbear server powers free watch parties out of the box. See its limits, or host your own server for full control over your synced watch together rooms."
+    />
+    <link rel="canonical" href="https://watchbear.deepfeld.com/servers.html" />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+    <meta name="theme-color" content="#16100c" />
+    <meta name="color-scheme" content="dark" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Watchbear" />
+    <meta property="og:title" content="Watchbear Servers · Public Watch Party Server &amp; Self-Hosting" />
+    <meta
+      property="og:description"
+      content="The public Watchbear server powers free watch parties out of the box, or host your own for full control."
+    />
+    <meta property="og:url" content="https://watchbear.deepfeld.com/servers.html" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://watchbear.deepfeld.com/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Watchbear, the sweet way to watch together" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Watchbear Servers · Public Watch Party Server &amp; Self-Hosting" />
+    <meta
+      name="twitter:description"
+      content="The public Watchbear server powers free watch parties out of the box, or host your own for full control."
+    />
+    <meta name="twitter:image" content="https://watchbear.deepfeld.com/og.svg" />
+
+    <link rel="icon" type="image/svg+xml" href="bear.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="icon32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="icon16.png" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #16100c;
+        --panel: #221912;
+        --panel2: #2a1f16;
+        --line: rgba(255, 220, 180, 0.1);
+        --honey: #ffb23e;
+        --coral: #ff8c6b;
+        --honey-deep: #f2912a;
+        --cream: #f6ebdc;
+        --text: #efe3d2;
+        --dim: #a89071;
+        --faint: #7e6a53;
+        --online: #7bc96f;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Nunito", system-ui, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        -webkit-font-smoothing: antialiased;
+        line-height: 1.6;
+        font-size: 17px;
+      }
+      .wrap {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 0 28px;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      h1,
+      h2 {
+        font-family: "Fredoka";
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        margin: 0;
+        line-height: 1.06;
+      }
+
+      /* nav */
+      .nav {
+        border-bottom: 1px solid var(--line);
+      }
+      .nav-in {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 72px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+      .brand .mk {
+        width: 34px;
+        height: 34px;
+        display: block;
+      }
+      .wordmark {
+        font-family: "Fredoka";
+        font-weight: 600;
+        font-size: 21px;
+        letter-spacing: -0.4px;
+      }
+      .wordmark .w2 {
+        color: var(--honey);
+      }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+      .nav-link {
+        font-family: "Nunito";
+        font-weight: 800;
+        font-size: 15px;
+        color: var(--dim);
+      }
+      .nav-link:hover {
+        color: var(--honey);
+      }
+
+      /* button */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        font-family: "Nunito";
+        font-weight: 800;
+        cursor: pointer;
+        border: none;
+        border-radius: 13px;
+        background: var(--honey);
+        color: #3a2410;
+        transition: background 0.15s;
+        padding: 11px 18px;
+        font-size: 15px;
+      }
+      .btn:hover {
+        background: #ffc159;
+      }
+      .btn.lg {
+        padding: 15px 26px;
+        font-size: 16.5px;
+        border-radius: 15px;
+      }
+      .btn.ghost {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--line);
+      }
+      .btn.ghost:hover {
+        background: rgba(255, 220, 180, 0.04);
+      }
+
+      /* hero */
+      .hero {
+        text-align: center;
+        padding: 72px 0 32px;
+      }
+      .hero h1 {
+        font-size: 46px;
+      }
+      .hero h1 .accent {
+        color: var(--honey);
+      }
+      .hero p {
+        color: var(--dim);
+        font-weight: 600;
+        font-size: 18px;
+        max-width: 540px;
+        margin: 18px auto 0;
+      }
+
+      /* server card */
+      .servers {
+        padding: 24px 0 80px;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+      }
+      .card-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .card-head .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--online);
+        background: rgba(123, 201, 111, 0.1);
+        border: 1px solid rgba(123, 201, 111, 0.25);
+        padding: 4px 11px;
+        border-radius: 999px;
+      }
+      .card-head .status i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--online);
+      }
+      .card-head .label {
+        font-family: "Fredoka";
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--cream);
+      }
+      .card-head .default {
+        margin-left: auto;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: var(--honey);
+        background: rgba(255, 178, 62, 0.12);
+        border: 1px solid rgba(255, 178, 62, 0.3);
+        padding: 4px 11px;
+        border-radius: 999px;
+      }
+      .endpoint {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 16px;
+        background: #1a130d;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 14px;
+        flex-wrap: wrap;
+      }
+      .endpoint code {
+        font-family: "Nunito";
+        font-weight: 800;
+        font-size: 14px;
+        color: var(--honey);
+        word-break: break-all;
+      }
+      .endpoint .copy {
+        margin-left: auto;
+        background: #352a21;
+        color: var(--cream);
+        border: none;
+        border-radius: 10px;
+        font-family: "Nunito";
+        font-weight: 800;
+        font-size: 12px;
+        padding: 7px 13px;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+      }
+      .endpoint .copy:hover {
+        background: #43342a;
+      }
+      .endpoint .copy.done {
+        color: var(--online);
+      }
+      /* self-host */
+      .selfhost {
+        margin-top: 28px;
+        text-align: center;
+        border-top: 1px solid var(--line);
+        padding-top: 40px;
+      }
+      .selfhost h2 {
+        font-size: 26px;
+        color: var(--cream);
+      }
+      .selfhost p {
+        color: var(--dim);
+        font-weight: 600;
+        font-size: 15.5px;
+        max-width: 480px;
+        margin: 12px auto 24px;
+      }
+
+      /* footer */
+      .foot {
+        border-top: 1px solid var(--line);
+        padding: 30px 0 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+      .foot .tag {
+        color: var(--faint);
+        font-weight: 700;
+        font-size: 13.5px;
+      }
+      .foot a {
+        color: var(--dim);
+        font-weight: 700;
+        font-size: 13.5px;
+      }
+      .foot a:hover {
+        color: var(--honey);
+      }
+
+      @media (max-width: 640px) {
+        .hero h1 {
+          font-size: 34px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="wrap nav-in">
+        <a href="index.html" class="brand">
+          <img class="mk" src="bear.svg" alt="" width="34" height="34" />
+          <span class="wordmark"><span class="w1">Watch</span><span class="w2">bear</span></span>
+        </a>
+        <div class="nav-right">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="servers.html" class="nav-link">Servers</a>
+          <a href="https://github.com/halitsever/watchbear/releases" target="_blank" rel="noopener" class="btn">Add to Chrome</a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <header class="hero">
+        <div class="wrap">
+          <h1>Bear Den <span class="accent">servers</span></h1>
+          <p>Watchbear rooms run on a sync server. Use the free public one, or point the extension at your own.</p>
+        </div>
+      </header>
+
+      <section class="servers">
+        <div class="wrap">
+          <div class="card">
+            <div class="card-head">
+              <span class="status"><i></i> Online</span>
+              <span class="label">Public server</span>
+              <span class="default">Default</span>
+            </div>
+
+            <div class="endpoint">
+              <code id="endpoint">https://watchbear-server.deepfeld.com/</code>
+              <button type="button" class="copy" id="copyBtn">copy</button>
+            </div>
+          </div>
+
+          <div class="selfhost">
+            <h2>Want full control?</h2>
+            <p>Run the Watchbear server yourself and set your own limits. The source and setup live on GitHub.</p>
+            <a href="https://github.com/halitsever/watchbear/tree/main/apps/landing" target="_blank" rel="noopener" class="btn lg ghost">Add your own server</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="wrap foot">
+      <span class="tag">Watchbear · the sweet way to watch together</span>
+      <a href="index.html">Back home</a>
+    </footer>
+
+    <script>
+      var copyBtn = document.getElementById("copyBtn");
+      var endpoint = document.getElementById("endpoint");
+      copyBtn.addEventListener("click", function () {
+        var url = endpoint.textContent.trim();
+        if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function () {});
+        copyBtn.textContent = "copied";
+        copyBtn.classList.add("done");
+        setTimeout(function () {
+          copyBtn.textContent = "copy";
+          copyBtn.classList.remove("done");
+        }, 1400);
+      });
+    </script>
+  </body>
+</html>

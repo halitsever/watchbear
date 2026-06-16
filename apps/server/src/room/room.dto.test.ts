@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
-import { ChatDto, JoinDto, VideoControlDto } from './room.dto';
+import { ChatDto, JoinDto, TypingDto, VideoControlDto } from './room.dto';
 
 function errorsFor<T>(cls: new () => T, payload: unknown): string[] {
   const instance = plainToInstance(cls, payload);
@@ -35,6 +35,13 @@ describe('ChatDto', () => {
   it('accepts text up to 500 chars and rejects beyond', () => {
     expect(errorsFor(ChatDto, { text: 'x'.repeat(500) })).toHaveLength(0);
     expect(errorsFor(ChatDto, { text: 'x'.repeat(501) }).length).toBeGreaterThan(0);
+  });
+});
+
+describe('TypingDto', () => {
+  it('accepts a boolean and rejects a non-boolean', () => {
+    expect(errorsFor(TypingDto, { typing: true })).toHaveLength(0);
+    expect(errorsFor(TypingDto, { typing: 'yes' }).length).toBeGreaterThan(0);
   });
 });
 

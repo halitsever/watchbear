@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { corsOrigin } from '../cors';
-import { ChatDto, JoinDto, SubscribeDto, VideoContentDto, VideoControlDto } from './room.dto';
+import { ChatDto, JoinDto, SubscribeDto, TypingDto, VideoContentDto, VideoControlDto } from './room.dto';
 
 interface Member {
   id: string;
@@ -117,6 +117,15 @@ export class RoomGateway implements OnGatewayDisconnect {
     const member = code ? this.rooms.get(code)?.get(client.id) : undefined;
     if (!code || !member) return;
     client.to(code).emit('chat:message', { fromId: client.id, from: member.name, text });
+  }
+
+  @SubscribeMessage('chat:typing')
+  handleTyping(@ConnectedSocket() client: Socket, @MessageBody() { typing }: TypingDto) {
+    if (!this.withinRate(client)) return;
+    const code = this.socketRoom.get(client.id);
+    const member = code ? this.rooms.get(code)?.get(client.id) : undefined;
+    if (!code || !member) return;
+    client.to(code).emit('chat:typing', { fromId: client.id, from: member.name, typing });
   }
 
   // silent video-sync channel, joins the room to receive control events without
@@ -232,7 +241,11 @@ export class RoomGateway implements OnGatewayDisconnect {
     }
 
     this.broadcastMembers(code);
-    if (member) client.to(code).emit('room:system', { text: `${member.name} left the den` });
+    if (member) {
+      // clear any lingering typing dots for a bear that bailed mid-message
+      client.to(code).emit('chat:typing', { fromId: client.id, from: member.name, typing: false });
+      client.to(code).emit('room:system', { text: `${member.name} left the den` });
+    }
   }
 
   private broadcastMembers(code: string) {

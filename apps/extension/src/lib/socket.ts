@@ -25,11 +25,18 @@ interface ChatPayload {
   text: string;
 }
 
+interface TypingPayload {
+  fromId: string;
+  from: string;
+  typing: boolean;
+}
+
 export type ConnStatus = 'connecting' | 'connected' | 'error';
 
 export interface RoomHandlers {
   onMembers: (members: Member[], selfId: string | undefined) => void;
   onChat: (msg: ChatPayload) => void;
+  onTyping: (msg: TypingPayload) => void;
   onSystem: (text: string) => void;
   onStatus: (status: ConnStatus) => void;
   onContent: (c: VideoContentInfo) => void;
@@ -37,6 +44,7 @@ export interface RoomHandlers {
 
 export interface RoomConnection {
   sendChat: (text: string) => void;
+  sendTyping: (typing: boolean) => void;
   disconnect: () => void;
 }
 
@@ -106,11 +114,13 @@ export function joinRoom(serverUrl: string, code: string, member: Identity, hand
   socket.on('exception', () => handlers.onStatus('error'));
   socket.on('room:members', (p: { members: Member[] }) => handlers.onMembers(p.members, socket.id));
   socket.on('chat:message', (p: ChatPayload) => handlers.onChat(p));
+  socket.on('chat:typing', (p: TypingPayload) => handlers.onTyping(p));
   socket.on('room:system', (p: { text: string }) => handlers.onSystem(p.text));
   socket.on('room:content', (c: VideoContentInfo) => handlers.onContent(c));
 
   return {
     sendChat: (text) => socket.emit('chat:send', { text }),
+    sendTyping: (typing) => socket.emit('chat:typing', { typing }),
     disconnect: () => {
       socket.emit('room:leave');
       socket.disconnect();

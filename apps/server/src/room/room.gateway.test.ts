@@ -75,6 +75,29 @@ describe('RoomGateway membership', () => {
     gw.handleDisconnect(a);
     expect(rooms().has(CODE)).toBe(false);
   });
+
+  it('broadcasts typing to the rest of the den with the sender name', () => {
+    const a = makeClient(sink);
+    gw.handleJoin(a, { code: CODE, member: member('A') });
+    sink.length = 0;
+    gw.handleTyping(a, { typing: true });
+    const ev = sink.find((e) => e.event === 'chat:typing');
+    expect(ev).toEqual({ room: CODE, event: 'chat:typing', payload: { fromId: a.id, from: 'A', typing: true } });
+  });
+
+  it('ignores typing from a socket that never joined', () => {
+    const stranger = makeClient(sink);
+    gw.handleTyping(stranger, { typing: true });
+    expect(sink.some((e) => e.event === 'chat:typing')).toBe(false);
+  });
+
+  it('clears the typing dots when a typing member disconnects', () => {
+    const a = makeClient(sink);
+    gw.handleJoin(a, { code: CODE, member: member('A') });
+    sink.length = 0;
+    gw.handleDisconnect(a);
+    expect(sink.some((e) => e.event === 'chat:typing' && (e.payload as { typing: boolean }).typing === false)).toBe(true);
+  });
 });
 
 describe('RoomGateway video sync', () => {

@@ -75,6 +75,11 @@ export class ChatDto {
   text!: string;
 }
 
+export class TypingDto {
+  @IsBoolean()
+  typing!: boolean;
+}
+
 export class VideoControlDto {
   @IsString()
   @Matches(CODE)

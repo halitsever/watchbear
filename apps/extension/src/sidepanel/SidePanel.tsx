@@ -20,6 +20,13 @@ const REACTIONS = ["🐻", "😂", "😱", "❤️", "🍿"];
 // group key for collapsing a run of messages from the same sender
 const sender = (m: Message) => (m.mine ? "me" : m.from);
 
+function typingLabel(typers: Map<string, string>): string {
+  const names = [...typers.values()];
+  if (names.length === 1) return `${names[0]} is typing`;
+  if (names.length === 2) return `${names[0]} and ${names[1]} are typing`;
+  return "Several bears are typing";
+}
+
 function formatTime(sec: number): string {
   if (!Number.isFinite(sec) || sec < 0) return "0:00";
   const total = Math.floor(sec);
@@ -36,6 +43,7 @@ export function SidePanel() {
   const [serverUrl, setServerUrl] = useState<string | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [typers, setTypers] = useState<Map<string, string>>(new Map());
   const [draft, setDraft] = useState("");
   const [copied, setCopied] = useState(false);
   const [videoTime, setVideoTime] = useState<number | null>(null);
@@ -46,6 +54,10 @@ export function SidePanel() {
   const msgId = useRef(0);
   const feedRef = useRef<HTMLDivElement>(null);
   const conn = useRef<RoomConnection | null>(null);
+  // per-sender expiry so dots clear even if a "stopped" event never arrives
+  const typerTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  const lastTypingSent = useRef(0);
+  const typingStopTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const diverged = !!content && !!activeUrl && contentKey(activeUrl) !== content.key;
 
@@ -66,6 +78,7 @@ export function SidePanel() {
       setMembers([]);
       setMessages([]);
       setContent(null);
+      clearTypers();
     }
   }, [inRoom, roomCode, identity]);
 
@@ -76,6 +89,7 @@ export function SidePanel() {
     conn.current = joinRoom(serverUrl, roomCode, identity, {
       onMembers: (list, selfId) => setMembers(list.map((m) => ({ ...m, you: m.id === selfId }))),
       onChat: ({ from, text }) => setMessages((m) => [...m, { id: nextId(), type: "chat", from, text }]),
+      onTyping: ({ fromId, from, typing }) => applyTyping(fromId, from, typing),
       onSystem: (text) => setMessages((m) => [...m, { id: nextId(), type: "system", text }]),
       onStatus: setStatus,
       onContent: setContent,
@@ -83,6 +97,9 @@ export function SidePanel() {
     return () => {
       conn.current?.disconnect();
       conn.current = null;
+      if (typingStopTimer.current) clearTimeout(typingStopTimer.current);
+      lastTypingSent.current = 0;
+      clearTypers();
     };
   }, [inRoom, roomCode, identity, serverUrl]);
 
@@ -116,6 +133,60 @@ export function SidePanel() {
     };
   }, [inRoom]);
 
+  function clearTypers() {
+    typerTimers.current.forEach(clearTimeout);
+    typerTimers.current.clear();
+    setTypers(new Map());
+  }
+
+  function applyTyping(fromId: string, from: string, typing: boolean) {
+    const timers = typerTimers.current;
+    const existing = timers.get(fromId);
+    if (existing) clearTimeout(existing);
+    if (typing) {
+      setTypers((m) => new Map(m).set(fromId, from));
+      timers.set(
+        fromId,
+        setTimeout(() => {
+          timers.delete(fromId);
+          setTypers((m) => {
+            const n = new Map(m);
+            n.delete(fromId);
+            return n;
+          });
+        }, 4000),
+      );
+    } else {
+      timers.delete(fromId);
+      setTypers((m) => {
+        const n = new Map(m);
+        n.delete(fromId);
+        return n;
+      });
+    }
+  }
+
+  function notifyTyping() {
+    const now = Date.now();
+    // leading-edge throttle so we don't burn the server rate limit on every keystroke
+    if (now - lastTypingSent.current > 1500) {
+      lastTypingSent.current = now;
+      conn.current?.sendTyping(true);
+    }
+    if (typingStopTimer.current) clearTimeout(typingStopTimer.current);
+    typingStopTimer.current = setTimeout(stopTyping, 2000);
+  }
+
+  function stopTyping() {
+    if (typingStopTimer.current) {
+      clearTimeout(typingStopTimer.current);
+      typingStopTimer.current = null;
+    }
+    if (lastTypingSent.current === 0) return;
+    lastTypingSent.current = 0;
+    conn.current?.sendTyping(false);
+  }
+
   function postChat(text: string) {
     const from = identity?.name ?? "You";
     setMessages((m) => [...m, { id: nextId(), type: "chat", from, text, mine: true }]);
@@ -127,6 +198,7 @@ export function SidePanel() {
     if (!text) return;
     postChat(text);
     setDraft("");
+    stopTyping();
   }
 
   function copyCode() {
@@ -243,6 +315,20 @@ export function SidePanel() {
         })}
       </div>
 
+      {/* typing indicator */}
+      <div className="h-[18px] px-[15px] text-[11.5px] font-semibold leading-[18px] text-wb-faint">
+        {typers.size > 0 && (
+          <span>
+            {typingLabel(typers)}
+            <span className="inline-flex">
+              <span className="animate-bounce [animation-delay:-0.3s]">.</span>
+              <span className="animate-bounce [animation-delay:-0.15s]">.</span>
+              <span className="animate-bounce">.</span>
+            </span>
+          </span>
+        )}
+      </div>
+
       {/* quick reactions */}
       <div className="flex gap-1.5 px-[14px] pt-2">
         {REACTIONS.map((emoji) => (
@@ -267,7 +353,11 @@ export function SidePanel() {
       >
         <input
           value={draft}
-          onChange={(e) => setDraft(e.target.value)}
+          onChange={(e) => {
+            setDraft(e.target.value);
+            if (e.target.value) notifyTyping();
+            else stopTyping();
+          }}
           placeholder="Message the den…"
           maxLength={300}
           autoComplete="off"

@@ -1,6 +1,9 @@
 import { BearFace } from './Bear';
 import type { Member, Message } from '@/lib/types';
 
+const formatClock = (ts?: number) =>
+  ts == null ? '' : new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
 export function ChatLine({ msg, members, grouped }: { msg: Message; members: Member[]; grouped?: boolean }) {
   if (msg.type === 'system') {
     return (
@@ -15,18 +18,21 @@ export function ChatLine({ msg, members, grouped }: { msg: Message; members: Mem
   const tail = mine ? 'rounded-[14px_4px_14px_14px]' : 'rounded-[4px_14px_14px_14px]';
 
   return (
-    <div className={`flex items-end gap-[9px] ${grouped ? 'mt-0.5' : 'mt-2.5'} ${mine ? 'flex-row-reverse' : 'flex-row'}`}>
-      {!mine && (grouped ? <span className="w-[26px] shrink-0" /> : <BearFace size={26} fur={m.fur} furDark={m.furDark} />)}
+    <div className={`flex items-end gap-2 ${grouped ? 'mt-0.5' : 'mt-2'} ${mine ? 'flex-row-reverse' : 'flex-row'}`}>
+      {!mine && (grouped ? <span className="w-[24px] shrink-0" /> : <BearFace size={24} fur={m.fur} furDark={m.furDark} />)}
       <div className="max-w-[76%]">
         {!mine && !grouped && <div className="mb-[3px] ml-1 text-[11px] font-bold text-wb-dim">{msg.from}</div>}
-        <div
-          className={
-            mine
-              ? `${grouped ? 'rounded-[14px]' : tail} break-words bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-3 py-2 text-[13px] font-semibold leading-[1.42] text-[#3a2410]`
-              : `${grouped ? 'rounded-[14px]' : tail} break-words bg-wb-panel2 px-3 py-2 text-[13px] font-medium leading-[1.42] text-wb-text`
-          }
-        >
-          {msg.text}
+        <div className={`flex items-end gap-1.5 ${mine ? 'flex-row-reverse' : 'flex-row'}`}>
+          <div
+            className={
+              mine
+                ? `${grouped ? 'rounded-[14px]' : tail} break-words bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-2.5 py-1.5 text-[13px] font-semibold leading-[1.42] text-[#3a2410]`
+                : `${grouped ? 'rounded-[14px]' : tail} break-words bg-wb-panel2 px-2.5 py-1.5 text-[13px] font-medium leading-[1.42] text-wb-text`
+            }
+          >
+            {msg.text}
+          </div>
+          <span className="mb-0.5 shrink-0 text-[10px] text-wb-faint">{formatClock(msg.ts)}</span>
         </div>
       </div>
     </div>

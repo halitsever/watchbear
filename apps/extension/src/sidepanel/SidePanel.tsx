@@ -45,6 +45,7 @@ export function SidePanel() {
   const [typers, setTypers] = useState<Map<string, string>>(new Map());
   const [draft, setDraft] = useState("");
   const [copied, setCopied] = useState(false);
+  const [popupHint, setPopupHint] = useState(false);
   const [videoTime, setVideoTime] = useState<number | null>(null);
   const [status, setStatus] = useState<ConnStatus>("connecting");
   const [content, setContent] = useState<VideoContentInfo | null>(null);
@@ -84,7 +85,7 @@ export function SidePanel() {
     setStatus("connecting");
     conn.current = joinRoom(serverUrl, roomCode, identity, {
       onMembers: (list, selfId) => setMembers(list.map((m) => ({ ...m, you: m.id === selfId }))),
-      onChat: ({ from, text }) => setMessages((m) => [...m, { id: nextId(), type: "chat", from, text }]),
+      onChat: ({ from, text }) => setMessages((m) => [...m, { id: nextId(), type: "chat", from, text, ts: Date.now() }]),
       onTyping: ({ fromId, from, typing }) => applyTyping(fromId, from, typing),
       onSystem: (text) => setMessages((m) => [...m, { id: nextId(), type: "system", text }]),
       onStatus: setStatus,
@@ -184,7 +185,7 @@ export function SidePanel() {
 
   function postChat(text: string) {
     const from = identity?.name ?? "You";
-    setMessages((m) => [...m, { id: nextId(), type: "chat", from, text, mine: true }]);
+    setMessages((m) => [...m, { id: nextId(), type: "chat", from, text, mine: true, ts: Date.now() }]);
     conn.current?.sendChat(text);
   }
 
@@ -207,16 +208,30 @@ export function SidePanel() {
     sendToBackground({ type: "WB_LEAVE_ROOM", tabId: tab?.id });
   }
 
+  function openPopup() {
+    // chrome.action.openPopup() is stable since Chrome 127; it can reject on
+    // older/unsupported builds, in which case we fall back to the toolbar hint.
+    chrome.action.openPopup().catch(() => setPopupHint(true));
+  }
+
   if (!inRoom) {
     return (
       <div className="flex h-full flex-col items-center justify-center px-6 text-center font-nunito">
         <div className="opacity-60">
-          <BearMark size={64} />
+          <BearMark size={56} />
         </div>
-        <div className="mt-4 font-fredoka text-[18px] font-semibold text-wb-text">
+        <div className="mt-3 font-fredoka text-[16px] font-semibold text-wb-text">
           Watch<span className="text-wb-honey">bear</span>
         </div>
-        <div className="mt-2 text-[12.5px] font-medium leading-[1.5] text-wb-dim">Click the bear in the toolbar to start a party.</div>
+        <div className="mt-2 text-[12.5px] font-medium leading-[1.5] text-wb-dim">Start or join a watch party to get going.</div>
+        <button
+          type="button"
+          onClick={openPopup}
+          className="mt-4 rounded-[12px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-5 py-2 text-[13.5px] font-bold text-[#3a2410] shadow-md transition-all hover:brightness-105 active:translate-y-px"
+        >
+          Join a Room
+        </button>
+        {popupHint && <div className="mt-3 text-[12px] font-medium text-wb-dim">Click the bear in the toolbar to start a party.</div>}
       </div>
     );
   }
@@ -224,12 +239,12 @@ export function SidePanel() {
   return (
     <div className="flex h-full min-w-0 flex-col font-nunito">
       {/* header */}
-      <div className="flex items-center justify-between gap-2 border-b border-wb-line px-[14px] py-[10px]">
-        <div className="flex min-w-0 items-center gap-[10px]">
-          <BearMark size={26} />
+      <div className="flex items-center justify-between gap-2 border-b border-wb-line px-3 py-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <BearMark size={22} />
           <div className="min-w-0">
-            <div className="font-fredoka text-[15px] font-semibold leading-none text-wb-text">Bear Den</div>
-            <div className="mt-[5px] flex items-center gap-[6px]">
+            <div className="font-fredoka text-[14px] font-semibold leading-none text-wb-text">Bear Den</div>
+            <div className="mt-[3px] flex items-center gap-[6px]">
               <span className="text-[11px] font-bold tracking-[.5px] text-wb-dim">{roomCode}</span>
               <button type="button" onClick={copyCode} title="copy code" className="text-wb-faint transition-colors hover:text-wb-honey">
                 {copied ? <IconCheck className="h-[13px] w-[13px]" /> : <IconCopy className="h-[13px] w-[13px]" />}
@@ -241,7 +256,7 @@ export function SidePanel() {
           type="button"
           onClick={() => void leave()}
           title="leave room"
-          className="shrink-0 rounded-[10px] border border-wb-line bg-[#2e2018] px-3 py-1.5 text-xs font-bold text-wb-dim transition-all hover:border-[rgba(255,140,107,.3)] hover:bg-[#3a2418] hover:text-wb-coral"
+          className="shrink-0 rounded-[10px] border border-wb-line bg-[#2e2018] px-2.5 py-1 text-xs font-bold text-wb-dim transition-all hover:border-[rgba(255,140,107,.3)] hover:bg-[#3a2418] hover:text-wb-coral"
         >
           Leave
         </button>
@@ -249,7 +264,7 @@ export function SidePanel() {
 
       {status !== "connected" && (
         <div
-          className={`px-[14px] py-1.5 text-center text-[11.5px] font-bold ${
+          className={`px-3 py-1.5 text-center text-[11.5px] font-bold ${
             status === "error" ? "bg-[rgba(255,140,107,.12)] text-wb-coral" : "bg-[rgba(255,178,62,.1)] text-wb-honey"
           }`}
         >
@@ -258,8 +273,8 @@ export function SidePanel() {
       )}
 
       {/* members + sync */}
-      <div className="border-b border-wb-line px-[14px] py-3">
-        <div className="mb-[10px] flex flex-wrap items-center gap-[7px]">
+      <div className="border-b border-wb-line px-3 py-2.5">
+        <div className="mb-2 flex flex-wrap items-center gap-1.5">
           {members.map((m) => (
             <MemberChip key={m.id ?? m.name} m={m} />
           ))}
@@ -273,7 +288,7 @@ export function SidePanel() {
         </div>
 
         {content && (
-          <div className="mt-2 flex items-center gap-1.5 text-[12px] font-semibold text-wb-dim">
+          <div className="mt-1.5 flex items-center gap-1.5 text-[12px] font-semibold text-wb-dim">
             <IconTv className="h-[13px] w-[13px] shrink-0" />
             <span className="truncate">Now playing: {content.title || content.url}</span>
           </div>
@@ -281,7 +296,7 @@ export function SidePanel() {
       </div>
 
       {/* chat feed */}
-      <div ref={feedRef} className="flex min-h-0 flex-1 flex-col overflow-y-auto px-[14px] py-3">
+      <div ref={feedRef} className="flex min-h-0 flex-1 flex-col overflow-y-auto px-3 py-2.5">
         {messages.map((msg, i) => {
           const prev = messages[i - 1];
           const grouped = msg.type === "chat" && prev?.type === "chat" && sender(prev) === sender(msg);
@@ -290,7 +305,7 @@ export function SidePanel() {
       </div>
 
       {/* typing indicator */}
-      <div className="h-[18px] px-[15px] text-[11.5px] font-semibold leading-[18px] text-wb-faint">
+      <div className="h-[18px] px-3 text-[11.5px] font-semibold leading-[18px] text-wb-faint">
         {typers.size > 0 && (
           <span>
             {typingLabel(typers)}
@@ -304,13 +319,13 @@ export function SidePanel() {
       </div>
 
       {/* quick reactions */}
-      <div className="flex gap-1.5 px-[14px] pt-2">
+      <div className="flex gap-1.5 px-3 pt-1.5">
         {REACTIONS.map((emoji) => (
           <button
             type="button"
             key={emoji}
             onClick={() => conn.current?.sendReaction(emoji)}
-            className="flex-1 rounded-[11px] border border-wb-line bg-wb-panel py-1.5 text-[15px] transition-colors hover:border-[rgba(255,178,62,.26)] hover:bg-wb-panel2"
+            className="flex-1 rounded-[11px] border border-wb-line bg-wb-panel py-1 text-[14px] transition-colors hover:border-[rgba(255,178,62,.26)] hover:bg-wb-panel2"
           >
             {emoji}
           </button>
@@ -323,7 +338,7 @@ export function SidePanel() {
           e.preventDefault();
           send();
         }}
-        className="flex gap-2 p-[14px]"
+        className="flex gap-1.5 p-3"
       >
         <input
           value={draft}
@@ -335,15 +350,15 @@ export function SidePanel() {
           placeholder="Message the den…"
           maxLength={300}
           autoComplete="off"
-          className="min-w-0 flex-1 rounded-[13px] border border-wb-line bg-[#1d150f] px-[13px] py-[10px] text-[13.5px] font-semibold text-wb-text outline-none transition-colors placeholder:text-wb-faint focus:border-[rgba(255,178,62,.45)]"
+          className="min-w-0 flex-1 rounded-[13px] border border-wb-line bg-[#1d150f] px-3 py-2 text-[13px] font-semibold text-wb-text outline-none transition-colors placeholder:text-wb-faint focus:border-[rgba(255,178,62,.45)]"
         />
         <button
           type="submit"
           disabled={!draft.trim()}
           aria-label="send"
-          className="flex shrink-0 items-center justify-center rounded-[13px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-[13px] text-[#3a2410] transition-opacity disabled:opacity-40"
+          className="flex shrink-0 items-center justify-center rounded-[13px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-3 text-[#3a2410] transition-opacity disabled:opacity-40"
         >
-          <IconSend className="h-[18px] w-[18px]" />
+          <IconSend className="h-4 w-4" />
         </button>
       </form>
     </div>

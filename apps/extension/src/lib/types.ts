@@ -13,4 +13,5 @@ export interface Message {
   from?: string;
   text: string;
   mine?: boolean;
+  ts?: number;
 }

@@ -163,6 +163,24 @@ function runTop(): void {
   let navTimer: number | undefined;
   let lastHref = location.href;
 
+  // only the focused/visible tab syncs; a hidden tab keeps its socket but neither
+  // broadcasts its video nor lets remote controls move it. on becoming visible it
+  // catches up to the latest control it banked while hidden.
+  let visible = document.visibilityState === 'visible';
+  document.addEventListener('visibilitychange', () => {
+    visible = document.visibilityState === 'visible';
+    if (visible) flushPending();
+  });
+
+  // entering/exiting fullscreen swaps the painted subtree; move any in-flight
+  // reaction overlay so the emojis follow the video into (or out of) fullscreen.
+  document.addEventListener('fullscreenchange', () => {
+    const layer = document.getElementById('wb-reactions');
+    if (!layer) return;
+    const host = reactionHost();
+    if (layer.parentElement !== host) host.appendChild(layer);
+  });
+
   // child frames that have announced a video, keyed by their window
   const announced = new Map<Window, { area: number }>();
 
@@ -253,6 +271,15 @@ function runTop(): void {
     document.getElementById('wb-reactions')?.remove();
   }
 
+  // where the reaction overlay must live to be painted. in fullscreen the browser
+  // only renders the fullscreen element's subtree, so we host inside it; a raw
+  // <video> can't host children, so fall back to its parent.
+  function reactionHost(): Element {
+    const fs = document.fullscreenElement;
+    if (!fs) return document.documentElement;
+    return fs.tagName === 'VIDEO' ? (fs.parentElement ?? document.documentElement) : fs;
+  }
+
   // big emoji that floats up over the video and fades, teleparty-style. anchored
   // to the synced video's box when we can see it, else the viewport.
   function spawnReaction(emoji: string): void {
@@ -261,8 +288,11 @@ function runTop(): void {
       layer = document.createElement('div');
       layer.id = 'wb-reactions';
       layer.className = 'wb-reactions';
-      document.documentElement.appendChild(layer);
     }
+    // in fullscreen the browser only paints the fullscreen element's subtree, so the
+    // overlay must live inside it for the emoji to be visible.
+    const host = reactionHost();
+    if (layer.parentElement !== host) host.appendChild(layer);
 
     const v = pickVideo();
     const rect = v && v.clientWidth * v.clientHeight >= MIN_AREA ? v.getBoundingClientRect() : null;
@@ -313,11 +343,7 @@ function runTop(): void {
     target?.teardown();
     target = next;
     target.onLocalChange(onLocal);
-    if (pending) {
-      const p = pending;
-      pending = null;
-      target.apply(p);
-    }
+    flushPending();
   }
 
   function startTargetWatch() {
@@ -332,16 +358,23 @@ function runTop(): void {
   }
 
   function onLocal() {
-    if (!channel || !target) return;
+    if (!channel || !target || !visible) return; // only the focused tab broadcasts
     const s = target.getState();
     if (s) channel.send(s);
   }
 
   function applyControl(c: VideoControl) {
-    if (!target) {
-      pending = c;
+    if (!visible || !target) {
+      pending = c; // hidden (or no target yet): bank the latest, don't touch the video
       return;
     }
+    target.apply(c);
+  }
+
+  function flushPending() {
+    if (!visible || !target || !pending) return;
+    const c = pending;
+    pending = null;
     target.apply(c);
   }
 

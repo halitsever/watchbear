@@ -4,7 +4,7 @@ import type { Member } from '@/lib/types';
 export function MemberChip({ m }: { m: Member }) {
   return (
     <div className="group relative shrink-0">
-      <BearFace size={30} fur={m.fur} furDark={m.furDark} ring={m.you ? 'var(--color-wb-honey)' : undefined} />
+      <BearFace size={26} fur={m.fur} furDark={m.furDark} ring={m.you ? 'var(--color-wb-honey)' : undefined} />
       {m.host && (
         <span className="absolute -top-[7px] left-1/2 -translate-x-1/2 rotate-[8deg] text-[11px]">👑</span>
       )}

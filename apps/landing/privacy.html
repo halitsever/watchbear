@@ -136,6 +136,38 @@
       .nav-link:hover {
         color: var(--honey);
       }
+      .nav-toggle {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 42px;
+        height: 42px;
+        padding: 0 9px;
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        cursor: pointer;
+      }
+      .nav-toggle span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        background: var(--text);
+        border-radius: 2px;
+        transition:
+          transform 0.2s,
+          opacity 0.2s;
+      }
+      .nav.open .nav-toggle span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+      .nav.open .nav-toggle span:nth-child(2) {
+        opacity: 0;
+      }
+      .nav.open .nav-toggle span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
       .btn {
         display: inline-flex;
         align-items: center;
@@ -269,19 +301,41 @@
           font-size: 34px;
         }
         .nav-in {
-          height: auto;
-          padding: 12px 0;
-          flex-wrap: wrap;
-          row-gap: 12px;
+          position: relative;
+        }
+        .nav-toggle {
+          display: flex;
         }
         .nav-right {
-          width: 100%;
-          flex-wrap: wrap;
-          gap: 14px 18px;
+          position: absolute;
+          top: calc(100% + 1px);
+          left: 0;
+          right: 0;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 4px;
+          background: var(--panel);
+          border: 1px solid var(--line);
+          border-radius: 0 0 16px 16px;
+          padding: 10px;
+          box-shadow: 0 28px 50px rgba(0, 0, 0, 0.45);
+          display: none;
+          z-index: 50;
         }
-        .tldr,
-        .policy h2 {
-          margin-top: 28px;
+        .nav.open .nav-right {
+          display: flex;
+        }
+        .nav-right .nav-link {
+          padding: 12px 14px;
+          border-radius: 10px;
+          font-size: 15px;
+        }
+        .nav-right .nav-link:hover {
+          background: rgba(255, 220, 180, 0.05);
+        }
+        .nav-right .btn {
+          justify-content: center;
+          margin-top: 4px;
         }
         .policy h2 {
           font-size: 22px;
@@ -301,6 +355,9 @@
           <a href="servers.html" class="nav-link">Servers</a>
           <a href="https://github.com/halitsever/watchbear/releases" target="_blank" rel="noopener" class="btn">Add to Chrome</a>
         </div>
+        <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </nav>
 
@@ -489,6 +546,23 @@
         );
       }
       document.getElementById("navBear").innerHTML = bearSVG({ size: 32 });
+
+      // mobile hamburger menu
+      (function () {
+        var nav = document.querySelector(".nav");
+        var toggle = document.getElementById("navToggle");
+        if (!nav || !toggle) return;
+        toggle.addEventListener("click", function () {
+          var open = nav.classList.toggle("open");
+          toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+        nav.querySelectorAll(".nav-right a").forEach(function (a) {
+          a.addEventListener("click", function () {
+            nav.classList.remove("open");
+            toggle.setAttribute("aria-expanded", "false");
+          });
+        });
+      })();
     </script>
   </body>
 </html>

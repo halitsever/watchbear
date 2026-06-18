@@ -18,6 +18,14 @@ const MIN_AREA = 120 * 90; // ignore tracking pixels / ad clips
 const SEEK_THRESHOLD = 0.5; // seconds of drift we tolerate before scrubbing
 const REMOTE_GUARD_MS = 400; // suppress echo right after applying a remote change
 
+const IS_NETFLIX = location.hostname.endsWith('netflix.com');
+
+// writing video.currentTime crashes the netflix player; ask the MAIN-world
+// bridge (netflix-main.ts) to seek through netflix's own player api instead.
+function postNetflixSeek(time: number): void {
+  window.postMessage({ __wbnf: 1, kind: 'seek', time }, '*');
+}
+
 type WbBridgeMsg =
   | { __wb: 1; kind: 'announce'; area: number; duration: number }
   | { __wb: 1; kind: 'state'; time: number; paused: boolean }
@@ -31,7 +39,10 @@ function pickVideo(): HTMLVideoElement | null {
 }
 
 function applyTo(v: HTMLVideoElement, c: VideoControl): void {
-  if (Math.abs(v.currentTime - c.time) > SEEK_THRESHOLD) v.currentTime = c.time;
+  if (Math.abs(v.currentTime - c.time) > SEEK_THRESHOLD) {
+    if (IS_NETFLIX) postNetflixSeek(c.time);
+    else v.currentTime = c.time;
+  }
   if (c.paused && !v.paused) v.pause();
   else if (!c.paused && v.paused) void v.play();
 }

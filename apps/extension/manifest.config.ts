@@ -38,6 +38,16 @@ export default defineManifest({
       all_frames: true,
       match_about_blank: true,
     },
+    {
+      // netflix crashes when we write video.currentTime, so on netflix we route
+      // only the seek through its player api, which lives on the page window. this
+      // entry runs in the MAIN world; main.ts (isolated) bridges the seek over
+      // postMessage.
+      matches: ['*://*.netflix.com/*'],
+      js: ['src/content/netflix-main.ts'],
+      run_at: 'document_idle',
+      world: 'MAIN',
+    },
   ],
   permissions: ['storage', 'activeTab', 'scripting', 'sidePanel'],
   host_permissions: ['<all_urls>'],

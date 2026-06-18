@@ -37,6 +37,14 @@ chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender
     return;
   }
 
+  // the join banner already wrote room state and started syncing; this gesture
+  // just opens the panel. call open() synchronously so the gesture isn't lost.
+  if (msg.type === 'WB_OPEN_PANEL') {
+    const tabId = sender.tab?.id;
+    if (tabId) chrome.sidePanel.open({ tabId }).catch(() => {});
+    return;
+  }
+
   if (msg.type === 'WB_LEAVE_ROOM') {
     clearRoomState();
     if (msg.tabId) chrome.tabs.sendMessage(msg.tabId, { type: 'LEAVE_ROOM' }).catch(() => {});

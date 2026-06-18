@@ -16,6 +16,77 @@
   animation: wb-react-float 2.6s ease-out forwards;
 }
 
+.wb-join-banner {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2147483646;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100vw - 32px);
+  padding: 10px 12px 10px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 200, 140, 0.16);
+  background: #2c211a;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  font-family: 'Nunito', system-ui, sans-serif;
+  animation: wb-jb-drop 0.28s cubic-bezier(0.18, 0.9, 0.32, 1.2) both;
+}
+
+.wb-jb-text {
+  font-size: 14px;
+  font-weight: 800;
+  color: #f4e4cf;
+  white-space: nowrap;
+}
+
+.wb-jb-open {
+  cursor: pointer;
+  border: 0;
+  border-radius: 10px;
+  padding: 7px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  color: #3a2410;
+  background: linear-gradient(180deg, #ffc156, #f2912a);
+  box-shadow: 0 6px 16px rgba(242, 145, 42, 0.32);
+  transition: filter 0.15s ease;
+}
+
+.wb-jb-open:hover {
+  filter: brightness(1.05);
+}
+
+.wb-jb-dismiss {
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: #b59a82;
+  font-size: 14px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 8px;
+  transition: color 0.15s ease;
+}
+
+.wb-jb-dismiss:hover {
+  color: #ff8c6b;
+}
+
+@keyframes wb-jb-drop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
 @keyframes wb-react-float {
   0% {
     opacity: 0;

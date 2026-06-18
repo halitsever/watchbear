@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Watchbear · Join the party</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#16100c" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" type="image/svg+xml" href="bear.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="icon32.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #16100c;
+        --panel: #221912;
+        --line: rgba(255, 220, 180, 0.1);
+        --honey: #ffb23e;
+        --coral: #ff8c6b;
+        --text: #efe3d2;
+        --dim: #a89071;
+        --faint: #7e6a53;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        font-family: "Nunito", system-ui, sans-serif;
+        color: var(--text);
+        background: radial-gradient(120% 90% at 50% 0%, #20160f, var(--bg));
+        -webkit-font-smoothing: antialiased;
+        line-height: 1.55;
+      }
+      .card {
+        width: 100%;
+        max-width: 440px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 30px 28px 26px;
+        text-align: center;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+      }
+      .mk {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 14px;
+      }
+      h1 {
+        font-family: "Fredoka", sans-serif;
+        font-weight: 600;
+        font-size: 23px;
+        letter-spacing: -0.4px;
+        margin: 0 0 6px;
+      }
+      h1 .w2 {
+        color: var(--honey);
+      }
+      .sub {
+        font-size: 14.5px;
+        font-weight: 600;
+        color: var(--dim);
+        margin: 0 0 20px;
+      }
+      .dest {
+        display: block;
+        margin: 0 0 22px;
+        padding: 11px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: #1b130d;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text);
+        word-break: break-all;
+      }
+      .dest .lbl {
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: var(--faint);
+        margin-bottom: 4px;
+      }
+      .btn {
+        display: inline-flex;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 800;
+        cursor: pointer;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(180deg, #ffc156, #f2912a);
+        color: #3a2410;
+        padding: 15px 22px;
+        font-size: 16px;
+        text-decoration: none;
+        box-shadow: 0 10px 24px rgba(242, 145, 42, 0.3);
+        transition: filter 0.15s;
+      }
+      .btn:hover {
+        filter: brightness(1.05);
+      }
+      .btn.ghost {
+        margin-top: 12px;
+        background: transparent;
+        color: var(--dim);
+        box-shadow: none;
+        border: 1px solid var(--line);
+      }
+      .btn.ghost:hover {
+        color: var(--honey);
+        filter: none;
+      }
+      .link {
+        display: inline-block;
+        margin-top: 14px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--faint);
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .link:hover {
+        color: var(--honey);
+      }
+      .hidden {
+        display: none !important;
+      }
+      .note {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--faint);
+        margin-top: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <img class="mk" src="bear.svg" alt="Watchbear" />
+
+      <!-- invalid / missing invite -->
+      <div id="bad" class="hidden">
+        <h1>Invalid invite</h1>
+        <p class="sub">This invite link looks broken. Ask your friend to send it again.</p>
+        <a class="btn ghost" href="https://watchbear.deepfeld.com/">Go to Watchbear</a>
+      </div>
+
+      <!-- valid invite: extension present -> join, else install -->
+      <div id="ok" class="hidden">
+        <h1>You're invited to a <span class="w2">watch party</span></h1>
+        <p class="sub">🐻 A friend wants to watch together with you on Watchbear.</p>
+
+        <span class="dest"><span class="lbl">You'll be taken to</span><span id="dest-url"></span></span>
+
+        <!-- extension installed -->
+        <div id="install-yes" class="hidden">
+          <a id="join-link" class="btn" href="#">Join the party →</a>
+          <div class="note">This takes you to the video and joins the party.</div>
+        </div>
+
+        <!-- extension missing -->
+        <div id="install-no" class="hidden">
+          <a class="btn" href="https://github.com/halitsever/watchbear/releases" target="_blank" rel="noopener">
+            Install Watchbear
+          </a>
+          <a class="link" id="retry">I've installed it — try again</a>
+          <div class="note">Watchbear is required to join. After installing, come back to this link.</div>
+          <a id="join-link-2" class="btn ghost hidden" href="#">Go to the video anyway →</a>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        // read the room code + destination from the hash (never sent to the server)
+        function parseHash() {
+          var h = location.hash.charAt(0) === "#" ? location.hash.slice(1) : location.hash;
+          var out = { code: null, url: null };
+          h.split("&").forEach(function (part) {
+            var i = part.indexOf("=");
+            if (i < 0) return;
+            var k = part.slice(0, i);
+            var v = decodeURIComponent(part.slice(i + 1));
+            if (k === "wb") out.code = v.toUpperCase();
+            else if (k === "u") out.url = v;
+          });
+          return out;
+        }
+
+        var ROOM_CODE_RE = /^[A-Z]{2,8}-[A-Z0-9]{4,12}$/;
+
+        // only allow http(s) destinations, so a crafted u= can't run javascript: urls
+        function safeUrl(raw) {
+          if (!raw) return null;
+          try {
+            var u = new URL(raw);
+            return u.protocol === "http:" || u.protocol === "https:" ? u : null;
+          } catch (e) {
+            return null;
+          }
+        }
+
+        var data = parseHash();
+        var dest = safeUrl(data.url);
+        var validCode = data.code && ROOM_CODE_RE.test(data.code);
+
+        function show(id) {
+          document.getElementById(id).classList.remove("hidden");
+        }
+
+        if (!validCode || !dest) {
+          show("bad");
+          return;
+        }
+        show("ok");
+
+        // the target the friend will be sent to: the video + #wb=CODE so the
+        // content script auto-joins on arrival
+        var target = dest.origin + dest.pathname + dest.search + "#wb=" + data.code;
+        document.getElementById("dest-url").textContent = dest.href;
+        document.getElementById("join-link").setAttribute("href", target);
+        document.getElementById("join-link-2").setAttribute("href", target);
+
+        // the content script sets data-wb-installed on watchbear.deepfeld.com; it
+        // runs at document_idle so poll briefly before deciding it's missing
+        var tries = 0;
+        function detect() {
+          if (document.documentElement.dataset.wbInstalled === "1") {
+            document.getElementById("install-no").classList.add("hidden");
+            show("install-yes");
+            return;
+          }
+          if (++tries > 12) {
+            show("install-no");
+            // offer a manual continue (e.g. self-hosted/dev where the marker host differs)
+            document.getElementById("join-link-2").classList.remove("hidden");
+            return;
+          }
+          setTimeout(detect, 150);
+        }
+        detect();
+
+        document.getElementById("retry").addEventListener("click", function () {
+          location.reload();
+        });
+      })();
+    </script>
+  </body>
+</html>

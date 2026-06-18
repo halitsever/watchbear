@@ -10,6 +10,7 @@ import { ChatLine } from "@/components/ChatLine";
 import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
 import { getIdentity, type Identity } from "@/lib/identity";
+import { buildInviteLink, STORAGE_KEYS } from "@/lib/room";
 import { getServerUrl } from "@/lib/server";
 import { joinRoom, type RoomConnection, type ConnStatus, type VideoContentInfo } from "@/lib/socket";
 import type { Member, Message } from "@/lib/types";
@@ -197,10 +198,18 @@ export function SidePanel() {
     stopTyping();
   }
 
-  function copyCode() {
-    navigator.clipboard?.writeText(roomCode).catch(() => {});
+  async function copyInvite() {
+    // prefer the anchor tab's current url (what the den is actually watching);
+    // fall back to this tab. host_permissions <all_urls> means tab.url is populated.
+    const data = await chrome.storage.local.get(STORAGE_KEYS.anchorTabId);
+    const anchorId = data[STORAGE_KEYS.anchorTabId];
+    let tab: chrome.tabs.Tab | undefined;
+    if (typeof anchorId === "number") tab = await chrome.tabs.get(anchorId).catch(() => undefined);
+    if (!tab?.url) tab = await getActiveTab();
+    if (!tab?.url || !roomCode) return;
+    navigator.clipboard?.writeText(buildInviteLink(tab.url, roomCode)).catch(() => {});
     setCopied(true);
-    setTimeout(() => setCopied(false), 1200);
+    setTimeout(() => setCopied(false), 1600);
   }
 
   async function leave() {
@@ -223,13 +232,15 @@ export function SidePanel() {
         <div className="mt-3 font-fredoka text-[16px] font-semibold text-wb-text">
           Watch<span className="text-wb-honey">bear</span>
         </div>
-        <div className="mt-2 text-[12.5px] font-medium leading-[1.5] text-wb-dim">Start or join a watch party to get going.</div>
+        <div className="mt-2 text-[12.5px] font-medium leading-[1.5] text-wb-dim">
+          Start a watch party, or open an invite link a friend sent you.
+        </div>
         <button
           type="button"
           onClick={openPopup}
           className="mt-4 rounded-[12px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-5 py-2 text-[13.5px] font-bold text-[#3a2410] shadow-md transition-all hover:brightness-105 active:translate-y-px"
         >
-          Join a Room
+          Start a Party
         </button>
         {popupHint && <div className="mt-3 text-[12px] font-medium text-wb-dim">Click the bear in the toolbar to start a party.</div>}
       </div>
@@ -244,12 +255,15 @@ export function SidePanel() {
           <BearMark size={22} />
           <div className="min-w-0">
             <div className="font-fredoka text-[14px] font-semibold leading-none text-wb-text">Bear Den</div>
-            <div className="mt-[3px] flex items-center gap-[6px]">
-              <span className="text-[11px] font-bold tracking-[.5px] text-wb-dim">{roomCode}</span>
-              <button type="button" onClick={copyCode} title="copy code" className="text-wb-faint transition-colors hover:text-wb-honey">
-                {copied ? <IconCheck className="h-[13px] w-[13px]" /> : <IconCopy className="h-[13px] w-[13px]" />}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => void copyInvite()}
+              title="copy invite link"
+              className="mt-[3px] flex items-center gap-[5px] text-[11px] font-bold tracking-[.3px] text-wb-faint transition-colors hover:text-wb-honey"
+            >
+              {copied ? <IconCheck className="h-[12px] w-[12px]" /> : <IconCopy className="h-[12px] w-[12px]" />}
+              {copied ? "Link copied!" : "Copy invite link"}
+            </button>
           </div>
         </div>
         <button

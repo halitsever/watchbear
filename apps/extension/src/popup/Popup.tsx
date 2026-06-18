@@ -6,7 +6,7 @@ import IconChevronDown from "~icons/lucide/chevron-down";
 import { BearMark, BearFace } from "@/components/Bear";
 import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
-import { generateCode, isValidCode } from "@/lib/room";
+import { generateCode } from "@/lib/room";
 import { getIdentity, setIdentityName, setIdentityCharacter, type Identity } from "@/lib/identity";
 import { getServerUrl } from "@/lib/server";
 import { pingServer } from "@/lib/socket";
@@ -15,7 +15,6 @@ import { BearPicker } from "@/components/BearPicker";
 
 export function Popup() {
   const { inRoom, roomCode } = useRoomState();
-  const [code, setCode] = useState("");
   const [you, setYou] = useState<Identity | null>(null);
   const [hasVideo, setHasVideo] = useState<boolean | null>(null);
   const [serverUp, setServerUp] = useState<boolean | null>(null);
@@ -98,16 +97,6 @@ export function Popup() {
     const tab = await getActiveTab();
     if (!tab?.id) return;
     sendToBackground({ type: "WB_START_ROOM", code: generateCode(), tabId: tab.id });
-    window.close();
-  }
-
-  async function joinRoom() {
-    const trimmed = code.trim();
-    if (!isValidCode(trimmed)) return;
-    if (!(await ensureServer())) return;
-    const tab = await getActiveTab();
-    if (!tab?.id) return;
-    sendToBackground({ type: "WB_JOIN_ROOM", code: trimmed, tabId: tab.id });
     window.close();
   }
 
@@ -237,41 +226,13 @@ export function Popup() {
                 No video playing on this page
               </div>
             )}
-
-            <div className="mt-[11px] flex gap-2">
-              <input
-                value={code}
-                onChange={(e) => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, ""))}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") void joinRoom();
-                }}
-                placeholder="ROOM CODE"
-                maxLength={12}
-                autoComplete="off"
-                spellCheck={false}
-                className="min-w-0 flex-1 rounded-xl border border-wb-line bg-[#1d150f] px-[13px] py-[11px] text-[13.5px] font-extrabold uppercase tracking-[1.5px] text-wb-text outline-none transition-colors placeholder:text-wb-faint focus:border-[rgba(255,178,62,.5)]"
-              />
-              <button
-                type="button"
-                onClick={() => void joinRoom()}
-                disabled={!isValidCode(code) || serverUp === false}
-                className="whitespace-nowrap rounded-xl bg-[#3a2c20] px-4 text-[13.5px] font-extrabold text-wb-cream transition-colors hover:bg-[#4a3826] disabled:cursor-default disabled:opacity-40"
-              >
-                Join
-              </button>
-            </div>
-            {code.trim().length > 0 && !isValidCode(code) && (
-              <div className="mt-2 rounded-xl border border-[rgba(255,140,107,.25)] bg-[rgba(255,140,107,.1)] px-[13px] py-2.5 text-center text-[12px] font-bold text-wb-coral">
-                That doesn't look like a room code (like BEAR-AB12CD)
-              </div>
-            )}
           </div>
 
           {/* share hint */}
           <div className="px-4 pt-[14px]">
             <div className="flex items-start gap-[9px] rounded-[13px] border border-wb-line bg-[#1d150f] px-[13px] py-3 text-[12.5px] font-semibold leading-[1.45] text-wb-dim">
               <span className="shrink-0 text-[15px] leading-none">🍯</span>
-              <span>You'll get a code when you create a room. Send it to your friends so everyone watches in sync.</span>
+              <span>Start a party and you'll get an invite link. Send it to your friends — they just click it to join and watch in sync.</span>
             </div>
           </div>
 

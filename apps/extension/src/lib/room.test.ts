@@ -6,7 +6,6 @@ import {
   buildInviteLink,
   parseInviteCode,
   parseInviteUrl,
-  stripWbHash,
   INVITE_BASE_URL,
 } from './room';
 
@@ -23,8 +22,8 @@ describe('isValidCode', () => {
   it('rejects lowercase, missing dash, and bad lengths', () => {
     expect(isValidCode('bear-test01')).toBe(false);
     expect(isValidCode('BEARTEST01')).toBe(false);
-    expect(isValidCode('A-BCDE')).toBe(false); // word too short
-    expect(isValidCode('BEAR-AB')).toBe(false); // suffix too short
+    expect(isValidCode('A-BCDE')).toBe(false);
+    expect(isValidCode('BEAR-AB')).toBe(false);
     expect(isValidCode('')).toBe(false);
   });
 });
@@ -90,15 +89,5 @@ describe('parseInviteUrl', () => {
     expect(parseInviteUrl('#wb=BEAR-AB12CD&u=not%20a%20url')).toBeNull();
     expect(parseInviteUrl('#wb=BEAR-AB12CD')).toBeNull();
     expect(parseInviteUrl('')).toBeNull();
-  });
-});
-
-describe('stripWbHash', () => {
-  it('removes only the wb entry, preserving the rest', () => {
-    expect(stripWbHash('#wb=BEAR-AB12CD')).toBe('');
-    expect(stripWbHash('#wb=BEAR-AB12CD&t=30')).toBe('#t=30');
-    expect(stripWbHash('#t=30&wb=BEAR-AB12CD')).toBe('#t=30');
-    expect(stripWbHash('#t=30')).toBe('#t=30');
-    expect(stripWbHash('')).toBe('');
   });
 });

@@ -1,6 +1,6 @@
 import type { TabMessage } from '@/lib/messages';
 import { joinVideoChannel, type VideoChannel, type VideoContentInfo, type VideoControl } from '@/lib/socket';
-import { STORAGE_KEYS, parseInviteCode, parseInviteUrl, stripWbHash, isValidCode, INVITE_BASE_URL, type PendingInvite } from '@/lib/room';
+import { STORAGE_KEYS, parseInviteCode, parseInviteUrl, INVITE_BASE_URL } from '@/lib/room';
 import { getServerUrl } from '@/lib/server';
 import { contentKey } from '@/lib/content';
 import { getIdentity } from '@/lib/identity';
@@ -11,21 +11,17 @@ declare global {
   }
 }
 
-// embedded players put the <video> in a cross-origin iframe, so the script runs
-// in every frame. the top frame owns the socket and the room/overlay state; a
+// the script runs in every frame: the top frame owns the socket and state, a
 // child frame just bridges its video to the top over postMessage.
 const MIN_AREA = 120 * 90; // ignore tracking pixels / ad clips
 const SEEK_THRESHOLD = 0.5; // seconds of drift we tolerate before scrubbing
 const REMOTE_GUARD_MS = 400; // suppress echo right after applying a remote change
-const PENDING_TTL_MS = 30 * 60 * 1000; // ignore a stashed invite older than this
 
 const IS_NETFLIX = location.hostname.endsWith('netflix.com');
-// the landing /j page carries the same #wb= hash, but it's the consent step —
-// it must not auto-join or get its hash scrubbed before its own script reads it.
+// the landing /j page is the consent step; we don't sync there, just bridge its join click
 const INVITE_HOST = new URL(INVITE_BASE_URL).hostname;
 
-// writing video.currentTime crashes the netflix player; ask the MAIN-world
-// bridge (netflix-main.ts) to seek through netflix's own player api instead.
+// writing video.currentTime crashes netflix; seek through its own player api via netflix-main.ts
 function postNetflixSeek(time: number): void {
   window.postMessage({ __wbnf: 1, kind: 'seek', time }, '*');
 }
@@ -154,8 +150,7 @@ if (!window.__wbLoaded) {
   else runBridge();
 }
 
-// top frame: owns the socket, content identity (this page's url), and selecting
-// which video (local or in a child frame) to drive.
+// top frame: owns the socket, content identity, and which video to drive
 function runTop(): void {
   let channel: VideoChannel | null = null;
   let target: VideoTarget | null = null;
@@ -168,32 +163,32 @@ function runTop(): void {
   let lastHref = location.href;
   let currentCode: string | null = null;
 
-  // the landing /j page is the consent step, not a watch page: don't sync or
-  // join here. instead leave a marker so the page can show "join" (not install),
-  // and stash the invite in durable storage as a backup join channel — so the
-  // join still works if the #wb= hash is lost on the netflix/SPA redirect ahead.
+  // landing consent page: don't sync. mark it so it shows "join", and turn the
+  // click (a real user gesture) into a background message so sidePanel.open() works.
   if (location.hostname === INVITE_HOST) {
     document.documentElement.dataset.wbInstalled = '1';
-    const code = parseInviteCode(location.hash);
-    const url = parseInviteUrl(location.hash);
-    if (code && url) {
-      const invite: PendingInvite = { code, url, ts: Date.now() };
-      void chrome.storage.local.set({ [STORAGE_KEYS.pendingInvite]: invite });
-    }
+    document.addEventListener('click', (e) => {
+      const target = e.target as Element | null;
+      if (!target?.closest('#join-link')) return;
+      const code = parseInviteCode(location.hash);
+      const url = parseInviteUrl(location.hash);
+      if (!code || !url) return; // not a valid invite; let the link behave normally
+      e.preventDefault();
+      chrome.runtime.sendMessage({ type: 'WB_JOIN_INVITE', code, url }).catch(() => {
+        location.href = url; // extension unreachable: at least get them to the video
+      });
+    });
     return;
   }
 
-  // only the focused/visible tab syncs; a hidden tab keeps its socket but neither
-  // broadcasts its video nor lets remote controls move it. on becoming visible it
-  // catches up to the latest control it banked while hidden.
+  // only the visible tab syncs; a hidden tab banks the latest control and catches up when shown
   let visible = document.visibilityState === 'visible';
   document.addEventListener('visibilitychange', () => {
     visible = document.visibilityState === 'visible';
     if (visible) flushPending();
   });
 
-  // entering/exiting fullscreen swaps the painted subtree; move any in-flight
-  // reaction overlay so the emojis follow the video into (or out of) fullscreen.
+  // fullscreen swaps the painted subtree; move the reaction overlay so emojis follow the video
   document.addEventListener('fullscreenchange', () => {
     const layer = document.getElementById('wb-reactions');
     if (!layer) return;
@@ -234,8 +229,6 @@ function runTop(): void {
     }
   });
 
-  maybeOfferInvite();
-  window.addEventListener('hashchange', maybeOfferInvite);
   armFromStorage();
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && (STORAGE_KEYS.inRoom in changes || STORAGE_KEYS.roomCode in changes)) {
@@ -247,98 +240,13 @@ function runTop(): void {
     chrome.storage.local.get([STORAGE_KEYS.inRoom, STORAGE_KEYS.roomCode], (d) => {
       const code = d[STORAGE_KEYS.roomCode];
       if (d[STORAGE_KEYS.inRoom] && typeof code === 'string') {
-        // switching to a different room (e.g. opened a second invite): tear the
-        // old socket down first, since startSync won't reconnect over a live one.
+        // switching rooms: tear the old socket down, since startSync won't reconnect over a live one
         if (channel && currentCode && currentCode !== code) stopSync();
         void startSync(code, false);
       } else {
         stopSync();
       }
     });
-  }
-
-  // a friend who opened an invite link reaches the video here. resolve the room
-  // code from the #wb= hash, or — if the page dropped the hash on its redirect —
-  // from the pending invite we stashed on the landing page (matched by content).
-  // we never join automatically: the banner's button is the consenting gesture.
-  function maybeOfferInvite() {
-    if (location.hostname === INVITE_HOST) return; // landing page handles its own hash
-    chrome.storage.local.get(
-      [STORAGE_KEYS.inRoom, STORAGE_KEYS.roomCode, STORAGE_KEYS.pendingInvite],
-      (d) => {
-        let code = parseInviteCode(location.hash);
-        const fromHash = Boolean(code);
-        if (!code) code = pendingCodeFor(d[STORAGE_KEYS.pendingInvite]);
-        if (!code) return;
-
-        // scrub the code from the address bar so it can't re-fire, leak into
-        // history, or get re-shared. replaceState (not push) keeps Back clean.
-        if (fromHash) {
-          const cleaned = stripWbHash(location.hash);
-          history.replaceState(history.state, '', location.pathname + location.search + cleaned);
-        }
-
-        if (d[STORAGE_KEYS.inRoom] && d[STORAGE_KEYS.roomCode] === code) {
-          clearPendingInvite(); // already in this room; nothing to offer
-          return;
-        }
-        showJoinBanner(code);
-      },
-    );
-  }
-
-  // a stashed invite is only usable while fresh and only on the very video it
-  // was meant for (contentKey tolerates timestamp/tracking param drift).
-  function pendingCodeFor(raw: unknown): string | null {
-    const p = raw as PendingInvite | undefined;
-    if (!p || !isValidCode(p.code)) return null;
-    if (Date.now() - p.ts > PENDING_TTL_MS) return null;
-    if (contentKey(p.url) !== contentKey(location.href)) return null;
-    return p.code;
-  }
-
-  function clearPendingInvite() {
-    void chrome.storage.local.set({ [STORAGE_KEYS.pendingInvite]: null });
-  }
-
-  // invite prompt. clicking "join" is the user gesture that both joins the room
-  // (via storage → armFromStorage → startSync) and opens the side panel.
-  function showJoinBanner(code: string) {
-    if (document.getElementById('wb-join-banner')) return;
-    const el = document.createElement('div');
-    el.id = 'wb-join-banner';
-    el.className = 'wb-join-banner';
-
-    const text = document.createElement('span');
-    text.className = 'wb-jb-text';
-    text.textContent = "🐻 You're invited to a watch party";
-
-    const join = document.createElement('button');
-    join.className = 'wb-jb-open';
-    join.textContent = 'Join the party';
-    join.addEventListener('click', () => {
-      // open the panel synchronously (carries the gesture), then join via storage
-      chrome.runtime.sendMessage({ type: 'WB_OPEN_PANEL' }).catch(() => {});
-      void chrome.storage.local.set({
-        [STORAGE_KEYS.inRoom]: true,
-        [STORAGE_KEYS.roomCode]: code,
-        [STORAGE_KEYS.anchorTabId]: null,
-        [STORAGE_KEYS.pendingInvite]: null,
-      });
-      el.remove();
-    });
-
-    const dismiss = document.createElement('button');
-    dismiss.className = 'wb-jb-dismiss';
-    dismiss.setAttribute('aria-label', 'Dismiss');
-    dismiss.textContent = '✕';
-    dismiss.addEventListener('click', () => {
-      clearPendingInvite(); // don't nag again for this invite
-      el.remove();
-    });
-
-    el.append(text, join, dismiss);
-    document.documentElement.appendChild(el);
   }
 
   function currentContent(): VideoContentInfo {
@@ -382,17 +290,14 @@ function runTop(): void {
     document.getElementById('wb-reactions')?.remove();
   }
 
-  // where the reaction overlay must live to be painted. in fullscreen the browser
-  // only renders the fullscreen element's subtree, so we host inside it; a raw
-  // <video> can't host children, so fall back to its parent.
+  // in fullscreen only that subtree paints, so host the overlay inside it; a raw <video> uses its parent
   function reactionHost(): Element {
     const fs = document.fullscreenElement;
     if (!fs) return document.documentElement;
     return fs.tagName === 'VIDEO' ? (fs.parentElement ?? document.documentElement) : fs;
   }
 
-  // big emoji that floats up over the video and fades, teleparty-style. anchored
-  // to the synced video's box when we can see it, else the viewport.
+  // big emoji that floats up over the video's box (or the viewport) and fades
   function spawnReaction(emoji: string): void {
     let layer = document.getElementById('wb-reactions');
     if (!layer) {
@@ -400,8 +305,6 @@ function runTop(): void {
       layer.id = 'wb-reactions';
       layer.className = 'wb-reactions';
     }
-    // in fullscreen the browser only paints the fullscreen element's subtree, so the
-    // overlay must live inside it for the emoji to be visible.
     const host = reactionHost();
     if (layer.parentElement !== host) host.appendChild(layer);
 
@@ -419,8 +322,7 @@ function runTop(): void {
     layer.appendChild(el);
   }
 
-  // pick the largest video across this frame and announcing children, preferring
-  // anything that clears the min-area floor so ad/background clips don't win.
+  // pick the largest video clearing the min-area floor so ad/background clips don't win
   function syncTarget() {
     const local = pickVideo();
     const localArea = local ? local.clientWidth * local.clientHeight : 0;
@@ -508,7 +410,6 @@ function runTop(): void {
   function onUrlMaybeChanged() {
     if (location.href === lastHref) return;
     lastHref = location.href;
-    maybeOfferInvite(); // an SPA may swap to an invite url without a hashchange
     target?.teardown();
     target = null;
     announced.clear();
@@ -517,8 +418,7 @@ function runTop(): void {
   }
 }
 
-// child frame: no socket, no room state. finds its <video> and relays it to the
-// top frame, applying remote control and showing the live tag on request.
+// child frame: finds its <video>, relays it to the top frame, and applies remote control
 function runBridge(): void {
   let v: HTMLVideoElement | null = null;
   let armed = false;

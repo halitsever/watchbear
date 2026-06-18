@@ -5,9 +5,8 @@ export type PopupMessage =
 
 export type ContentMessage =
   | { type: 'ROOM_STATE'; inRoom: boolean; memberCount: number }
-  // fired from the in-page join banner (a user gesture) so the background can
-  // open the side panel — sidePanel.open() needs a gesture and can't run on load
-  | { type: 'WB_OPEN_PANEL' };
+  // fired from the landing page join click; the background opens the side panel, joins, then navigates
+  | { type: 'WB_JOIN_INVITE'; code: string; url: string };
 
 export type TabMessage =
   | { type: 'START_ROOM'; code: string; anchor: boolean }

@@ -253,18 +253,7 @@ export function SidePanel() {
       <div className="flex items-center justify-between gap-2 border-b border-wb-line px-3 py-2">
         <div className="flex min-w-0 items-center gap-2">
           <BearMark size={22} />
-          <div className="min-w-0">
-            <div className="font-fredoka text-[14px] font-semibold leading-none text-wb-text">Bear Den</div>
-            <button
-              type="button"
-              onClick={() => void copyInvite()}
-              title="copy invite link"
-              className="mt-[3px] flex items-center gap-[5px] text-[11px] font-bold tracking-[.3px] text-wb-faint transition-colors hover:text-wb-honey"
-            >
-              {copied ? <IconCheck className="h-[12px] w-[12px]" /> : <IconCopy className="h-[12px] w-[12px]" />}
-              {copied ? "Link copied!" : "Copy invite link"}
-            </button>
-          </div>
+          <div className="font-fredoka text-[14px] font-semibold leading-none text-wb-text">Bear Den</div>
         </div>
         <button
           type="button"
@@ -273,6 +262,19 @@ export function SidePanel() {
           className="shrink-0 rounded-[10px] border border-wb-line bg-[#2e2018] px-2.5 py-1 text-xs font-bold text-wb-dim transition-all hover:border-[rgba(255,140,107,.3)] hover:bg-[#3a2418] hover:text-wb-coral"
         >
           Leave
+        </button>
+      </div>
+
+      {/* invite bar */}
+      <div className="border-b border-wb-line px-3 py-2.5">
+        <button
+          type="button"
+          onClick={() => void copyInvite()}
+          title="copy invite link"
+          className="flex w-full items-center justify-center gap-2 rounded-[12px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] py-2 text-[13px] font-bold text-[#3a2410] shadow-md transition-all hover:brightness-105 active:translate-y-px"
+        >
+          {copied ? <IconCheck className="h-[15px] w-[15px]" /> : <IconCopy className="h-[15px] w-[15px]" />}
+          {copied ? "Link copied!" : "Copy invite link"}
         </button>
       </div>
 

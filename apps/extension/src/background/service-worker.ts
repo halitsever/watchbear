@@ -1,4 +1,4 @@
-import { STORAGE_KEYS } from '@/lib/room';
+import { STORAGE_KEYS, isValidCode } from '@/lib/room';
 import { PANEL_PORT_NAME } from '@/lib/panelPort';
 import type { PopupMessage, ContentMessage } from '@/lib/messages';
 
@@ -22,9 +22,7 @@ chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender
 
   if (msg.type === 'WB_START_ROOM' || msg.type === 'WB_JOIN_ROOM') {
     const { code, tabId } = msg;
-    // the tab that starts the party is the anchor: its video defines what the
-    // den watches. joiners follow it. anchorTabId lets us keep that mark across
-    // full-page reloads (see tabs.onUpdated below).
+    // the anchor tab's video is what the den watches; anchorTabId keeps that mark across reloads
     const isAnchor = msg.type === 'WB_START_ROOM';
     const contentType = isAnchor ? 'START_ROOM' : 'JOIN_ROOM';
     void chrome.storage.local.set(
@@ -37,11 +35,24 @@ chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender
     return;
   }
 
-  // the join banner already wrote room state and started syncing; this gesture
-  // just opens the panel. call open() synchronously so the gesture isn't lost.
-  if (msg.type === 'WB_OPEN_PANEL') {
+  // one-click join from the landing page: open the panel, write room state, then navigate the tab
+  if (msg.type === 'WB_JOIN_INVITE') {
     const tabId = sender.tab?.id;
-    if (tabId) chrome.sidePanel.open({ tabId }).catch(() => {});
+    if (!tabId || !isValidCode(msg.code)) return;
+    let url: string | null = null;
+    try {
+      const u = new URL(msg.url);
+      if (u.protocol === 'http:' || u.protocol === 'https:') url = u.href;
+    } catch {
+      url = null;
+    }
+    chrome.sidePanel.open({ tabId }).catch(() => {});
+    chrome.storage.local.set(
+      { [STORAGE_KEYS.inRoom]: true, [STORAGE_KEYS.roomCode]: msg.code, [STORAGE_KEYS.anchorTabId]: null },
+      () => {
+        if (url) chrome.tabs.update(tabId, { url }).catch(() => {});
+      },
+    );
     return;
   }
 
@@ -52,8 +63,7 @@ chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender
   }
 });
 
-// closing the side panel drops this port; treat it as leaving the room so the
-// content script disarms (it follows wb_inRoom via storage.onChanged).
+// closing the side panel drops this port; treat it as leaving the room
 chrome.runtime.onConnect.addListener((port) => {
   if (port.name !== PANEL_PORT_NAME) return;
   port.onDisconnect.addListener(() => {
@@ -63,8 +73,7 @@ chrome.runtime.onConnect.addListener((port) => {
   });
 });
 
-// re-arm the anchor after it navigates to a new page, so the freshly injected
-// content script knows it's still the anchor (the flag came from a one-off message).
+// re-arm the anchor after it navigates, so the fresh content script knows it's still the anchor
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (changeInfo.status !== 'complete') return;
   chrome.storage.local.get([STORAGE_KEYS.inRoom, STORAGE_KEYS.roomCode, STORAGE_KEYS.anchorTabId], (d) => {

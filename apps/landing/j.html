@@ -94,6 +94,39 @@
         color: var(--faint);
         margin-bottom: 4px;
       }
+      .dest .host {
+        display: block;
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--cream);
+      }
+      .dest .url {
+        display: block;
+        margin-top: 3px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--dim);
+      }
+      /* anti-phishing: show the attacker-controlled destination before the click */
+      .caution {
+        display: flex;
+        gap: 8px;
+        margin: 0 0 18px;
+        padding: 10px 13px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 178, 62, 0.28);
+        background: rgba(255, 178, 62, 0.1);
+        font-size: 12.5px;
+        font-weight: 700;
+        line-height: 1.45;
+        color: var(--honey);
+        text-align: left;
+      }
+      .caution.danger {
+        border-color: rgba(255, 140, 107, 0.3);
+        background: rgba(255, 140, 107, 0.12);
+        color: var(--coral);
+      }
       .btn {
         display: inline-flex;
         width: 100%;
@@ -166,11 +199,20 @@
         <h1>You're invited to a <span class="w2">watch party</span></h1>
         <p class="sub">🐻 A friend wants to watch together with you on Watchbear.</p>
 
-        <span class="dest"><span class="lbl">You'll be taken to</span><span id="dest-url"></span></span>
+        <span class="dest">
+          <span class="lbl">You'll be taken to</span>
+          <span id="dest-host" class="host"></span>
+          <span id="dest-url" class="url"></span>
+        </span>
+
+        <p id="caution" class="caution">
+          <span>🛡️</span>
+          <span id="caution-text">Only continue if you trust whoever sent you this link. It will take you to the site above.</span>
+        </p>
 
         <!-- extension installed -->
         <div id="install-yes" class="hidden">
-          <a id="join-link" class="btn" href="#">Join the party →</a>
+          <a id="join-link" class="btn" href="#">Join the party</a>
           <div class="note">This takes you to the video and joins the party.</div>
         </div>
 
@@ -179,16 +221,15 @@
           <a class="btn" href="https://github.com/halitsever/watchbear/releases" target="_blank" rel="noopener">
             Install Watchbear
           </a>
-          <a class="link" id="retry">I've installed it — try again</a>
+          <a class="link" id="retry">I've installed it, try again</a>
           <div class="note">Watchbear is required to join. After installing, come back to this link.</div>
-          <a id="join-link-2" class="btn ghost hidden" href="#">Go to the video anyway →</a>
         </div>
       </div>
     </main>
 
     <script>
       (function () {
-        // read the room code + destination from the hash (never sent to the server)
+        // read the room code + destination from the hash, never sent to the server
         function parseHash() {
           var h = location.hash.charAt(0) === "#" ? location.hash.slice(1) : location.hash;
           var out = { code: null, url: null };
@@ -230,15 +271,22 @@
         }
         show("ok");
 
-        // the target the friend will be sent to: the video + #wb=CODE so the
-        // content script auto-joins on arrival
+        // video + #wb=CODE so the content script auto-joins on arrival
         var target = dest.origin + dest.pathname + dest.search + "#wb=" + data.code;
+        document.getElementById("dest-host").textContent = dest.hostname;
         document.getElementById("dest-url").textContent = dest.href;
         document.getElementById("join-link").setAttribute("href", target);
-        document.getElementById("join-link-2").setAttribute("href", target);
 
-        // the content script sets data-wb-installed on watchbear.deepfeld.com; it
-        // runs at document_idle so poll briefly before deciding it's missing
+        // a non-https destination is a stronger phishing/eavesdrop signal, so escalate
+        if (dest.protocol !== "https:") {
+          document.getElementById("caution").classList.add("danger");
+          document.getElementById("caution-text").textContent =
+            "This link is NOT secure (http) and points to " +
+            dest.hostname +
+            ". Only continue if you fully trust the sender.";
+        }
+
+        // the content script sets data-wb-installed at document_idle; poll briefly before giving up
         var tries = 0;
         function detect() {
           if (document.documentElement.dataset.wbInstalled === "1") {
@@ -248,8 +296,6 @@
           }
           if (++tries > 12) {
             show("install-no");
-            // offer a manual continue (e.g. self-hosted/dev where the marker host differs)
-            document.getElementById("join-link-2").classList.remove("hidden");
             return;
           }
           setTimeout(detect, 150);

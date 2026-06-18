@@ -9,10 +9,10 @@ const icons = {
 
 export default defineManifest({
   manifest_version: 3,
-  name: 'Watchbear',
+  name: 'Watchbear: Watch Together & Watch Party Sync',
   short_name: 'Watchbear',
   description: 'The sweet way to watch together',
-  version: '0.2.0',
+  version: '0.2.1',
   icons,
   action: {
     default_popup: 'src/popup/index.html',

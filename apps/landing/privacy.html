@@ -4,24 +4,24 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Watchbear Servers · Public Watch Party Server &amp; Self-Hosting</title>
+    <title>Watchbear Privacy Policy · How We Handle Your Data</title>
     <meta
       name="description"
-      content="The public Watchbear server powers free watch parties out of the box. See its limits, or host your own server for full control over your synced watch together rooms."
+      content="Watchbear's privacy policy. WatchBear has no accounts, stores room data only in memory while a watch party is live, runs no analytics, and never sells your data."
     />
-    <link rel="canonical" href="https://watchbear.deepfeld.com/servers.html" />
+    <link rel="canonical" href="https://watchbear.deepfeld.com/privacy.html" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
     <meta name="theme-color" content="#16100c" />
     <meta name="color-scheme" content="dark" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Watchbear" />
-    <meta property="og:title" content="Watchbear Servers · Public Watch Party Server &amp; Self-Hosting" />
+    <meta property="og:title" content="Watchbear Privacy Policy" />
     <meta
       property="og:description"
-      content="The public Watchbear server powers free watch parties out of the box, or host your own for full control."
+      content="No accounts, no analytics, no data selling. See exactly what WatchBear stores and shares."
     />
-    <meta property="og:url" content="https://watchbear.deepfeld.com/servers.html" />
+    <meta property="og:url" content="https://watchbear.deepfeld.com/privacy.html" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:image" content="https://watchbear.deepfeld.com/og.svg" />
     <meta property="og:image:type" content="image/svg+xml" />
@@ -30,10 +30,10 @@
     <meta property="og:image:alt" content="Watchbear, the sweet way to watch together" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Watchbear Servers · Public Watch Party Server &amp; Self-Hosting" />
+    <meta name="twitter:title" content="Watchbear Privacy Policy" />
     <meta
       name="twitter:description"
-      content="The public Watchbear server powers free watch parties out of the box, or host your own for full control."
+      content="No accounts, no analytics, no data selling. See exactly what WatchBear stores and shares."
     />
     <meta name="twitter:image" content="https://watchbear.deepfeld.com/og.svg" />
 
@@ -72,7 +72,7 @@
         font-size: 17px;
       }
       .wrap {
-        max-width: 920px;
+        max-width: 760px;
         margin: 0 auto;
         padding: 0 28px;
       }
@@ -94,6 +94,7 @@
         border-bottom: 1px solid var(--line);
       }
       .nav-in {
+        max-width: 920px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -134,8 +135,6 @@
       .nav-link:hover {
         color: var(--honey);
       }
-
-      /* button */
       .btn {
         display: inline-flex;
         align-items: center;
@@ -154,24 +153,11 @@
       .btn:hover {
         background: #ffc159;
       }
-      .btn.lg {
-        padding: 15px 26px;
-        font-size: 16.5px;
-        border-radius: 15px;
-      }
-      .btn.ghost {
-        background: transparent;
-        color: var(--text);
-        border: 1px solid var(--line);
-      }
-      .btn.ghost:hover {
-        background: rgba(255, 220, 180, 0.04);
-      }
 
       /* hero */
       .hero {
         text-align: center;
-        padding: 72px 0 32px;
+        padding: 72px 0 12px;
       }
       .hero h1 {
         font-size: 46px;
@@ -179,121 +165,78 @@
       .hero h1 .accent {
         color: var(--honey);
       }
-      .hero p {
-        color: var(--dim);
-        font-weight: 600;
-        font-size: 18px;
-        max-width: 540px;
-        margin: 18px auto 0;
+      .hero .updated {
+        color: var(--faint);
+        font-weight: 700;
+        font-size: 13.5px;
+        margin: 18px 0 0;
       }
 
-      /* server card */
-      .servers {
-        padding: 24px 0 80px;
-      }
-      .card {
+      /* tldr */
+      .tldr {
+        margin: 40px 0 0;
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 18px;
-        padding: 24px;
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+        padding: 22px 24px;
       }
-      .card-head {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-      .card-head .status {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        font-size: 12px;
-        font-weight: 800;
-        color: var(--online);
-        background: rgba(123, 201, 111, 0.1);
-        border: 1px solid rgba(123, 201, 111, 0.25);
-        padding: 4px 11px;
-        border-radius: 999px;
-      }
-      .card-head .status i {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--online);
-      }
-      .card-head .label {
-        font-family: "Fredoka";
-        font-weight: 600;
-        font-size: 18px;
-        color: var(--cream);
-      }
-      .card-head .default {
-        margin-left: auto;
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 0.6px;
+      .tldr h2 {
+        font-size: 16px;
+        color: var(--honey);
         text-transform: uppercase;
-        color: var(--honey);
-        background: rgba(255, 178, 62, 0.12);
-        border: 1px solid rgba(255, 178, 62, 0.3);
-        padding: 4px 11px;
-        border-radius: 999px;
+        letter-spacing: 0.6px;
+        margin: 0 0 12px;
       }
-      .endpoint {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 16px;
-        background: #1a130d;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 12px 14px;
-        flex-wrap: wrap;
-      }
-      .endpoint code {
-        font-family: "Nunito";
-        font-weight: 800;
-        font-size: 14px;
-        color: var(--honey);
-        word-break: break-all;
-      }
-      .endpoint .copy {
-        margin-left: auto;
-        background: #352a21;
-        color: var(--cream);
-        border: none;
-        border-radius: 10px;
-        font-family: "Nunito";
-        font-weight: 800;
-        font-size: 12px;
-        padding: 7px 13px;
-        cursor: pointer;
-        transition: background 0.15s, color 0.15s;
-      }
-      .endpoint .copy:hover {
-        background: #43342a;
-      }
-      .endpoint .copy.done {
-        color: var(--online);
-      }
-      /* self-host */
-      .selfhost {
-        margin-top: 28px;
-        text-align: center;
-        border-top: 1px solid var(--line);
-        padding-top: 40px;
-      }
-      .selfhost h2 {
-        font-size: 26px;
-        color: var(--cream);
-      }
-      .selfhost p {
-        color: var(--dim);
+      .tldr ul {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--text);
         font-weight: 600;
         font-size: 15.5px;
-        max-width: 480px;
-        margin: 12px auto 24px;
+      }
+      .tldr li {
+        margin-bottom: 7px;
+      }
+
+      /* policy body */
+      .policy {
+        padding: 40px 0 72px;
+      }
+      .policy h2 {
+        font-size: 25px;
+        color: var(--cream);
+        margin: 40px 0 14px;
+      }
+      .policy h2:first-child {
+        margin-top: 0;
+      }
+      .policy p {
+        color: var(--dim);
+        font-weight: 600;
+        font-size: 15.8px;
+        line-height: 1.65;
+        margin: 0 0 14px;
+      }
+      .policy ul {
+        color: var(--dim);
+        font-weight: 600;
+        font-size: 15.8px;
+        line-height: 1.6;
+        margin: 14px 0;
+        padding-left: 22px;
+      }
+      .policy li {
+        margin-bottom: 9px;
+      }
+      .policy strong {
+        color: var(--text);
+      }
+      .policy a {
+        color: var(--honey);
+        font-weight: 800;
+      }
+      .policy a:hover {
+        text-decoration: underline;
       }
 
       /* footer */
@@ -345,38 +288,140 @@
     <main>
       <header class="hero">
         <div class="wrap">
-          <h1>Bear Den <span class="accent">servers</span></h1>
-          <p>Watchbear rooms run on a sync server. Use the free public one, or point the extension at your own.</p>
+          <h1>Privacy <span class="accent">policy</span></h1>
+          <p class="updated">Last updated: June 18, 2026</p>
         </div>
       </header>
 
-      <section class="servers">
+      <div class="wrap">
+        <div class="tldr">
+          <h2>The short version</h2>
+          <ul>
+            <li>No account, no sign-up, no email, no password. WatchBear never asks who you are.</li>
+            <li>We don't run analytics or trackers, and we never sell or rent your data.</li>
+            <li>Watch-party data (chat, playback position, the video you're on) lives only in the server's memory while the room is open, and is gone the moment the room ends.</li>
+            <li>Your display name and bear color are stored on your own device, not on our servers.</li>
+            <li>WatchBear is open source and self-hostable, so you can run the whole thing yourself.</li>
+          </ul>
+        </div>
+      </div>
+
+      <section class="policy">
         <div class="wrap">
-          <div class="card">
-            <div class="card-head">
-              <span class="status"><i></i> Online</span>
-              <span class="label">Public server</span>
-              <span class="default">Default</span>
-            </div>
+          <h2>Who this policy covers</h2>
+          <p>
+            This policy explains how the <strong>WatchBear</strong> browser extension and the public
+            WatchBear sync server (the "Service") handle information. It applies to the extension
+            published on the Chrome Web Store and to the default public server at
+            <strong>watchbear-server.deepfeld.com</strong>. If you connect the extension to a
+            self-hosted server, the operator of that server is responsible for its data handling.
+          </p>
 
-            <div class="endpoint">
-              <code id="endpoint">https://watchbear-server.deepfeld.com/</code>
-              <button type="button" class="copy" id="copyBtn">copy</button>
-            </div>
-          </div>
+          <h2>What WatchBear does not collect</h2>
+          <p>WatchBear is built to know as little about you as possible. We do <strong>not</strong> collect:</p>
+          <ul>
+            <li>Accounts, names, emails, passwords, or any sign-up information.</li>
+            <li>Your browsing history, the content of the pages you visit, or your search queries.</li>
+            <li>Cookies, login sessions, or credentials from the websites you watch on.</li>
+            <li>IP addresses for logging or profiling, device fingerprints, or location data.</li>
+            <li>Any data for advertising, marketing, or sale to third parties.</li>
+          </ul>
 
-          <div class="selfhost">
-            <h2>Want full control?</h2>
-            <p>Run the Watchbear server yourself and set your own limits. The source and setup live on GitHub.</p>
-            <a href="https://github.com/halitsever/watchbear/tree/main/apps/landing" target="_blank" rel="noopener" class="btn lg ghost">Add your own server</a>
-          </div>
+          <h2>Information stored on your device</h2>
+          <p>
+            The following is saved using your browser's local extension storage
+            (<strong>chrome.storage.local</strong>). It stays on your device and is not sent to us
+            unless you join a watch party:
+          </p>
+          <ul>
+            <li><strong>Display name and bear color</strong> — the nickname and avatar color you pick, so you look consistent in rooms.</li>
+            <li><strong>Sync server address</strong> — which server the extension connects to (the default public server, or your own).</li>
+            <li><strong>Current room state</strong> — the active room code and which tab is leading playback, so a room survives a popup close or reload.</li>
+          </ul>
+          <p>You can clear all of this at any time by removing the extension or clearing its storage.</p>
+
+          <h2>Information shared during a watch party</h2>
+          <p>
+            When you start or join a room, the extension connects to the sync server over a real-time
+            (WebSocket) connection and shares only what's needed to keep everyone in sync:
+          </p>
+          <ul>
+            <li>Your chosen <strong>display name and bear color</strong>.</li>
+            <li>The <strong>room code</strong> you're in.</li>
+            <li>The <strong>video you're watching</strong> — the page URL, page title, and a derived identifier used to confirm everyone is on the same video.</li>
+            <li>The <strong>playback position</strong> (current time) and play/pause state.</li>
+            <li><strong>Chat messages, typing indicators, and emoji reactions</strong> you send in the room.</li>
+          </ul>
+          <p>
+            This information is relayed to the other members of your room so the experience stays in
+            sync. It is only shared while you are in a room, and only with that room.
+          </p>
+
+          <h2>How long data is kept</h2>
+          <p>
+            The public sync server keeps room data <strong>only in memory, only while the room is
+            live</strong>. There is no database and nothing is written to disk. When the last person
+            leaves a room — or whenever the server restarts — all of that room's data (members, chat,
+            reactions, playback state, the video being watched) is permanently discarded. We do not
+            keep chat logs, history, or backups, and the server does not log your IP address.
+          </p>
+
+          <h2>What the extension can access on web pages</h2>
+          <p>
+            To sync playback, WatchBear's content script reads only what it needs from the page you're
+            watching: the main video element's <strong>current time, play/pause state, and duration</strong>,
+            plus the page's <strong>title and URL</strong> so the room knows which video you're on. It
+            does not read other page content, form inputs, cookies, or stored site data.
+          </p>
+
+          <h2>Permissions we request, and why</h2>
+          <ul>
+            <li><strong>storage</strong> — to save your display name, bear color, server address, and current room on your device.</li>
+            <li><strong>activeTab</strong> and <strong>scripting</strong> — to detect and sync the video in the tab you're actively watching.</li>
+            <li><strong>sidePanel</strong> — to show the chat and reactions panel next to your video.</li>
+            <li><strong>Host access to websites (&lt;all_urls&gt;)</strong> — because a watch party can happen on any site with a video player; the extension only reads video state and the page title/URL, and only acts when you're in a room.</li>
+          </ul>
+
+          <h2>Third parties and tracking</h2>
+          <p>
+            WatchBear contains <strong>no analytics, no advertising, and no third-party tracking SDKs</strong>.
+            The only network connection the extension makes is the real-time connection to the sync
+            server you've selected (the public server by default). This website (watchbear.deepfeld.com)
+            loads fonts from Google Fonts to render its pages; the extension itself does not.
+          </p>
+
+          <h2>Self-hosting</h2>
+          <p>
+            WatchBear is open source and the server is fully self-hostable. You can point the extension
+            at your own server from its settings, in which case your room data flows only to the server
+            you control. See the <a href="servers.html">Servers</a> page for details.
+          </p>
+
+          <h2>Children's privacy</h2>
+          <p>
+            WatchBear is not directed to children under 13 and does not knowingly collect personal
+            information from them. Because there are no accounts and room data is ephemeral, the Service
+            holds no lasting personal data about any user.
+          </p>
+
+          <h2>Changes to this policy</h2>
+          <p>
+            If we change how WatchBear handles data, we'll update this page and revise the "Last updated"
+            date above. Significant changes will be reflected here before they take effect.
+          </p>
+
+          <h2>Contact</h2>
+          <p>
+            Questions about this policy or your data? Email
+            <a href="mailto:hello@deepfeld.com">hello@deepfeld.com</a>, or open an issue on our
+            <a href="https://github.com/halitsever/watchbear" target="_blank" rel="noopener">GitHub repository</a>.
+          </p>
         </div>
       </section>
     </main>
 
     <footer class="wrap foot">
       <span class="tag">Watchbear · the sweet way to watch together</span>
-      <a href="privacy.html">Privacy</a>
       <a href="index.html">Back home</a>
     </footer>
 
@@ -425,19 +470,6 @@
         );
       }
       document.getElementById("navBear").innerHTML = bearSVG({ size: 32 });
-
-      var copyBtn = document.getElementById("copyBtn");
-      var endpoint = document.getElementById("endpoint");
-      copyBtn.addEventListener("click", function () {
-        var url = endpoint.textContent.trim();
-        if (navigator.clipboard) navigator.clipboard.writeText(url).catch(function () {});
-        copyBtn.textContent = "copied";
-        copyBtn.classList.add("done");
-        setTimeout(function () {
-          copyBtn.textContent = "copy";
-          copyBtn.classList.remove("done");
-        }, 1400);
-      });
     </script>
   </body>
 </html>

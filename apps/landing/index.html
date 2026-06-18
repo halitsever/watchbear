@@ -159,6 +159,7 @@
         -webkit-font-smoothing: antialiased;
         line-height: 1.6;
         font-size: 17px;
+        overflow-x: hidden;
       }
       .wrap {
         max-width: 920px;
@@ -1215,6 +1216,55 @@
           font-size: 27px;
         }
       }
+
+      /* nav wraps so links never overflow on small screens */
+      @media (max-width: 700px) {
+        .nav-in {
+          height: auto;
+          padding: 12px 0;
+          flex-wrap: wrap;
+          row-gap: 12px;
+        }
+        .nav-right {
+          width: 100%;
+          flex-wrap: wrap;
+          gap: 14px 18px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .wrap,
+        .demowrap {
+          padding: 0 18px;
+        }
+        .hero {
+          padding: 56px 0 44px;
+        }
+        .hero h1 {
+          font-size: 32px;
+        }
+        .hero p {
+          font-size: 17px;
+        }
+        .nav-right {
+          gap: 12px 16px;
+        }
+        .nav-link {
+          font-size: 14px;
+        }
+        .btn.lg {
+          padding: 13px 22px;
+          font-size: 15.5px;
+        }
+        .demo-head h2 {
+          font-size: 23px;
+        }
+        .feat-head h2,
+        .install h2,
+        .faq > .wrap > h2 {
+          font-size: 25px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1227,7 +1277,7 @@
         <div class="nav-right">
           <a href="index.html" class="nav-link">Home</a>
           <a href="servers.html" class="nav-link">Servers</a>
-          <a href="privacy.html" class="nav-link">Privacy</a>
+          <a href="privacy.html" class="nav-link">Privacy Policy</a>
           <a href="https://github.com/halitsever/watchbear/releases" target="_blank" rel="noopener" class="btn">Add to Chrome</a>
         </div>
       </div>
@@ -1404,7 +1454,7 @@
 
     <footer class="wrap foot">
       <span class="tag">Watchbear · the sweet way to watch together</span>
-      <a href="privacy.html">Privacy</a>
+      <a href="privacy.html">Privacy Policy</a>
       <a href="https://github.com/halitsever/watchbear/releases" target="_blank" rel="noopener">Add to Chrome</a>
     </footer>
 

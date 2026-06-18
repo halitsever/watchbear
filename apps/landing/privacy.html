@@ -70,6 +70,7 @@
         -webkit-font-smoothing: antialiased;
         line-height: 1.6;
         font-size: 17px;
+        overflow-x: hidden;
       }
       .wrap {
         max-width: 760px;
@@ -266,6 +267,24 @@
       @media (max-width: 640px) {
         .hero h1 {
           font-size: 34px;
+        }
+        .nav-in {
+          height: auto;
+          padding: 12px 0;
+          flex-wrap: wrap;
+          row-gap: 12px;
+        }
+        .nav-right {
+          width: 100%;
+          flex-wrap: wrap;
+          gap: 14px 18px;
+        }
+        .tldr,
+        .policy h2 {
+          margin-top: 28px;
+        }
+        .policy h2 {
+          font-size: 22px;
         }
       }
     </style>

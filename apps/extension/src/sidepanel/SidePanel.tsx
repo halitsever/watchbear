@@ -226,7 +226,7 @@ export function SidePanel() {
   if (!inRoom) {
     return (
       <div className="flex h-full flex-col items-center justify-center px-6 text-center font-nunito">
-        <div className="opacity-60">
+        <div className="animate-wb-float opacity-60">
           <BearMark size={56} />
         </div>
         <div className="mt-3 font-fredoka text-[16px] font-semibold text-wb-text">
@@ -238,7 +238,7 @@ export function SidePanel() {
         <button
           type="button"
           onClick={openPopup}
-          className="mt-4 rounded-[12px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-5 py-2 text-[13.5px] font-bold text-[#3a2410] shadow-md transition-all hover:brightness-105 active:translate-y-px"
+          className="mt-4 animate-wb-glow rounded-[12px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-5 py-2 text-[13.5px] font-bold text-[#3a2410] shadow-md transition-all hover:scale-[1.02] hover:brightness-105 active:scale-95"
         >
           Start a Party
         </button>
@@ -252,7 +252,9 @@ export function SidePanel() {
       {/* header */}
       <div className="flex items-center justify-between gap-2 border-b border-wb-line px-3 py-2">
         <div className="flex min-w-0 items-center gap-2">
-          <BearMark size={22} />
+          <div className="animate-wb-float">
+            <BearMark size={22} />
+          </div>
           <div className="font-fredoka text-[14px] font-semibold leading-none text-wb-text">Bear Den</div>
         </div>
         <button
@@ -271,16 +273,16 @@ export function SidePanel() {
           type="button"
           onClick={() => void copyInvite()}
           title="copy invite link"
-          className="flex w-full items-center justify-center gap-2 rounded-[12px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] py-2 text-[13px] font-bold text-[#3a2410] shadow-md transition-all hover:brightness-105 active:translate-y-px"
+          className="flex w-full items-center justify-center gap-2 rounded-[12px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] py-2 text-[13px] font-bold text-[#3a2410] shadow-md transition-all hover:scale-[1.02] hover:brightness-105 active:scale-95"
         >
-          {copied ? <IconCheck className="h-[15px] w-[15px]" /> : <IconCopy className="h-[15px] w-[15px]" />}
+          {copied ? <IconCheck className="h-[15px] w-[15px] animate-wb-pop-in" /> : <IconCopy className="h-[15px] w-[15px]" />}
           {copied ? "Link copied!" : "Copy invite link"}
         </button>
       </div>
 
       {status !== "connected" && (
         <div
-          className={`px-3 py-1.5 text-center text-[11.5px] font-bold ${
+          className={`animate-wb-slide-down px-3 py-1.5 text-center text-[11.5px] font-bold ${
             status === "error" ? "bg-[rgba(255,140,107,.12)] text-wb-coral" : "bg-[rgba(255,178,62,.1)] text-wb-honey"
           }`}
         >
@@ -341,7 +343,7 @@ export function SidePanel() {
             type="button"
             key={emoji}
             onClick={() => conn.current?.sendReaction(emoji)}
-            className="flex-1 rounded-[11px] border border-wb-line bg-wb-panel py-1 text-[14px] transition-colors hover:border-[rgba(255,178,62,.26)] hover:bg-wb-panel2"
+            className="flex-1 rounded-[11px] border border-wb-line bg-wb-panel py-1 text-[14px] transition-all hover:-translate-y-0.5 hover:scale-110 hover:border-[rgba(255,178,62,.26)] hover:bg-wb-panel2 hover:animate-wb-wiggle active:scale-90"
           >
             {emoji}
           </button>
@@ -372,7 +374,7 @@ export function SidePanel() {
           type="submit"
           disabled={!draft.trim()}
           aria-label="send"
-          className="flex shrink-0 items-center justify-center rounded-[13px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-3 text-[#3a2410] transition-opacity disabled:opacity-40"
+          className="flex shrink-0 items-center justify-center rounded-[13px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-3 text-[#3a2410] transition-all enabled:hover:scale-110 enabled:active:scale-90 disabled:opacity-40"
         >
           <IconSend className="h-4 w-4" />
         </button>

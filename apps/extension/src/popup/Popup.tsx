@@ -118,7 +118,9 @@ export function Popup() {
       {/* header */}
       <div className="flex items-center gap-3 px-4 pb-3 pt-4">
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[radial-gradient(circle_at_50%_35%,#3a2a1d,#271b12)] shadow-[inset_0_0_0_1px_rgba(255,200,140,.12)]">
-          <BearMark size={34} />
+          <div className="animate-wb-float">
+            <BearMark size={34} />
+          </div>
         </div>
         <div className="flex-1">
           <div className="font-fredoka text-[19px] font-semibold leading-none text-wb-text">
@@ -213,7 +215,7 @@ export function Popup() {
               type="button"
               onClick={() => void startRoom()}
               disabled={hasVideo === false || serverUp === false}
-              className="flex w-full items-center justify-between gap-2 rounded-[14px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-4 py-[14px] text-[14.5px] font-extrabold text-[#3a2410] shadow-[0_8px_20px_rgba(242,145,42,.32)] transition-all hover:-translate-y-px hover:brightness-105 active:translate-y-0 disabled:cursor-default disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0 disabled:hover:brightness-100"
+              className="flex w-full items-center justify-between gap-2 rounded-[14px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-4 py-[14px] text-[14.5px] font-extrabold text-[#3a2410] shadow-[0_8px_20px_rgba(242,145,42,.32)] transition-all enabled:animate-wb-glow hover:-translate-y-px hover:brightness-105 enabled:hover:scale-[1.02] active:translate-y-0 enabled:active:scale-95 disabled:cursor-default disabled:opacity-40 disabled:shadow-none disabled:hover:translate-y-0 disabled:hover:brightness-100"
             >
               <span className="flex items-center gap-[9px]">
                 <IconPlay className="h-[17px] w-[17px]" />

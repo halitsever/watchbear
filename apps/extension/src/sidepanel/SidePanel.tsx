@@ -225,12 +225,12 @@ export function SidePanel() {
 
   if (!inRoom) {
     return (
-      <div className="flex h-full flex-col items-center justify-center px-6 text-center font-nunito">
+      <div className="flex h-full animate-wb-fade-in flex-col items-center justify-center px-6 text-center font-nunito">
         <div className="animate-wb-float opacity-60">
           <BearMark size={56} />
         </div>
         <div className="mt-3 font-fredoka text-[16px] font-semibold text-wb-text">
-          Watch<span className="text-wb-honey">bear</span>
+          Watch<span className="wb-shimmer-text animate-wb-shimmer">bear</span>
         </div>
         <div className="mt-2 text-[12.5px] font-medium leading-[1.5] text-wb-dim">
           Start a watch party, or open an invite link a friend sent you.
@@ -261,7 +261,7 @@ export function SidePanel() {
           type="button"
           onClick={() => void leave()}
           title="leave room"
-          className="shrink-0 rounded-[10px] border border-wb-line bg-[#2e2018] px-2.5 py-1 text-xs font-bold text-wb-dim transition-all hover:border-[rgba(255,140,107,.3)] hover:bg-[#3a2418] hover:text-wb-coral"
+          className="shrink-0 rounded-[10px] border border-wb-line bg-[#2e2018] px-2.5 py-1 text-xs font-bold text-wb-dim transition-all hover:border-[rgba(255,140,107,.3)] hover:bg-[#3a2418] hover:text-wb-coral active:scale-95"
         >
           Leave
         </button>
@@ -306,7 +306,7 @@ export function SidePanel() {
         </div>
 
         {content && (
-          <div className="mt-1.5 flex items-center gap-1.5 text-[12px] font-semibold text-wb-dim">
+          <div className="mt-1.5 flex animate-wb-fade-in items-center gap-1.5 text-[12px] font-semibold text-wb-dim">
             <IconTv className="h-[13px] w-[13px] shrink-0" />
             <span className="truncate">Now playing: {content.title || content.url}</span>
           </div>
@@ -325,7 +325,7 @@ export function SidePanel() {
       {/* typing indicator */}
       <div className="h-[18px] px-3 text-[11.5px] font-semibold leading-[18px] text-wb-faint">
         {typers.size > 0 && (
-          <span>
+          <span className="inline-flex animate-wb-fade-in">
             {typingLabel(typers)}
             <span className="inline-flex">
               <span className="animate-bounce [animation-delay:-0.3s]">.</span>

@@ -19,14 +19,17 @@
 @keyframes wb-react-float {
   0% {
     opacity: 0;
-    transform: translate(-50%, 0) scale(0.4);
+    transform: translate(-50%, 0) scale(0.4) rotate(0deg);
   }
   12% {
     opacity: 1;
-    transform: translate(-50%, -16px) scale(1.15);
+    transform: translate(-50%, -16px) scale(1.15) rotate(-6deg);
+  }
+  55% {
+    transform: translate(calc(-50% + var(--wb-drift, 0px) * 0.6), -130px) scale(1.05) rotate(6deg);
   }
   100% {
     opacity: 0;
-    transform: translate(calc(-50% + var(--wb-drift, 0px)), -240px) scale(1);
+    transform: translate(calc(-50% + var(--wb-drift, 0px)), -240px) scale(1) rotate(-3deg);
   }
 }

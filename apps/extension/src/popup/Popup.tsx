@@ -124,11 +124,11 @@ export function Popup() {
         </div>
         <div className="flex-1">
           <div className="font-fredoka text-[19px] font-semibold leading-none text-wb-text">
-            Watch<span className="text-wb-honey">bear</span>
+            Watch<span className="wb-shimmer-text animate-wb-shimmer">bear</span>
           </div>
           <div className="mt-[3px] text-[11.5px] font-medium text-wb-dim">the sweet way to watch together</div>
         </div>
-        <span title="connected" className="h-[9px] w-[9px] shrink-0 rounded-full bg-wb-online shadow-[0_0_0_4px_rgba(123,201,111,.16)]" />
+        <span title="connected" className="h-[9px] w-[9px] shrink-0 animate-wb-breathe rounded-full bg-wb-online shadow-[0_0_0_4px_rgba(123,201,111,.16)]" />
       </div>
 
       {inRoom ? (
@@ -143,7 +143,7 @@ export function Popup() {
             <button
               type="button"
               onClick={openSidePanel}
-              className="flex items-center gap-1 rounded-[10px] border border-[rgba(255,178,62,.3)] bg-[rgba(255,178,62,.12)] px-2.5 py-1.5 text-xs font-bold text-wb-honey transition-all hover:bg-[rgba(255,178,62,.2)]"
+              className="flex items-center gap-1 rounded-[10px] border border-[rgba(255,178,62,.3)] bg-[rgba(255,178,62,.12)] px-2.5 py-1.5 text-xs font-bold text-wb-honey transition-all hover:bg-[rgba(255,178,62,.2)] active:scale-95"
             >
               <IconPanelRight className="h-[14px] w-[14px]" />
               Go to room
@@ -151,7 +151,7 @@ export function Popup() {
             <button
               type="button"
               onClick={leaveRoom}
-              className="rounded-[10px] border border-wb-line bg-[#2e2018] px-3 py-1.5 text-xs font-bold text-wb-dim transition-all hover:border-[rgba(255,140,107,.3)] hover:bg-[#3a2418] hover:text-wb-coral"
+              className="rounded-[10px] border border-wb-line bg-[#2e2018] px-3 py-1.5 text-xs font-bold text-wb-dim transition-all hover:border-[rgba(255,140,107,.3)] hover:bg-[#3a2418] hover:text-wb-coral active:scale-95"
             >
               Leave
             </button>
@@ -233,7 +233,7 @@ export function Popup() {
           {/* share hint */}
           <div className="px-4 pt-[14px]">
             <div className="flex items-start gap-[9px] rounded-[13px] border border-wb-line bg-[#1d150f] px-[13px] py-3 text-[12.5px] font-semibold leading-[1.45] text-wb-dim">
-              <span className="shrink-0 text-[15px] leading-none">🍯</span>
+              <span className="inline-block shrink-0 animate-wb-float text-[15px] leading-none">🍯</span>
               <span>Start a party and you'll get an invite link. Send it to your friends — they just click it to join and watch in sync.</span>
             </div>
           </div>

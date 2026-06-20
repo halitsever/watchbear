@@ -36,6 +36,9 @@
   --animate-wb-float: wb-float 3s ease-in-out infinite;
   --animate-wb-glow: wb-glow 2.4s ease-in-out infinite;
   --animate-wb-wiggle: wb-wiggle 0.5s ease-in-out;
+  --animate-wb-shimmer: wb-shimmer 3.5s linear infinite;
+  --animate-wb-breathe: wb-breathe 2.6s ease-in-out infinite;
+  --animate-wb-fade-in: wb-fade-in 0.35s ease-out;
 
   @keyframes wb-pop-in {
     from {
@@ -142,12 +145,56 @@
       transform: rotate(7deg);
     }
   }
+
+  @keyframes wb-shimmer {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes wb-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.18);
+    }
+  }
+
+  @keyframes wb-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
 html,
 body {
   margin: 0;
   font-family: var(--font-nunito);
+}
+
+/* honey->cream sweep for the "bear" wordmark; pair with animate-wb-shimmer */
+.wb-shimmer-text {
+  background: linear-gradient(
+    100deg,
+    var(--color-wb-honey) 20%,
+    var(--color-wb-cream) 50%,
+    var(--color-wb-honey) 80%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {

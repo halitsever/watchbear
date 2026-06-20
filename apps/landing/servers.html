@@ -11,7 +11,7 @@
     />
     <link rel="canonical" href="https://watchbear.deepfeld.com/servers.html" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
-    <meta name="theme-color" content="#16100c" />
+    <meta name="theme-color" content="#14100b" />
     <meta name="color-scheme" content="dark" />
 
     <meta property="og:type" content="website" />
@@ -43,28 +43,30 @@
     <link rel="manifest" href="site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
       :root {
-        --bg: #16100c;
-        --panel: #221912;
-        --panel2: #2a1f16;
-        --line: rgba(255, 220, 180, 0.1);
-        --honey: #ffb23e;
-        --coral: #ff8c6b;
-        --honey-deep: #f2912a;
-        --cream: #f6ebdc;
-        --text: #efe3d2;
-        --dim: #a89071;
-        --faint: #7e6a53;
-        --online: #7bc96f;
+        --bg: #14100b;
+        --panel: #1c150e;
+        --panel2: #241a11;
+        --line: rgba(244, 196, 128, 0.12);
+        --honey: #f0a830;
+        --honey-bright: #ffc560;
+        --coral: #e58a6e;
+        --honey-deep: #f0a830;
+        --on-honey: #241704;
+        --cream: #fbf2e3;
+        --text: #f6ead7;
+        --dim: #c9b095;
+        --faint: #93795f;
+        --online: #6ac987;
       }
       * {
         box-sizing: border-box;
       }
       body {
         margin: 0;
-        font-family: "Nunito", system-ui, sans-serif;
+        font-family: "Hanken Grotesk", system-ui, sans-serif;
         color: var(--text);
         background: var(--bg);
         -webkit-font-smoothing: antialiased;
@@ -83,7 +85,7 @@
       }
       h1,
       h2 {
-        font-family: "Fredoka";
+        font-family: "Baloo 2";
         font-weight: 600;
         letter-spacing: -0.5px;
         margin: 0;
@@ -92,6 +94,12 @@
 
       /* nav */
       .nav {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        background: rgba(20, 16, 11, 0.72);
         border-bottom: 1px solid var(--line);
       }
       .nav-in {
@@ -113,7 +121,7 @@
         justify-content: center;
       }
       .wordmark {
-        font-family: "Fredoka";
+        font-family: "Baloo 2";
         font-weight: 600;
         font-size: 21px;
         letter-spacing: -0.4px;
@@ -127,7 +135,7 @@
         gap: 22px;
       }
       .nav-link {
-        font-family: "Nunito";
+        font-family: "Hanken Grotesk";
         font-weight: 800;
         font-size: 15px;
         color: var(--dim);
@@ -173,32 +181,40 @@
         display: inline-flex;
         align-items: center;
         gap: 9px;
-        font-family: "Nunito";
-        font-weight: 800;
+        font-family: "Hanken Grotesk";
+        font-weight: 700;
         cursor: pointer;
         border: none;
-        border-radius: 13px;
-        background: var(--honey);
-        color: #3a2410;
-        transition: background 0.15s;
-        padding: 11px 18px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, var(--honey-bright), var(--honey));
+        color: var(--on-honey);
+        box-shadow: 0 6px 18px rgba(240, 168, 48, 0.3);
+        transition:
+          transform 0.15s,
+          box-shadow 0.2s;
+        padding: 10px 18px;
         font-size: 15px;
       }
       .btn:hover {
-        background: #ffc159;
+        transform: translateY(-2px);
+        box-shadow: 0 14px 34px rgba(240, 168, 48, 0.42);
       }
       .btn.lg {
-        padding: 15px 26px;
-        font-size: 16.5px;
-        border-radius: 15px;
+        padding: 15px 28px;
+        font-size: 17px;
+        border-radius: 14px;
       }
       .btn.ghost {
-        background: transparent;
+        background: rgba(255, 255, 255, 0.05);
         color: var(--text);
-        border: 1px solid var(--line);
+        border: 1px solid rgba(244, 196, 128, 0.2);
+        box-shadow: none;
+        font-weight: 600;
       }
       .btn.ghost:hover {
-        background: rgba(255, 220, 180, 0.04);
+        transform: none;
+        background: rgba(255, 255, 255, 0.09);
+        border-color: rgba(244, 196, 128, 0.38);
       }
 
       /* hero */
@@ -256,7 +272,7 @@
         background: var(--online);
       }
       .card-head .label {
-        font-family: "Fredoka";
+        font-family: "Baloo 2";
         font-weight: 600;
         font-size: 18px;
         color: var(--cream);
@@ -268,8 +284,8 @@
         letter-spacing: 0.6px;
         text-transform: uppercase;
         color: var(--honey);
-        background: rgba(255, 178, 62, 0.12);
-        border: 1px solid rgba(255, 178, 62, 0.3);
+        background: rgba(240, 168, 48, 0.12);
+        border: 1px solid rgba(240, 168, 48, 0.3);
         padding: 4px 11px;
         border-radius: 999px;
       }
@@ -285,7 +301,7 @@
         flex-wrap: wrap;
       }
       .endpoint code {
-        font-family: "Nunito";
+        font-family: "Hanken Grotesk";
         font-weight: 800;
         font-size: 14px;
         color: var(--honey);
@@ -297,7 +313,7 @@
         color: var(--cream);
         border: none;
         border-radius: 10px;
-        font-family: "Nunito";
+        font-family: "Hanken Grotesk";
         font-weight: 800;
         font-size: 12px;
         padding: 7px 13px;
@@ -388,7 +404,7 @@
           font-size: 15px;
         }
         .nav-right .nav-link:hover {
-          background: rgba(255, 220, 180, 0.05);
+          background: rgba(244, 196, 128, 0.05);
         }
         .nav-right .btn {
           justify-content: center;

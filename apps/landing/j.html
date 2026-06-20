@@ -5,26 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Watchbear · Join the party</title>
     <meta name="robots" content="noindex,nofollow" />
-    <meta name="theme-color" content="#16100c" />
+    <meta name="theme-color" content="#14100b" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" type="image/svg+xml" href="bear.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="icon32.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --bg: #16100c;
-        --panel: #221912;
-        --line: rgba(255, 220, 180, 0.1);
-        --honey: #ffb23e;
-        --coral: #ff8c6b;
-        --text: #efe3d2;
-        --dim: #a89071;
-        --faint: #7e6a53;
+        --bg: #14100b;
+        --panel: #1c150e;
+        --line: rgba(244, 196, 128, 0.12);
+        --honey: #f0a830;
+        --honey-bright: #ffc560;
+        --coral: #e58a6e;
+        --on-honey: #241704;
+        --cream: #fbf2e3;
+        --text: #f6ead7;
+        --dim: #c9b095;
+        --faint: #93795f;
       }
       * {
         box-sizing: border-box;
@@ -36,7 +39,7 @@
         align-items: center;
         justify-content: center;
         padding: 24px;
-        font-family: "Nunito", system-ui, sans-serif;
+        font-family: "Hanken Grotesk", system-ui, sans-serif;
         color: var(--text);
         background: radial-gradient(120% 90% at 50% 0%, #20160f, var(--bg));
         -webkit-font-smoothing: antialiased;
@@ -58,7 +61,7 @@
         margin: 0 auto 14px;
       }
       h1 {
-        font-family: "Fredoka", sans-serif;
+        font-family: "Baloo 2", sans-serif;
         font-weight: 600;
         font-size: 23px;
         letter-spacing: -0.4px;
@@ -114,8 +117,8 @@
         margin: 0 0 18px;
         padding: 10px 13px;
         border-radius: 12px;
-        border: 1px solid rgba(255, 178, 62, 0.28);
-        background: rgba(255, 178, 62, 0.1);
+        border: 1px solid rgba(240, 168, 48, 0.28);
+        background: rgba(240, 168, 48, 0.1);
         font-size: 12.5px;
         font-weight: 700;
         line-height: 1.45;
@@ -123,8 +126,8 @@
         text-align: left;
       }
       .caution.danger {
-        border-color: rgba(255, 140, 107, 0.3);
-        background: rgba(255, 140, 107, 0.12);
+        border-color: rgba(229, 138, 110, 0.3);
+        background: rgba(229, 138, 110, 0.12);
         color: var(--coral);
       }
       .btn {
@@ -133,17 +136,17 @@
         align-items: center;
         justify-content: center;
         gap: 9px;
-        font-family: "Nunito", sans-serif;
+        font-family: "Hanken Grotesk", sans-serif;
         font-weight: 800;
         cursor: pointer;
         border: none;
         border-radius: 14px;
-        background: linear-gradient(180deg, #ffc156, #f2912a);
-        color: #3a2410;
+        background: linear-gradient(180deg, var(--honey-bright), var(--honey));
+        color: var(--on-honey);
         padding: 15px 22px;
         font-size: 16px;
         text-decoration: none;
-        box-shadow: 0 10px 24px rgba(242, 145, 42, 0.3);
+        box-shadow: 0 10px 24px rgba(240, 168, 48, 0.3);
         transition: filter 0.15s;
       }
       .btn:hover {

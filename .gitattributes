@@ -1,0 +1,13 @@
+# GitHub Linguist overrides — keep the repo's primary language accurate.
+#
+# Watchbear is a TypeScript project (browser extension + sync server), but the
+# first-party marketing/landing site is single-file HTML with large inline
+# CSS/JS, so by raw byte count it otherwise outweighs the actual source and
+# GitHub mislabels the repo as "HTML". These files are excluded from the
+# language statistics only — they still show normally in diffs and reviews.
+
+apps/landing/**            linguist-vendored
+apps/extension/e2e/static/** linguist-vendored
+
+# Lockfile: generated, not authored.
+pnpm-lock.yaml             linguist-generated

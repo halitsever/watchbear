@@ -22,10 +22,10 @@ Watchbear lets you watch any video together, in sync. Start a room, share the
 code, and everyone's playback stays on the same frame, with chat and reactions
 in a side panel right next to the video.
 
-- **Synced playback:** play, pause and seek stay in step for everyone in the room.
-- **Join with a code:** no account; friends drop in within seconds.
-- **Side-panel chat:** live messages and quick reactions next to the video.
-- **Live position:** the panel shows the current second of the active tab's video.
+**Synced playback:** play, pause and seek stay in step for everyone in the room.<br/><br/>
+**Join with a code:** no account; friends drop in within seconds.<br/><br/>
+**Side-panel chat:** live messages and quick reactions next to the video.<br/><br/>
+**Live position:** the panel shows the current second of the active tab's video.<br/><br/>
 
 <p align="center">
 <img src="/.github/assets/screenshot-rounded.png"/>

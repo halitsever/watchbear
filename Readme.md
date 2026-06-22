@@ -4,6 +4,10 @@
 <img src="https://halitsever-api.vercel.app/api/repo-title?title=Watchbear">
 
 <p align="center">
+   <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn"><img src="/.github/assets/chrome-store.png"/></a>
+</p>
+
+<p align="center">
 🐻 Watchbear: The sweet way to watch together<br>
 <br/>
 <br/>

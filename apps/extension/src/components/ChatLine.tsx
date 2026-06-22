@@ -24,14 +24,14 @@ export function ChatLine({ msg, members, grouped }: { msg: Message; members: Mem
   return (
     <div className={`flex animate-wb-msg-in items-end gap-2 ${grouped ? 'mt-0.5' : 'mt-2'} ${mine ? 'flex-row-reverse' : 'flex-row'}`}>
       {!mine && (grouped ? <span className="w-[24px] shrink-0" /> : <BearFace size={24} fur={m.fur} furDark={m.furDark} />)}
-      <div className="max-w-[76%]">
+      <div className="min-w-0 max-w-[76%]">
         {!mine && !grouped && <div className="mb-[3px] ml-1 text-[11px] font-bold text-wb-dim">{msg.from}</div>}
         <div className={`flex items-end gap-1.5 ${mine ? 'flex-row-reverse' : 'flex-row'}`}>
           <div
             className={
               mine
-                ? `${grouped ? 'rounded-[14px]' : tail} break-words bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-2.5 py-1.5 text-[13px] font-semibold leading-[1.42] text-[#3a2410]`
-                : `${grouped ? 'rounded-[14px]' : tail} break-words bg-wb-panel2 px-2.5 py-1.5 text-[13px] font-medium leading-[1.42] text-wb-text`
+                ? `${grouped ? 'rounded-[14px]' : tail} min-w-0 [overflow-wrap:anywhere] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-2.5 py-1.5 text-[13px] font-semibold leading-[1.42] text-[#3a2410]`
+                : `${grouped ? 'rounded-[14px]' : tail} min-w-0 [overflow-wrap:anywhere] bg-wb-panel2 px-2.5 py-1.5 text-[13px] font-medium leading-[1.42] text-wb-text`
             }
           >
             {linkify(msg.text, linkClass)}

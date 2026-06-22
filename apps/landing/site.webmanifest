@@ -4,8 +4,8 @@
   "description": "Free watch together Chrome extension. Start a watch party and stream videos in sync with friends.",
   "start_url": "/",
   "display": "browser",
-  "background_color": "#16100c",
-  "theme_color": "#16100c",
+  "background_color": "#14100b",
+  "theme_color": "#14100b",
   "icons": [
     { "src": "icon16.png", "sizes": "16x16", "type": "image/png" },
     { "src": "icon32.png", "sizes": "32x32", "type": "image/png" },

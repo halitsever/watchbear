@@ -12,7 +12,7 @@ export default defineManifest({
   name: 'Watchbear: Watch Together & Watch Party Sync',
   short_name: 'Watchbear',
   description: 'The sweet way to watch together',
-  version: '0.2.2',
+  version: '0.2.3',
   icons,
   action: {
     default_popup: 'src/popup/index.html',

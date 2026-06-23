@@ -52,6 +52,8 @@ export interface RoomConnection {
 export interface VideoControl {
   time: number;
   paused: boolean;
+  // playback speed, synced room-wide; optional so older clients (no rate) still validate
+  rate?: number;
 }
 
 // what the page is watching, used to keep everyone on the same video

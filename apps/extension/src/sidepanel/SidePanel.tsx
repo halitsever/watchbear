@@ -4,11 +4,12 @@ import IconCopy from "~icons/lucide/copy";
 import IconCheck from "~icons/lucide/check";
 import IconClock from "~icons/lucide/clock";
 import IconTv from "~icons/lucide/tv";
+import IconGauge from "~icons/lucide/gauge";
 import { BearMark } from "@/components/Bear";
 import { MemberChip } from "@/components/MemberChip";
 import { ChatLine } from "@/components/ChatLine";
 import { useRoomState } from "@/hooks/useRoomState";
-import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
+import { getActiveTab, getVideoTime, sendToBackground, sendToTab } from "@/lib/messages";
 import { getIdentity, type Identity } from "@/lib/identity";
 import { buildInviteLink, STORAGE_KEYS } from "@/lib/room";
 import { getServerUrl } from "@/lib/server";
@@ -16,6 +17,7 @@ import { joinRoom, type RoomConnection, type ConnStatus, type VideoContentInfo }
 import type { Member, Message } from "@/lib/types";
 
 const REACTIONS = ["🐻", "😂", "❤️", "😱", "😢", "😍", "😡"];
+const SPEEDS = [0.5, 1, 1.25, 1.5, 2];
 
 // group key for collapsing a run of messages from the same sender
 const sender = (m: Message) => (m.mine ? "me" : m.from);
@@ -48,6 +50,7 @@ export function SidePanel() {
   const [copied, setCopied] = useState(false);
   const [popupHint, setPopupHint] = useState(false);
   const [videoTime, setVideoTime] = useState<number | null>(null);
+  const [rate, setRate] = useState(1);
   const [status, setStatus] = useState<ConnStatus>("connecting");
   const [content, setContent] = useState<VideoContentInfo | null>(null);
   const activeTabId = useRef<number | null>(null);
@@ -109,6 +112,7 @@ export function SidePanel() {
   useEffect(() => {
     if (!inRoom) {
       setVideoTime(null);
+      setRate(1);
       return;
     }
     let active = true;
@@ -118,6 +122,7 @@ export function SidePanel() {
       const res = tab?.id != null ? await getVideoTime(tab.id) : undefined;
       if (!active || res === undefined) return; // unreachable: keep last value
       setVideoTime(res?.currentTime ?? null);
+      setRate(res?.playbackRate ?? 1);
     };
     void poll();
     const iv = setInterval(() => void poll(), 500);
@@ -212,6 +217,12 @@ export function SidePanel() {
     setTimeout(() => setCopied(false), 1600);
   }
 
+  function changeRate(next: number) {
+    setRate(next); // optimistic; the poll confirms from the page
+    const tabId = activeTabId.current;
+    if (tabId != null) sendToTab(tabId, { type: "SET_RATE", rate: next });
+  }
+
   async function leave() {
     const tab = await getActiveTab();
     sendToBackground({ type: "WB_LEAVE_ROOM", tabId: tab?.id });
@@ -249,7 +260,6 @@ export function SidePanel() {
 
   return (
     <div className="flex h-full min-w-0 flex-col font-nunito">
-      {/* header */}
       <div className="flex items-center justify-between gap-2 border-b border-wb-line px-3 py-2">
         <div className="flex min-w-0 items-center gap-2">
           <div className="animate-wb-float">
@@ -267,7 +277,6 @@ export function SidePanel() {
         </button>
       </div>
 
-      {/* invite bar */}
       <div className="border-b border-wb-line px-3 py-2.5">
         <button
           type="button"
@@ -290,7 +299,6 @@ export function SidePanel() {
         </div>
       )}
 
-      {/* members + sync */}
       <div className="border-b border-wb-line px-3 py-2.5">
         <div className="mb-2 flex flex-wrap items-center gap-1.5">
           {members.map((m) => (
@@ -311,9 +319,33 @@ export function SidePanel() {
             <span className="truncate">Now playing: {content.title || content.url}</span>
           </div>
         )}
+
+        {/* playback speed, synced to the den */}
+        <div className="mt-2 flex items-center gap-1.5">
+          <IconGauge className="h-[13px] w-[13px] shrink-0 text-wb-dim" />
+          <div className="flex flex-1 gap-1">
+            {SPEEDS.map((s) => {
+              const isActive = Math.abs(rate - s) < 0.01;
+              return (
+                <button
+                  type="button"
+                  key={s}
+                  onClick={() => changeRate(s)}
+                  title={`Set speed to ${s}x for the den`}
+                  className={`flex-1 rounded-[9px] border py-1 text-[11.5px] font-bold transition-all active:scale-90 ${
+                    isActive
+                      ? "border-[rgba(255,178,62,.45)] bg-[rgba(255,178,62,.15)] text-wb-honey"
+                      : "border-wb-line bg-wb-panel text-wb-dim hover:border-[rgba(255,178,62,.26)] hover:bg-wb-panel2 hover:text-wb-text"
+                  }`}
+                >
+                  {s}x
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
-      {/* chat feed */}
       <div ref={feedRef} className="flex min-h-0 flex-1 flex-col overflow-y-auto px-3 py-2.5">
         {messages.map((msg, i) => {
           const prev = messages[i - 1];
@@ -322,7 +354,6 @@ export function SidePanel() {
         })}
       </div>
 
-      {/* typing indicator */}
       <div className="h-[18px] px-3 text-[11.5px] font-semibold leading-[18px] text-wb-faint">
         {typers.size > 0 && (
           <span className="inline-flex animate-wb-fade-in">
@@ -336,7 +367,6 @@ export function SidePanel() {
         )}
       </div>
 
-      {/* quick reactions */}
       <div className="flex gap-1.5 px-3 pt-1.5">
         {REACTIONS.map((emoji) => (
           <button
@@ -350,7 +380,6 @@ export function SidePanel() {
         ))}
       </div>
 
-      {/* composer */}
       <form
         onSubmit={(e) => {
           e.preventDefault();

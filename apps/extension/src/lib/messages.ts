@@ -11,12 +11,14 @@ export type ContentMessage =
 export type TabMessage =
   | { type: 'START_ROOM'; code: string; anchor: boolean }
   | { type: 'JOIN_ROOM'; code: string; anchor: boolean }
-  | { type: 'LEAVE_ROOM' };
+  | { type: 'LEAVE_ROOM' }
+  | { type: 'SET_RATE'; rate: number };
 
 export interface VideoState {
   currentTime: number;
   duration: number;
   paused: boolean;
+  playbackRate: number;
 }
 
 export type RuntimeMessage = PopupMessage | ContentMessage;
@@ -34,7 +36,7 @@ export async function getActiveTab(): Promise<chrome.tabs.Tab | undefined> {
   return tab;
 }
 
-function readBestVideoInPage(): { currentTime: number; duration: number; paused: boolean } | null {
+function readBestVideoInPage(): { currentTime: number; duration: number; paused: boolean; playbackRate: number } | null {
   const videos = [...document.querySelectorAll('video')];
   if (videos.length === 0) {
     const collect = (root: Document | ShadowRoot) => {
@@ -58,7 +60,7 @@ function readBestVideoInPage(): { currentTime: number; duration: number; paused:
       area: v.clientWidth * v.clientHeight,
     }))
     .sort((a, b) => b.playing - a.playing || b.dur - a.dur || b.area - a.area)[0].v;
-  return { currentTime: best.currentTime, duration: best.duration, paused: best.paused };
+  return { currentTime: best.currentTime, duration: best.duration, paused: best.paused, playbackRate: best.playbackRate };
 }
 
 // null = no video anywhere, undefined = page not injectable (keep last value)

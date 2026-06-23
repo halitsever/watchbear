@@ -115,7 +115,6 @@ export function Popup() {
     <div className="font-nunito">
       <div className="pointer-events-none absolute -top-[7px] right-[30px] z-[1] h-[14px] w-[14px] rotate-45 border-l border-t border-[rgba(255,200,140,.12)] bg-[#2c211a]" />
 
-      {/* header */}
       <div className="flex items-center gap-3 px-4 pb-3 pt-4">
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[radial-gradient(circle_at_50%_35%,#3a2a1d,#271b12)] shadow-[inset_0_0_0_1px_rgba(255,200,140,.12)]">
           <div className="animate-wb-float">
@@ -132,7 +131,6 @@ export function Popup() {
       </div>
 
       {inRoom ? (
-        /* active room banner */
         <div className="mx-4 mb-3 flex items-center justify-between gap-2 rounded-xl border border-[rgba(123,201,111,.24)] bg-[rgba(123,201,111,.1)] px-[13px] py-[10px]">
           <div className="flex min-w-0 items-center gap-2">
             <span className="h-2 w-2 shrink-0 animate-wb-pulse rounded-full bg-wb-online" />
@@ -159,7 +157,6 @@ export function Popup() {
         </div>
       ) : (
         <>
-          {/* body */}
           <div className="px-4">
             {serverUp === false && (
               <div className="mb-[11px] rounded-xl border border-[rgba(255,140,107,.25)] bg-[rgba(255,140,107,.1)] px-[13px] py-2.5 text-center text-[12px] font-bold text-wb-coral">
@@ -230,15 +227,13 @@ export function Popup() {
             )}
           </div>
 
-          {/* share hint */}
           <div className="px-4 pt-[14px]">
             <div className="flex items-start gap-[9px] rounded-[13px] border border-wb-line bg-[#1d150f] px-[13px] py-3 text-[12.5px] font-semibold leading-[1.45] text-wb-dim">
               <span className="inline-block shrink-0 animate-wb-float text-[15px] leading-none">🍯</span>
-              <span>Start a party and you'll get an invite link. Send it to your friends — they just click it to join and watch in sync.</span>
+              <span>Start a party and you'll get an invite link. Send it to your friends. They just click it to join and watch in sync.</span>
             </div>
           </div>
 
-          {/* server picker (self-host) */}
           <div className="px-4 pb-[18px] pt-2.5">
             <ServerSettings onChange={refreshServer} />
           </div>

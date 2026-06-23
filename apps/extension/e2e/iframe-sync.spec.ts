@@ -27,7 +27,7 @@ test('play/pause syncs when the video is in a cross-origin iframe', async () => 
     // let both top frames connect, video:subscribe, and bind their iframe video
     await a.video.waitForTimeout(2500);
 
-    // A plays inside its iframe -> B's iframe video follows via the bridge
+    // A plays inside its iframe and B's iframe video follows via the bridge
     await setVideo(af, 'play', 5);
     await expect.poll(() => videoPaused(bf), { timeout: 8000 }).toBe(false);
 

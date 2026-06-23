@@ -28,9 +28,9 @@ function postNetflixSeek(time: number): void {
 
 type WbBridgeMsg =
   | { __wb: 1; kind: 'announce'; area: number; duration: number }
-  | { __wb: 1; kind: 'state'; time: number; paused: boolean }
+  | { __wb: 1; kind: 'state'; time: number; paused: boolean; rate?: number }
   | { __wb: 1; kind: 'gone' }
-  | { __wb: 1; kind: 'apply'; time: number; paused: boolean };
+  | { __wb: 1; kind: 'apply'; time: number; paused: boolean; rate?: number };
 
 function pickVideo(): HTMLVideoElement | null {
   const vids = [...document.querySelectorAll('video')];
@@ -43,6 +43,7 @@ function applyTo(v: HTMLVideoElement, c: VideoControl): void {
     if (IS_NETFLIX) postNetflixSeek(c.time);
     else v.currentTime = c.time;
   }
+  if (typeof c.rate === 'number' && v.playbackRate !== c.rate) v.playbackRate = c.rate;
   if (c.paused && !v.paused) v.pause();
   else if (!c.paused && v.paused) void v.play();
 }
@@ -51,6 +52,7 @@ function applyTo(v: HTMLVideoElement, c: VideoControl): void {
 interface VideoTarget {
   getState(): VideoControl | null;
   apply(c: VideoControl): void;
+  setRate(rate: number): void;
   onLocalChange(cb: () => void): void;
   area(): number;
   teardown(): void;
@@ -65,6 +67,7 @@ class LocalVideoTarget implements VideoTarget {
     video.addEventListener('play', this.onEv);
     video.addEventListener('pause', this.onEv);
     video.addEventListener('seeked', this.onEv);
+    video.addEventListener('ratechange', this.onEv);
   }
 
   private onEv = () => {
@@ -72,7 +75,7 @@ class LocalVideoTarget implements VideoTarget {
   };
 
   getState(): VideoControl {
-    return { time: this.video.currentTime, paused: this.video.paused };
+    return { time: this.video.currentTime, paused: this.video.paused, rate: this.video.playbackRate };
   }
 
   apply(c: VideoControl): void {
@@ -82,6 +85,11 @@ class LocalVideoTarget implements VideoTarget {
     this.timer = window.setTimeout(() => {
       this.applyingRemote = false;
     }, REMOTE_GUARD_MS);
+  }
+
+  // a local rate change fires ratechange, which broadcasts the new state
+  setRate(rate: number): void {
+    this.video.playbackRate = rate;
   }
 
   onLocalChange(cb: () => void): void {
@@ -96,6 +104,7 @@ class LocalVideoTarget implements VideoTarget {
     this.video.removeEventListener('play', this.onEv);
     this.video.removeEventListener('pause', this.onEv);
     this.video.removeEventListener('seeked', this.onEv);
+    this.video.removeEventListener('ratechange', this.onEv);
   }
 }
 
@@ -122,7 +131,15 @@ class RemoteVideoTarget implements VideoTarget {
   }
 
   apply(c: VideoControl): void {
-    this.post({ __wb: 1, kind: 'apply', time: c.time, paused: c.paused });
+    this.post({ __wb: 1, kind: 'apply', time: c.time, paused: c.paused, rate: c.rate });
+  }
+
+  // broadcast the new rate from the top, then push it down to the iframe video
+  setRate(rate: number): void {
+    if (!this.last) return;
+    this.last = { ...this.last, rate };
+    this.cb?.();
+    this.apply(this.last);
   }
 
   onLocalChange(cb: () => void): void {
@@ -207,6 +224,9 @@ function runTop(): void {
     if (msg.type === 'LEAVE_ROOM') {
       stopSync();
     }
+    if (msg.type === 'SET_RATE') {
+      target?.setRate(msg.rate);
+    }
   });
 
   window.addEventListener('message', (e) => {
@@ -218,7 +238,7 @@ function runTop(): void {
       announced.set(src, { area: d.area });
       syncTarget();
     } else if (d.kind === 'state') {
-      if (target instanceof RemoteVideoTarget && target.win === src) target.pushState({ time: d.time, paused: d.paused });
+      if (target instanceof RemoteVideoTarget && target.win === src) target.pushState({ time: d.time, paused: d.paused, rate: d.rate });
     } else if (d.kind === 'gone') {
       announced.delete(src);
       if (target instanceof RemoteVideoTarget && target.win === src) {
@@ -443,7 +463,7 @@ function runBridge(): void {
 
   const onEv = () => {
     if (applyingRemote || !v) return;
-    post({ __wb: 1, kind: 'state', time: v.currentTime, paused: v.paused });
+    post({ __wb: 1, kind: 'state', time: v.currentTime, paused: v.paused, rate: v.playbackRate });
   };
 
   function attach(): void {
@@ -453,6 +473,7 @@ function runBridge(): void {
     v.addEventListener('play', onEv);
     v.addEventListener('pause', onEv);
     v.addEventListener('seeked', onEv);
+    v.addEventListener('ratechange', onEv);
     announce();
   }
 
@@ -461,6 +482,7 @@ function runBridge(): void {
       v.removeEventListener('play', onEv);
       v.removeEventListener('pause', onEv);
       v.removeEventListener('seeked', onEv);
+      v.removeEventListener('ratechange', onEv);
       if (notify) post({ __wb: 1, kind: 'gone' });
     }
     v = null;
@@ -495,7 +517,7 @@ function runBridge(): void {
     const d = e.data as WbBridgeMsg | undefined;
     if (!d || d.__wb !== 1) return;
     if (e.source !== window.top) return; // only honor commands from our top frame
-    if (d.kind === 'apply') applyFromTop({ time: d.time, paused: d.paused });
+    if (d.kind === 'apply') applyFromTop({ time: d.time, paused: d.paused, rate: d.rate });
   });
 
   function arm(): void {

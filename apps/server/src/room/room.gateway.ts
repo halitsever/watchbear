@@ -50,7 +50,7 @@ export class RoomGateway implements OnGatewayDisconnect {
   private readonly rooms = new Map<string, Map<string, Member>>();
   private readonly socketRoom = new Map<string, string>();
   // one playback state per room, keyed by code; control relays to everyone in it
-  private readonly videoState = new Map<string, { time: number; paused: boolean; updatedAt: number }>();
+  private readonly videoState = new Map<string, { time: number; paused: boolean; rate?: number; updatedAt: number }>();
   private readonly socketContent = new Map<string, Content>();
   // the bear name carried on a video socket, used to attribute control events in chat
   private readonly socketName = new Map<string, string>();
@@ -72,9 +72,8 @@ export class RoomGateway implements OnGatewayDisconnect {
     return ids;
   }
 
-  // crude per-socket sliding window so a single client can't flood join/chat/control.
-  // @nestjs/throttler has no first-class ws path (it needs a custom guard subclass
-  // either way), so a small inline limiter is the clearer option here.
+  // crude per-socket sliding window so one client can't flood join/chat/control;
+  // @nestjs/throttler has no first-class ws path, so an inline limiter is simpler.
   private withinRate(client: Socket): boolean {
     const now = Date.now();
     const h = this.hits.get(client.id);
@@ -170,7 +169,7 @@ export class RoomGateway implements OnGatewayDisconnect {
     const s = this.videoState.get(code);
     if (s) {
       const elapsed = s.paused ? 0 : (Date.now() - s.updatedAt) / 1000;
-      client.emit('video:control', { time: s.time + elapsed, paused: s.paused });
+      client.emit('video:control', { time: s.time + elapsed, paused: s.paused, rate: s.rate });
     }
   }
 
@@ -186,30 +185,36 @@ export class RoomGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('video:control')
-  handleVideoControl(@ConnectedSocket() client: Socket, @MessageBody() { time, paused }: VideoControlDto) {
+  handleVideoControl(@ConnectedSocket() client: Socket, @MessageBody() { time, paused, rate }: VideoControlDto) {
     if (!this.withinRate(client)) return;
     // trust the server-tracked binding, never the code in the payload, so a client
     // can only drive the room it actually joined or subscribed to.
     const code = this.socketRoom.get(client.id);
     if (!code) return;
 
-    const text = this.describeControl(this.videoState.get(code), { time, paused }, this.socketName.get(client.id));
+    const text = this.describeControl(this.videoState.get(code), { time, paused, rate }, this.socketName.get(client.id));
     if (text) this.server.to(code).emit('room:system', { text });
 
-    this.videoState.set(code, { time, paused, updatedAt: Date.now() });
-    client.to(code).emit('video:control', { time, paused });
+    // carry the last known rate when a control omits it, so play/pause doesn't drop the speed
+    const nextRate = rate ?? this.videoState.get(code)?.rate;
+    this.videoState.set(code, { time, paused, rate: nextRate, updatedAt: Date.now() });
+    client.to(code).emit('video:control', { time, paused, rate: nextRate });
   }
 
   // turn a control event into a chat line ("Maple paused the video"), or undefined
   // when the socket has no name or the move is too small to bother announcing.
   private describeControl(
-    prev: { time: number; paused: boolean; updatedAt: number } | undefined,
-    next: { time: number; paused: boolean },
+    prev: { time: number; paused: boolean; rate?: number; updatedAt: number } | undefined,
+    next: { time: number; paused: boolean; rate?: number },
     name: string | undefined,
   ): string | undefined {
     if (!name) return undefined;
     if (!prev || prev.paused !== next.paused) {
       return next.paused ? `${name} paused the video` : `${name} resumed the video`;
+    }
+    // speed changes ride the same control event; announce only an actual change (default 1x)
+    if (typeof next.rate === 'number' && next.rate !== (prev.rate ?? 1)) {
+      return `${name} set the speed to ${next.rate}x`;
     }
     const expected = prev.time + (prev.paused ? 0 : (Date.now() - prev.updatedAt) / 1000);
     const delta = next.time - expected;

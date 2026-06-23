@@ -25,11 +25,11 @@ test('play/pause stays in sync between two users', async () => {
     // let both content scripts connect and video:subscribe
     await a.video.waitForTimeout(2000);
 
-    // A starts playing -> B should follow
+    // A starts playing and B should follow
     await setVideo(a.video, 'play', 5);
     await expect.poll(() => videoPaused(b!.video), { timeout: 8000 }).toBe(false);
 
-    // A pauses -> B should pause
+    // A pauses and B should pause
     await setVideo(a.video, 'pause');
     await expect.poll(() => videoPaused(b!.video), { timeout: 8000 }).toBe(true);
   } finally {
@@ -61,7 +61,7 @@ test('a user on a different url still syncs and shows no callout', async () => {
     // no diverged callout exists anymore
     await expect(b.video.locator('#wb-diverged')).toHaveCount(0);
 
-    // A starts playing -> B follows even though it's a different url
+    // A starts playing and B follows even though it's a different url
     await setVideo(b.video, 'pause');
     await setVideo(a.video, 'play', 5);
     await expect.poll(() => videoPaused(b!.video), { timeout: 8000 }).toBe(false);

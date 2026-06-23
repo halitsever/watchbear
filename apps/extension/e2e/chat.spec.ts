@@ -28,11 +28,11 @@ test('chat messages travel between two users in the same den', async () => {
     await expect(bp.getByText('Bear Den', { exact: true })).toBeVisible({ timeout: 8000 });
     await ap.waitForTimeout(1500);
 
-    // A -> B
+    // A to B
     await say(ap, 'honey time');
     await expect(bp.getByText('honey time')).toBeVisible({ timeout: 8000 });
 
-    // B -> A
+    // B to A
     await say(bp, 'paws up');
     await expect(ap.getByText('paws up')).toBeVisible({ timeout: 8000 });
   } finally {

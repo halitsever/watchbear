@@ -155,6 +155,16 @@ describe('RoomGateway video sync', () => {
     expect(systemTexts()).toContain('Maple skipped ahead to 1:40');
   });
 
+  it('announces a speed change with the new rate', () => {
+    const a = makeClient(sink);
+    gw.handleVideoSubscribe(a, { code: CODE, anchor: true, key: 'K1', url: 'https://x/1', name: 'Maple' });
+    gw.handleVideoControl(a, { code: CODE, time: 10, paused: false });
+
+    sink.length = 0;
+    gw.handleVideoControl(a, { code: CODE, time: 10, paused: false, rate: 1.5 });
+    expect(systemTexts()).toContain('Maple set the speed to 1.5x');
+  });
+
   it('stays silent when the video socket carries no name', () => {
     const a = makeClient(sink);
     gw.handleVideoSubscribe(a, { code: CODE, anchor: true, key: 'K1', url: 'https://x/1' });

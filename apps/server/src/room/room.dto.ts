@@ -103,4 +103,10 @@ export class VideoControlDto {
 
   @IsBoolean()
   paused!: boolean;
+
+  @IsNumber()
+  @Min(0.25)
+  @Max(4)
+  @IsOptional()
+  rate?: number;
 }

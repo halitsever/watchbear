@@ -1,7 +1,7 @@
 // runs in the page MAIN world (manifest world:'MAIN') so it can reach netflix's
 // private player api. the isolated content script (main.ts) reads/writes the
-// <video> tag for everything except seeking — writing video.currentTime crashes
-// netflix — so it asks us to drive player.seek() instead.
+// <video> tag for everything except seeking. writing video.currentTime crashes
+// netflix, so it asks us to drive player.seek() instead.
 
 interface NetflixPlayer {
   seek(ms: number): void;
@@ -35,7 +35,7 @@ window.addEventListener('message', (e) => {
   try {
     getNetflixPlayer()?.seek(Math.round(d.time * 1000)); // netflix wants milliseconds
   } catch {
-    // player not ready / api shape changed — ignore, next sync tick retries
+    // player not ready or api shape changed; ignore, next sync tick retries
   }
 });
 

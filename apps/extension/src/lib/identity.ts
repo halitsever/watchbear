@@ -15,9 +15,8 @@ export const BEARS: Identity[] = [
   { name: 'Olive', fur: '#A7B07A', furDark: '#838C58' },
 ];
 
-// stable per-browser identity, kept in storage so name/fur survive reconnects
-// and panel reopens. fur is random, name defaults to a random bear until the
-// user picks their own.
+// stable per-browser identity in storage so name/fur survive reconnects and panel
+// reopens. fur is random; name defaults to a random bear until the user picks one.
 export async function getIdentity(): Promise<Identity> {
   const data = await chrome.storage.local.get('wb_identity');
   const stored = data.wb_identity as Partial<Identity> | undefined;

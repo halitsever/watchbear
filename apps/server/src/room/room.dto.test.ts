@@ -36,6 +36,15 @@ describe('ChatDto', () => {
     expect(errorsFor(ChatDto, { text: 'x'.repeat(500) })).toHaveLength(0);
     expect(errorsFor(ChatDto, { text: 'x'.repeat(501) }).length).toBeGreaterThan(0);
   });
+
+  it('accepts an optional mid and a reply snapshot', () => {
+    expect(errorsFor(ChatDto, { text: 'hi', mid: 'abc-123' })).toHaveLength(0);
+    expect(errorsFor(ChatDto, { text: 'hi', replyTo: { from: 'Cub', text: 'earlier' } })).toHaveLength(0);
+  });
+
+  it('rejects a reply whose snapshot is missing required fields', () => {
+    expect(errorsFor(ChatDto, { text: 'hi', replyTo: { text: 'no from' } }).length).toBeGreaterThan(0);
+  });
 });
 
 describe('TypingDto', () => {

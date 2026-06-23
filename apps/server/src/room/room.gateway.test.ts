@@ -91,6 +91,37 @@ describe('RoomGateway membership', () => {
     expect(sink.some((e) => e.event === 'chat:typing')).toBe(false);
   });
 
+  it('relays a chat message with its id and reply snapshot', () => {
+    const a = makeClient(sink);
+    gw.handleJoin(a, { code: CODE, member: member('A') });
+    sink.length = 0;
+    const replyTo = { mid: 'm1', from: 'B', text: 'hello' };
+    gw.handleChat(a, { text: 'hi', mid: 'm2', replyTo });
+    expect(sink).toContainEqual({
+      room: CODE,
+      event: 'chat:message',
+      payload: { fromId: a.id, from: 'A', text: 'hi', mid: 'm2', replyTo },
+    });
+  });
+
+  it('ignores chat from a socket that never joined', () => {
+    const stranger = makeClient(sink);
+    gw.handleChat(stranger, { text: 'hi' });
+    expect(sink.some((e) => e.event === 'chat:message')).toBe(false);
+  });
+
+  it('broadcasts an expanded-set reaction and drops an unknown one', () => {
+    const a = makeClient(sink);
+    gw.handleJoin(a, { code: CODE, member: member('A') });
+    sink.length = 0;
+    gw.handleReaction(a, { emoji: '🔥' });
+    expect(sink.some((e) => e.event === 'reaction:show' && (e.payload as { emoji: string }).emoji === '🔥')).toBe(true);
+
+    sink.length = 0;
+    gw.handleReaction(a, { emoji: '🦄' });
+    expect(sink.some((e) => e.event === 'reaction:show')).toBe(false);
+  });
+
   it('clears the typing dots when a typing member disconnects', () => {
     const a = makeClient(sink);
     gw.handleJoin(a, { code: CODE, member: member('A') });

@@ -5,19 +5,26 @@ import IconCheck from "~icons/lucide/check";
 import IconClock from "~icons/lucide/clock";
 import IconTv from "~icons/lucide/tv";
 import IconGauge from "~icons/lucide/gauge";
+import IconSmilePlus from "~icons/lucide/smile-plus";
+import IconX from "~icons/lucide/x";
 import { BearMark } from "@/components/Bear";
 import { MemberChip } from "@/components/MemberChip";
 import { ChatLine } from "@/components/ChatLine";
+import { MessageMenu, type MenuAnchor } from "@/components/MessageMenu";
+import { EmojiPicker } from "@/components/EmojiPicker";
 import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground, sendToTab } from "@/lib/messages";
 import { getIdentity, type Identity } from "@/lib/identity";
 import { buildInviteLink, STORAGE_KEYS } from "@/lib/room";
 import { getServerUrl } from "@/lib/server";
-import { joinRoom, type RoomConnection, type ConnStatus, type VideoContentInfo } from "@/lib/socket";
-import type { Member, Message } from "@/lib/types";
+import { joinRoom, type RoomConnection, type ConnStatus, type VideoContentInfo, type ChatOpts } from "@/lib/socket";
+import { QUICK_REACTIONS } from "@/lib/emoji";
+import type { Member, Message, ReplyRef } from "@/lib/types";
 
-const REACTIONS = ["🐻", "😂", "❤️", "😱", "😢", "😍", "😡"];
 const SPEEDS = [0.5, 1, 1.25, 1.5, 2];
+
+// short cross-client message id; both sender and receivers key the same message by it
+const newMid = () => crypto.randomUUID();
 
 // group key for collapsing a run of messages from the same sender
 const sender = (m: Message) => (m.mine ? "me" : m.from);
@@ -53,7 +60,12 @@ export function SidePanel() {
   const [rate, setRate] = useState(1);
   const [status, setStatus] = useState<ConnStatus>("connecting");
   const [content, setContent] = useState<VideoContentInfo | null>(null);
+  const [replyTo, setReplyTo] = useState<ReplyRef | null>(null);
+  const [menu, setMenu] = useState<{ msg: Message; anchor: MenuAnchor } | null>(null);
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const [highlightMid, setHighlightMid] = useState<string | null>(null);
   const activeTabId = useRef<number | null>(null);
+  const highlightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const msgId = useRef(0);
   const feedRef = useRef<HTMLDivElement>(null);
   const conn = useRef<RoomConnection | null>(null);
@@ -89,7 +101,8 @@ export function SidePanel() {
     setStatus("connecting");
     conn.current = joinRoom(serverUrl, roomCode, identity, {
       onMembers: (list, selfId) => setMembers(list.map((m) => ({ ...m, you: m.id === selfId }))),
-      onChat: ({ from, text }) => setMessages((m) => [...m, { id: nextId(), type: "chat", from, text, ts: Date.now() }]),
+      onChat: ({ from, text, mid, replyTo: r }) =>
+        setMessages((m) => [...m, { id: nextId(), mid, type: "chat", from, text, ts: Date.now(), replyTo: r }]),
       onTyping: ({ fromId, from, typing }) => applyTyping(fromId, from, typing),
       onSystem: (text) => setMessages((m) => [...m, { id: nextId(), type: "system", text }]),
       onStatus: setStatus,
@@ -189,18 +202,48 @@ export function SidePanel() {
     conn.current?.sendTyping(false);
   }
 
-  function postChat(text: string) {
+  function postChat(text: string, extra?: { replyTo?: ReplyRef }) {
     const from = identity?.name ?? "You";
-    setMessages((m) => [...m, { id: nextId(), type: "chat", from, text, mine: true, ts: Date.now() }]);
-    conn.current?.sendChat(text);
+    const mid = newMid();
+    const opts: ChatOpts = { mid, replyTo: extra?.replyTo };
+    setMessages((m) => [...m, { id: nextId(), mid, type: "chat", from, text, mine: true, ts: Date.now(), ...extra }]);
+    conn.current?.sendChat(text, opts);
   }
 
   function send() {
     const text = draft.trim();
     if (!text) return;
-    postChat(text);
+    postChat(text, { replyTo: replyTo ?? undefined });
     setDraft("");
+    setReplyTo(null);
     stopTyping();
+  }
+
+  // reply targets carry a snapshot (from + truncated text) so the quote renders
+  // for everyone, even bears who never received the original message.
+  function startReply(msg: Message) {
+    if (msg.type !== "chat") return;
+    const from = msg.mine ? identity?.name ?? "You" : msg.from ?? "bear";
+    setReplyTo({ mid: msg.mid, from, text: msg.text.slice(0, 200) });
+  }
+
+  function copyMessage(msg: Message) {
+    navigator.clipboard?.writeText(msg.text).catch(() => {});
+  }
+
+  function sendReaction(emoji: string) {
+    conn.current?.sendReaction(emoji);
+    setEmojiOpen(false);
+  }
+
+  // scroll the quoted message into view and flash it; no-op if it's scrolled off history
+  function jumpTo(mid: string) {
+    const el = feedRef.current?.querySelector<HTMLElement>(`[data-mid="${CSS.escape(mid)}"]`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    setHighlightMid(mid);
+    if (highlightTimer.current) clearTimeout(highlightTimer.current);
+    highlightTimer.current = setTimeout(() => setHighlightMid(null), 1400);
   }
 
   async function copyInvite() {
@@ -350,7 +393,17 @@ export function SidePanel() {
         {messages.map((msg, i) => {
           const prev = messages[i - 1];
           const grouped = msg.type === "chat" && prev?.type === "chat" && sender(prev) === sender(msg);
-          return <ChatLine key={msg.id} msg={msg} members={members} grouped={grouped} />;
+          return (
+            <ChatLine
+              key={msg.id}
+              msg={msg}
+              members={members}
+              grouped={grouped}
+              highlighted={msg.mid != null && msg.mid === highlightMid}
+              onContext={(m, anchor) => setMenu({ msg: m, anchor })}
+              onJumpTo={jumpTo}
+            />
+          );
         })}
       </div>
 
@@ -367,18 +420,48 @@ export function SidePanel() {
         )}
       </div>
 
-      <div className="flex gap-1.5 px-3 pt-1.5">
-        {REACTIONS.map((emoji) => (
+      <div className="relative flex items-center gap-1.5 px-3 pt-1.5">
+        {QUICK_REACTIONS.map((emoji) => (
           <button
             type="button"
             key={emoji}
-            onClick={() => conn.current?.sendReaction(emoji)}
+            onClick={() => sendReaction(emoji)}
             className="flex-1 rounded-[11px] border border-wb-line bg-wb-panel py-1 text-[14px] transition-all hover:-translate-y-0.5 hover:scale-110 hover:border-[rgba(255,178,62,.26)] hover:bg-wb-panel2 hover:animate-wb-wiggle active:scale-90"
           >
             {emoji}
           </button>
         ))}
+        <button
+          type="button"
+          onClick={() => setEmojiOpen((v) => !v)}
+          title="More reactions"
+          className={`flex shrink-0 items-center justify-center rounded-[11px] border px-2 py-1 transition-all active:scale-90 ${
+            emojiOpen
+              ? "border-[rgba(255,178,62,.45)] bg-[rgba(255,178,62,.15)] text-wb-honey"
+              : "border-wb-line bg-wb-panel text-wb-dim hover:border-[rgba(255,178,62,.26)] hover:bg-wb-panel2 hover:text-wb-text"
+          }`}
+        >
+          <IconSmilePlus className="h-[15px] w-[15px]" />
+        </button>
+        {emojiOpen && <EmojiPicker onPick={sendReaction} onClose={() => setEmojiOpen(false)} />}
       </div>
+
+      {replyTo && (
+        <div className="mx-3 mt-2 flex animate-wb-slide-down items-center gap-2 rounded-[11px] border-l-2 border-wb-honey bg-[rgba(255,220,180,.06)] px-2.5 py-1.5">
+          <div className="min-w-0 flex-1">
+            <div className="text-[10.5px] font-bold text-wb-honey">Replying to {replyTo.from}</div>
+            <div className="truncate text-[11.5px] font-medium text-wb-faint">{replyTo.text}</div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setReplyTo(null)}
+            aria-label="cancel reply"
+            className="shrink-0 rounded-[8px] p-1 text-wb-faint transition-colors hover:text-wb-coral"
+          >
+            <IconX className="h-[14px] w-[14px]" />
+          </button>
+        </div>
+      )}
 
       <form
         onSubmit={(e) => {
@@ -408,6 +491,16 @@ export function SidePanel() {
           <IconSend className="h-4 w-4" />
         </button>
       </form>
+
+      {menu && (
+        <MessageMenu
+          anchor={menu.anchor}
+          canCopy={menu.msg.text.length > 0}
+          onReply={() => startReply(menu.msg)}
+          onCopy={() => copyMessage(menu.msg)}
+          onClose={() => setMenu(null)}
+        />
+      )}
     </div>
   );
 }

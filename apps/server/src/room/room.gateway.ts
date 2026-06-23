@@ -25,7 +25,15 @@ interface Content {
   title: string;
 }
 
-const REACTIONS = new Set(['🐻', '😂', '❤️', '😱', '😢', '😍', '😡']);
+// curated set the emoji picker can send as floating reactions. keep in sync with
+// REACTION_EMOJI in the extension (apps/extension/src/lib/emoji.ts).
+const REACTIONS = new Set([
+  '🐻', '😂', '❤️', '😱', '😢', '😍', '😡', '👍', '👎', '🔥',
+  '🎉', '👏', '🙌', '🤯', '😴', '🥱', '🤔', '😮', '😅', '😭',
+  '🥺', '😎', '🤩', '😇', '🙃', '😏', '😬', '🤣', '💀', '👀',
+  '✨', '⭐', '💯', '🙏', '🤝', '💪', '🍿', '☕', '🎬', '📺',
+  '🐾', '🍯', '🌙', '⚡', '💖', '💔', '🫶', '🤡', '🥳', '😤',
+]);
 const MAX_ROOMS = 5_000;
 const MAX_MEMBERS_PER_ROOM = 50;
 const RATE_LIMIT = 25;
@@ -114,12 +122,12 @@ export class RoomGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('chat:send')
-  handleChat(@ConnectedSocket() client: Socket, @MessageBody() { text }: ChatDto) {
+  handleChat(@ConnectedSocket() client: Socket, @MessageBody() { text, mid, replyTo }: ChatDto) {
     if (!this.withinRate(client)) return;
     const code = this.socketRoom.get(client.id);
     const member = code ? this.rooms.get(code)?.get(client.id) : undefined;
     if (!code || !member) return;
-    client.to(code).emit('chat:message', { fromId: client.id, from: member.name, text });
+    client.to(code).emit('chat:message', { fromId: client.id, from: member.name, text, mid, replyTo });
   }
 
   @SubscribeMessage('reaction:send')

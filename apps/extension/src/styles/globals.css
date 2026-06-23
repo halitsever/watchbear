@@ -175,12 +175,27 @@
       transform: none;
     }
   }
+
+  @keyframes wb-flash {
+    0%,
+    100% {
+      background-color: transparent;
+    }
+    25% {
+      background-color: rgba(255, 178, 62, 0.18);
+    }
+  }
 }
 
 html,
 body {
   margin: 0;
   font-family: var(--font-nunito);
+}
+
+/* brief honey glow when a reply jumps you to the quoted message */
+.wb-flash {
+  animation: wb-flash 1.4s ease-out;
 }
 
 /* honey->cream sweep for the "bear" wordmark; pair with animate-wb-shimmer */

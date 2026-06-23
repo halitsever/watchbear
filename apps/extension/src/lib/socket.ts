@@ -1,5 +1,5 @@
 import { io, type Socket } from 'socket.io-client';
-import type { Member } from './types';
+import type { Member, ReplyRef } from './types';
 import type { Identity } from './identity';
 
 // the server url is chosen at runtime (self-host), so every entry point takes it
@@ -23,6 +23,14 @@ interface ChatPayload {
   fromId: string;
   from: string;
   text: string;
+  mid?: string;
+  replyTo?: ReplyRef;
+}
+
+// extra fields a chat message can carry beyond its text
+export interface ChatOpts {
+  mid?: string;
+  replyTo?: ReplyRef;
 }
 
 interface TypingPayload {
@@ -43,7 +51,7 @@ export interface RoomHandlers {
 }
 
 export interface RoomConnection {
-  sendChat: (text: string) => void;
+  sendChat: (text: string, opts?: ChatOpts) => void;
   sendTyping: (typing: boolean) => void;
   sendReaction: (emoji: string) => void;
   disconnect: () => void;
@@ -125,7 +133,7 @@ export function joinRoom(serverUrl: string, code: string, member: Identity, hand
   socket.on('room:content', (c: VideoContentInfo) => handlers.onContent(c));
 
   return {
-    sendChat: (text) => socket.emit('chat:send', { text }),
+    sendChat: (text, opts) => socket.emit('chat:send', { text, ...opts }),
     sendTyping: (typing) => socket.emit('chat:typing', { typing }),
     sendReaction: (emoji) => socket.emit('reaction:send', { emoji }),
     disconnect: () => {

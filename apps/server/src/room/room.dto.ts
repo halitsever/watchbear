@@ -74,10 +74,39 @@ export class VideoContentDto {
   title!: string;
 }
 
+// the quoted message a reply points at. carried as a snapshot (not just an id)
+// because chat history isn't stored server-side, so a late joiner can still see it.
+export class ReplyToDto {
+  @IsString()
+  @MaxLength(64)
+  @IsOptional()
+  mid?: string;
+
+  @IsString()
+  @MaxLength(24)
+  from!: string;
+
+  @IsString()
+  @MaxLength(200)
+  text!: string;
+}
+
 export class ChatDto {
   @IsString()
   @MaxLength(500)
   text!: string;
+
+  // shared cross-client id the sender mints, so a reply can reference the same
+  // message on every client (also used to scroll/highlight the original).
+  @IsString()
+  @MaxLength(64)
+  @IsOptional()
+  mid?: string;
+
+  @ValidateNested()
+  @Type(() => ReplyToDto)
+  @IsOptional()
+  replyTo?: ReplyToDto;
 }
 
 export class TypingDto {

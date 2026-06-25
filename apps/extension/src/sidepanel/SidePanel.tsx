@@ -12,9 +12,10 @@ import { MemberChip } from "@/components/MemberChip";
 import { ChatLine } from "@/components/ChatLine";
 import { MessageMenu, type MenuAnchor } from "@/components/MessageMenu";
 import { EmojiPicker } from "@/components/EmojiPicker";
+import { IdentityEditor } from "@/components/IdentityEditor";
 import { useRoomState } from "@/hooks/useRoomState";
 import { getActiveTab, getVideoTime, sendToBackground, sendToTab } from "@/lib/messages";
-import { getIdentity, type Identity } from "@/lib/identity";
+import { getIdentity, setIdentityName, setIdentityCharacter, type Identity } from "@/lib/identity";
 import { buildInviteLink, STORAGE_KEYS } from "@/lib/room";
 import { getServerUrl } from "@/lib/server";
 import { joinRoom, type RoomConnection, type ConnStatus, type VideoContentInfo, type ChatOpts } from "@/lib/socket";
@@ -49,6 +50,8 @@ function formatTime(sec: number): string {
 export function SidePanel() {
   const { inRoom, roomCode } = useRoomState();
   const [identity, setIdentity] = useState<Identity | null>(null);
+  // editable copy shown in the in-room editor; committed to `identity` on Save
+  const [identityDraft, setIdentityDraft] = useState<Identity | null>(null);
   const [serverUrl, setServerUrl] = useState<string | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -63,7 +66,11 @@ export function SidePanel() {
   const [replyTo, setReplyTo] = useState<ReplyRef | null>(null);
   const [menu, setMenu] = useState<{ msg: Message; anchor: MenuAnchor } | null>(null);
   const [emojiOpen, setEmojiOpen] = useState(false);
+  // the identity editor is hidden until you click your own bear chip
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [editorClosing, setEditorClosing] = useState(false);
   const [highlightMid, setHighlightMid] = useState<string | null>(null);
+  const editorTimer = useRef<number>(0);
   const activeTabId = useRef<number | null>(null);
   const highlightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const msgId = useRef(0);
@@ -73,19 +80,29 @@ export function SidePanel() {
   const typerTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const lastTypingSent = useRef(0);
   const typingStopTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // the join effect reads identity from this ref so an in-room name/bear edit doesn't
+  // change a dependency and force a disconnect/rejoin (which would spam join/leave).
+  const identityRef = useRef<Identity | null>(null);
 
   const nextId = () => ++msgId.current;
+  // only the null -> loaded transition should (re)open the connection, not later edits
+  const identityReady = identity != null;
 
   useEffect(() => {
-    void getIdentity().then(setIdentity);
+    void getIdentity().then((id) => {
+      identityRef.current = id;
+      setIdentity(id);
+      setIdentityDraft(id);
+    });
     void getServerUrl().then(setServerUrl);
   }, []);
 
   // optimistic local state until the server sends the real roster
   useEffect(() => {
-    if (inRoom && roomCode && identity) {
+    const id = identityRef.current;
+    if (inRoom && roomCode && id) {
       msgId.current = 0;
-      setMembers([{ ...identity, you: true, host: true }]);
+      setMembers([{ ...id, you: true, host: true }]);
       setMessages([{ id: nextId(), type: "system", text: `🐻 Bear Den opened · code ${roomCode}` }]);
     } else {
       setMembers([]);
@@ -93,13 +110,14 @@ export function SidePanel() {
       setContent(null);
       clearTypers();
     }
-  }, [inRoom, roomCode, identity]);
+  }, [inRoom, roomCode, identityReady]);
 
   // live room over websocket
   useEffect(() => {
-    if (!inRoom || !roomCode || !identity || !serverUrl) return;
+    const id = identityRef.current;
+    if (!inRoom || !roomCode || !id || !serverUrl) return;
     setStatus("connecting");
-    conn.current = joinRoom(serverUrl, roomCode, identity, {
+    conn.current = joinRoom(serverUrl, roomCode, id, {
       onMembers: (list, selfId) => setMembers(list.map((m) => ({ ...m, you: m.id === selfId }))),
       onChat: ({ from, text, mid, replyTo: r }) =>
         setMessages((m) => [...m, { id: nextId(), mid, type: "chat", from, text, ts: Date.now(), replyTo: r }]),
@@ -115,7 +133,7 @@ export function SidePanel() {
       lastTypingSent.current = 0;
       clearTypers();
     };
-  }, [inRoom, roomCode, identity, serverUrl]);
+  }, [inRoom, roomCode, identityReady, serverUrl]);
 
   useEffect(() => {
     const el = feedRef.current;
@@ -201,6 +219,61 @@ export function SidePanel() {
     lastTypingSent.current = 0;
     conn.current?.sendTyping(false);
   }
+
+  // play the exit animation, then unmount once it finishes (mirrors the popup bear picker)
+  function closeEditor() {
+    setEditorClosing(true);
+    window.clearTimeout(editorTimer.current);
+    editorTimer.current = window.setTimeout(() => {
+      setEditorOpen(false);
+      setEditorClosing(false);
+    }, 200);
+  }
+
+  function openEditor() {
+    window.clearTimeout(editorTimer.current);
+    setEditorClosing(false);
+    setIdentityDraft(identity); // start clean from the saved identity
+    setEditorOpen(true);
+  }
+
+  function toggleEditor() {
+    if (editorOpen && !editorClosing) closeEditor();
+    else openEditor();
+  }
+
+  // the editor only touches the draft; nothing is persisted or broadcast until Save
+  function changeDraftName(value: string) {
+    setIdentityDraft((d) => (d ? { ...d, name: value } : d));
+  }
+
+  function changeDraftBear(fur: string, furDark: string) {
+    setIdentityDraft((d) => (d ? { ...d, fur, furDark } : d));
+  }
+
+  // commit the draft: persist, update the local "you" chip, and announce to the den once
+  function saveIdentity() {
+    if (!identityDraft) return;
+    const name = identityDraft.name.trim();
+    if (!name) return;
+    const next: Identity = { ...identityDraft, name };
+    identityRef.current = next;
+    setIdentity(next);
+    setIdentityDraft(next);
+    void setIdentityName(name);
+    void setIdentityCharacter(next.fur, next.furDark);
+    setMembers((ms) => ms.map((m) => (m.you ? { ...m, name, fur: next.fur, furDark: next.furDark } : m)));
+    conn.current?.updateMember(next);
+    closeEditor();
+  }
+
+  // Save is live only when the draft is a valid, actual change from the saved identity
+  const draftName = identityDraft?.name.trim() ?? "";
+  const identityDirty =
+    !!identityDraft &&
+    !!identity &&
+    draftName.length > 0 &&
+    (draftName !== identity.name || identityDraft.fur !== identity.fur || identityDraft.furDark !== identity.furDark);
 
   function postChat(text: string, extra?: { replyTo?: ReplyRef }) {
     const from = identity?.name ?? "You";
@@ -343,9 +416,20 @@ export function SidePanel() {
       )}
 
       <div className="border-b border-wb-line px-3 py-2.5">
+        {editorOpen && identityDraft && (
+          <div className={`mb-2.5 origin-top ${editorClosing ? "animate-wb-pop-out" : "animate-wb-pop-in"}`}>
+            <IdentityEditor
+              identity={identityDraft}
+              onChangeName={changeDraftName}
+              onChangeBear={changeDraftBear}
+              onSave={saveIdentity}
+              saveDisabled={!identityDirty}
+            />
+          </div>
+        )}
         <div className="mb-2 flex flex-wrap items-center gap-1.5">
           {members.map((m) => (
-            <MemberChip key={m.id ?? m.name} m={m} />
+            <MemberChip key={m.id ?? m.name} m={m} onEdit={m.you ? toggleEditor : undefined} />
           ))}
           <span className="ml-0.5 text-[12px] font-semibold text-wb-faint">
             {members.length} {members.length === 1 ? "bear" : "bears"}

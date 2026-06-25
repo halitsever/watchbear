@@ -30,6 +30,14 @@ export class JoinDto {
   member!: MemberDto;
 }
 
+// in-room identity change; the code is read from the server-tracked socket binding,
+// never the payload, so a client can only update its own member in its own room.
+export class MemberUpdateDto {
+  @ValidateNested()
+  @Type(() => MemberDto)
+  member!: MemberDto;
+}
+
 export class SubscribeDto {
   @IsString()
   @Matches(CODE)

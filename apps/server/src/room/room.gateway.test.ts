@@ -122,6 +122,32 @@ describe('RoomGateway membership', () => {
     expect(sink.some((e) => e.event === 'reaction:show')).toBe(false);
   });
 
+  it('updates a member in place and announces a rename', () => {
+    const a = makeClient(sink);
+    gw.handleJoin(a, { code: CODE, member: member('A') });
+    sink.length = 0;
+    gw.handleMemberUpdate(a, { member: { name: 'Cocoa', fur: '#7A4A2B', furDark: '#5E3720' } });
+    const stored = rooms().get(CODE)!.get(a.id)! as unknown as { name: string; fur: string };
+    expect(stored.name).toBe('Cocoa');
+    expect(stored.fur).toBe('#7A4A2B');
+    expect(sink.some((e) => e.event === 'room:members')).toBe(true);
+    expect(sink.some((e) => e.event === 'room:system' && (e.payload as { text: string }).text === '🐻 A is now Cocoa')).toBe(true);
+  });
+
+  it('announces a look change when only the bear changes', () => {
+    const a = makeClient(sink);
+    gw.handleJoin(a, { code: CODE, member: member('A') });
+    sink.length = 0;
+    gw.handleMemberUpdate(a, { member: { name: 'A', fur: '#7A4A2B', furDark: '#5E3720' } });
+    expect(sink.some((e) => e.event === 'room:system' && (e.payload as { text: string }).text === '🐻 A changed their look')).toBe(true);
+  });
+
+  it('ignores a member update from a socket that never joined', () => {
+    const stranger = makeClient(sink);
+    gw.handleMemberUpdate(stranger, { member: member('ghost') });
+    expect(sink.some((e) => e.event === 'room:members')).toBe(false);
+  });
+
   it('clears the typing dots when a typing member disconnects', () => {
     const a = makeClient(sink);
     gw.handleJoin(a, { code: CODE, member: member('A') });

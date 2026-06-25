@@ -54,6 +54,8 @@ export interface RoomConnection {
   sendChat: (text: string, opts?: ChatOpts) => void;
   sendTyping: (typing: boolean) => void;
   sendReaction: (emoji: string) => void;
+  // push a name/bear change to the room without rejoining
+  updateMember: (member: Identity) => void;
   disconnect: () => void;
 }
 
@@ -136,6 +138,7 @@ export function joinRoom(serverUrl: string, code: string, member: Identity, hand
     sendChat: (text, opts) => socket.emit('chat:send', { text, ...opts }),
     sendTyping: (typing) => socket.emit('chat:typing', { typing }),
     sendReaction: (emoji) => socket.emit('reaction:send', { emoji }),
+    updateMember: (member) => socket.emit('member:update', { member }),
     disconnect: () => {
       socket.emit('room:leave');
       socket.disconnect();

@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { corsOrigin } from '../cors';
-import { ChatDto, JoinDto, ReactionDto, SubscribeDto, TypingDto, VideoContentDto, VideoControlDto } from './room.dto';
+import { ChatDto, JoinDto, MemberUpdateDto, ReactionDto, SubscribeDto, TypingDto, VideoContentDto, VideoControlDto } from './room.dto';
 
 interface Member {
   id: string;
@@ -119,6 +119,23 @@ export class RoomGateway implements OnGatewayDisconnect {
   @SubscribeMessage('room:leave')
   handleLeave(@ConnectedSocket() client: Socket) {
     this.removeFromRoom(client);
+  }
+
+  // a member changed their name and/or bear without leaving; update the roster in
+  // place and rebroadcast so everyone sees it live.
+  @SubscribeMessage('member:update')
+  handleMemberUpdate(@ConnectedSocket() client: Socket, @MessageBody() { member }: MemberUpdateDto) {
+    if (!this.withinRate(client)) return;
+    const code = this.socketRoom.get(client.id);
+    const current = code ? this.rooms.get(code)?.get(client.id) : undefined;
+    if (!code || !current) return;
+    const prevName = current.name;
+    current.name = member.name;
+    current.fur = member.fur;
+    current.furDark = member.furDark;
+    this.broadcastMembers(code);
+    const text = prevName !== member.name ? `🐻 ${prevName} is now ${member.name}` : `🐻 ${member.name} changed their look`;
+    client.to(code).emit('room:system', { text });
   }
 
   @SubscribeMessage('chat:send')

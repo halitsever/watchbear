@@ -58,80 +58,115 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "Watchbear",
-        "description": "Watchbear is a free watch together Chrome extension. Start a watch party, share a code, and stream videos in perfect sync with friends, with live chat and reactions built in.",
-        "applicationCategory": "BrowserApplication",
-        "operatingSystem": "Chrome",
-        "browserRequirements": "Requires Google Chrome",
-        "url": "https://watchbear.deepfeld.com/",
-        "downloadUrl": "https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn",
-        "image": "https://watchbear.deepfeld.com/og.png",
-        "isAccessibleForFree": true,
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "featureList": ["Synced video playback across everyone in the room", "Invite friends with a room code, no account needed", "Live chat and reactions next to the video"]
-      }
-    </script>
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Watchbear",
-        "url": "https://watchbear.deepfeld.com/"
-      }
-    </script>
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
+        "@graph": [
           {
-            "@type": "Question",
-            "name": "What is Watchbear?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Watchbear is a free watch together Chrome extension. You start a room, share the code with friends, and everyone's video stays in sync while you chat and react in a side panel."
-            }
+            "@type": "Organization",
+            "@id": "https://watchbear.deepfeld.com/#org",
+            "name": "Watchbear",
+            "url": "https://watchbear.deepfeld.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://watchbear.deepfeld.com/og.png",
+              "width": 1200,
+              "height": 630
+            },
+            "description": "Watchbear makes a free watch together Chrome extension for synced watch parties with live chat and reactions.",
+            "sameAs": [
+              "https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn",
+              "https://github.com/halitsever/watchbear"
+            ]
           },
           {
-            "@type": "Question",
-            "name": "Is Watchbear free to use?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. Watchbear is completely free for hosting a watch party. It syncs playback and adds live chat and reactions, with no account required."
-            }
+            "@type": "WebSite",
+            "@id": "https://watchbear.deepfeld.com/#website",
+            "name": "Watchbear",
+            "url": "https://watchbear.deepfeld.com/",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://watchbear.deepfeld.com/#org" }
           },
           {
-            "@type": "Question",
-            "name": "How do I watch videos together with friends online?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Install the Chrome extension, open a video, start a Bear Den, and share the room code. Your friends join with the code and watch in perfect sync."
-            }
+            "@type": "SoftwareApplication",
+            "@id": "https://watchbear.deepfeld.com/#app",
+            "name": "Watchbear",
+            "description": "Watchbear is a free watch together Chrome extension. Start a watch party, share a code, and stream videos in perfect sync with friends, with live chat and reactions built in.",
+            "applicationCategory": "BrowserApplication",
+            "operatingSystem": "Chrome",
+            "browserRequirements": "Requires Google Chrome",
+            "url": "https://watchbear.deepfeld.com/",
+            "downloadUrl": "https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn",
+            "image": "https://watchbear.deepfeld.com/og.png",
+            "isAccessibleForFree": true,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+            "publisher": { "@id": "https://watchbear.deepfeld.com/#org" },
+            "author": { "@id": "https://watchbear.deepfeld.com/#org" },
+            "featureList": ["Synced video playback across everyone in the room", "Invite friends with a room code, no account needed", "Live chat and reactions next to the video"]
           },
           {
-            "@type": "Question",
-            "name": "Which sites does Watchbear work with?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Watchbear works on YouTube, Vimeo, and most sites that have a standard video player. It automatically finds the main video on the page and keeps it in sync."
-            }
+            "@type": "WebPage",
+            "@id": "https://watchbear.deepfeld.com/#webpage",
+            "url": "https://watchbear.deepfeld.com/",
+            "name": "Watchbear · Watch Together Chrome Extension for Watch Parties",
+            "description": "Watchbear is a free watch together Chrome extension. Start a watch party, share a code, and stream videos in perfect sync with friends, with live chat and reactions built in. No account needed.",
+            "inLanguage": "en",
+            "isPartOf": { "@id": "https://watchbear.deepfeld.com/#website" },
+            "about": { "@id": "https://watchbear.deepfeld.com/#app" },
+            "primaryImageOfPage": "https://watchbear.deepfeld.com/og.png"
           },
           {
-            "@type": "Question",
-            "name": "Do my friends need an account to join?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. There are no accounts or sign-ups. Anyone with the room code can join the watch party in seconds."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Does playback stay in sync?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. When anyone plays, pauses, or skips, everyone's screen follows so the whole room stays on the exact same frame."
-            }
+            "@type": "FAQPage",
+            "@id": "https://watchbear.deepfeld.com/#faq",
+            "inLanguage": "en",
+            "isPartOf": { "@id": "https://watchbear.deepfeld.com/#website" },
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is Watchbear?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Watchbear is a free watch together Chrome extension. You start a room, share the code with friends, and everyone's video stays in sync while you chat and react in a side panel."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is Watchbear free to use?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Watchbear is completely free for hosting a watch party. It syncs playback and adds live chat and reactions, with no account required."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I watch videos together with friends online?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Install the Chrome extension, open a video, start a Bear Den, and share the room code. Your friends join with the code and watch in perfect sync."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which sites does Watchbear work with?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Watchbear works on YouTube, Vimeo, and most sites that have a standard video player. It automatically finds the main video on the page and keeps it in sync."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do my friends need an account to join?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. There are no accounts or sign-ups. Anyone with the room code can join the watch party in seconds."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does playback stay in sync?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. When anyone plays, pauses, or skips, everyone's screen follows so the whole room stays on the exact same frame."
+                }
+              }
+            ]
           }
         ]
       }

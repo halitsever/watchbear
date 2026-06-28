@@ -79,10 +79,15 @@ export async function loginWithGoogle(): Promise<AuthUser> {
   return stored.user;
 }
 
+interface LoginResult {
+  ok: boolean;
+  error?: string;
+}
+
 // the popup closes when launchWebAuthFlow takes focus, killing the flow; run it in the
 // background instead and let useAuth pick up the stored session via storage events
-export async function requestGoogleLogin(): Promise<{ ok: boolean; error?: string }> {
-  const res = (await chrome.runtime.sendMessage({ type: 'WB_LOGIN' })) as { ok: boolean; error?: string } | undefined;
+export async function requestGoogleLogin(): Promise<LoginResult> {
+  const res = await chrome.runtime.sendMessage<{ type: 'WB_LOGIN' }, LoginResult | undefined>({ type: 'WB_LOGIN' });
   return res ?? { ok: false };
 }
 

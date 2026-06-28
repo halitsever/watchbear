@@ -2,6 +2,7 @@ export interface Identity {
   name: string;
   fur: string;
   furDark: string;
+  avatar?: string;
 }
 
 export const BEARS: Identity[] = [
@@ -15,8 +16,7 @@ export const BEARS: Identity[] = [
   { name: 'Olive', fur: '#A7B07A', furDark: '#838C58' },
 ];
 
-// stable per-browser identity in storage so name/fur survive reconnects and panel
-// reopens. fur is random; name defaults to a random bear until the user picks one.
+// stable per-browser identity in storage; defaults to a random bear until the user picks one
 export async function getIdentity(): Promise<Identity> {
   const data = await chrome.storage.local.get('wb_identity');
   const stored = data.wb_identity as Partial<Identity> | undefined;
@@ -43,4 +43,12 @@ export async function setIdentityName(name: string): Promise<void> {
 export async function setIdentityCharacter(fur: string, furDark: string): Promise<void> {
   const current = await getIdentity();
   await chrome.storage.local.set({ wb_identity: { ...current, fur, furDark } });
+}
+
+export async function setIdentityAvatar(avatar?: string): Promise<void> {
+  const current = await getIdentity();
+  const next: Identity = { ...current };
+  if (avatar) next.avatar = avatar;
+  else delete next.avatar;
+  await chrome.storage.local.set({ wb_identity: next });
 }

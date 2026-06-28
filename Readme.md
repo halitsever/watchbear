@@ -48,8 +48,8 @@ pnpm install
 **Extension**
 
 ```bash
-pnpm dev:ext      # Vite dev server with HMR (outputs apps/extension/dist)
-pnpm build:ext    # production build
+pnpm dev:ext
+pnpm build:ext
 ```
 
 Then open `chrome://extensions`, enable Developer mode, and **Load unpacked** â†’
@@ -58,7 +58,7 @@ Then open `chrome://extensions`, enable Developer mode, and **Load unpacked** â†
 **Server**
 
 ```bash
-pnpm dev:server   # nest start --watch
+pnpm dev:server
 pnpm build:server
 ```
 

@@ -2,12 +2,15 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { AuthService, type AuthUser } from '../auth/auth.service';
+import { attachUser } from '../auth/ws-auth';
 import { corsOrigin } from '../cors';
 import { ChatDto, JoinDto, MemberUpdateDto, ReactionDto, SubscribeDto, TypingDto, VideoContentDto, VideoControlDto } from './room.dto';
 
@@ -16,6 +19,7 @@ interface Member {
   name: string;
   fur: string;
   furDark: string;
+  avatar?: string;
   host: boolean;
 }
 
@@ -25,8 +29,7 @@ interface Content {
   title: string;
 }
 
-// curated set the emoji picker can send as floating reactions. keep in sync with
-// REACTION_EMOJI in the extension (apps/extension/src/lib/emoji.ts).
+// keep in sync with REACTION_EMOJI in the extension (apps/extension/src/lib/emoji.ts)
 const REACTIONS = new Set([
   '🐻', '😂', '❤️', '😱', '😢', '😍', '😡', '👍', '👎', '🔥',
   '🎉', '👏', '🙌', '🤯', '😴', '🥱', '🤔', '😮', '😅', '😭',
@@ -34,6 +37,22 @@ const REACTIONS = new Set([
   '✨', '⭐', '💯', '🙏', '🤝', '💪', '🍿', '☕', '🎬', '📺',
   '🐾', '🍯', '🌙', '⚡', '💖', '💔', '🫶', '🤡', '🥳', '😤',
 ]);
+// keep in sync with BEARS in the extension (apps/extension/src/lib/identity.ts)
+const BEARS = [
+  { name: 'Cinnamon', fur: '#C06B3A', furDark: '#9E5328' },
+  { name: 'Cocoa', fur: '#7A4A2B', furDark: '#5E3720' },
+  { name: 'Pumpkin', fur: '#D9A441', furDark: '#B6822A' },
+  { name: 'Maple', fur: '#C98A4B', furDark: '#A86B30' },
+  { name: 'Hazel', fur: '#B97C43', furDark: '#9A6230' },
+  { name: 'Cloud', fur: '#E6DCCB', furDark: '#CDBFA8' },
+  { name: 'Smoke', fur: '#9AA0A6', furDark: '#757B80' },
+  { name: 'Olive', fur: '#A7B07A', furDark: '#838C58' },
+];
+
+function randomBear() {
+  return BEARS[Math.floor(Math.random() * BEARS.length)];
+}
+
 const MAX_ROOMS = 5_000;
 const MAX_MEMBERS_PER_ROOM = 50;
 const RATE_LIMIT = 25;
@@ -52,17 +71,27 @@ function formatTime(t: number): string {
 
 @WebSocketGateway({ cors: { origin: corsOrigin }, maxHttpBufferSize: 16 * 1024 })
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }))
-export class RoomGateway implements OnGatewayDisconnect {
+export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server!: Server;
+
+  constructor(private readonly auth: AuthService) {}
+
+  // synchronous so the user is resolved before room:join is dispatched
+  handleConnection(client: Socket) {
+    try {
+      attachUser(client, this.auth);
+    } catch {
+      // never block a connection on auth
+    }
+  }
 
   private readonly rooms = new Map<string, Map<string, Member>>();
   private readonly socketRoom = new Map<string, string>();
-  // one playback state per room, keyed by code; control relays to everyone in it
   private readonly videoState = new Map<string, { time: number; paused: boolean; rate?: number; updatedAt: number }>();
   private readonly socketContent = new Map<string, Content>();
-  // the bear name carried on a video socket, used to attribute control events in chat
+  // bear name on a video socket, used to attribute control events in chat
   private readonly socketName = new Map<string, string>();
-  // the den's canonical "now playing", defined by the anchor (party starter).
+  // the den's canonical "now playing", defined by the anchor
   private readonly roomContent = new Map<string, Content>();
   private readonly roomAnchor = new Map<string, string>();
   private readonly hits = new Map<string, { count: number; reset: number }>();
@@ -80,8 +109,16 @@ export class RoomGateway implements OnGatewayDisconnect {
     return ids;
   }
 
-  // crude per-socket sliding window so one client can't flood join/chat/control;
-  // @nestjs/throttler has no first-class ws path, so an inline limiter is simpler.
+  private userOf(client: Socket): AuthUser | undefined {
+    return (client.data as { user?: AuthUser }).user;
+  }
+
+  // logged-in members can always customize; otherwise it depends on the auth policy
+  private canCustomize(client: Socket): boolean {
+    return !this.auth.customizeRequiresLogin() || !!this.userOf(client);
+  }
+
+  // crude per-socket sliding window; @nestjs/throttler has no first-class ws path
   private withinRate(client: Socket): boolean {
     const now = Date.now();
     const h = this.hits.get(client.id);
@@ -102,18 +139,23 @@ export class RoomGateway implements OnGatewayDisconnect {
     const room = existing ?? new Map<string, Member>();
     if (room.size >= MAX_MEMBERS_PER_ROOM) return;
 
+    // guests can't choose a name/color/avatar; ignore their payload and assign a random bear.
+    const custom = this.canCustomize(client);
+    const identity = custom ? member : randomBear();
+
     void client.join(code);
     this.socketRoom.set(client.id, code);
     room.set(client.id, {
       id: client.id,
-      name: member.name,
-      fur: member.fur,
-      furDark: member.furDark,
+      name: identity.name,
+      fur: identity.fur,
+      furDark: identity.furDark,
+      avatar: custom ? member.avatar : undefined,
       host: room.size === 0,
     });
     this.rooms.set(code, room);
     this.broadcastMembers(code);
-    client.to(code).emit('room:system', { text: `🐻 ${member.name} joined the den` });
+    client.to(code).emit('room:system', { text: `🐻 ${identity.name} joined the den` });
   }
 
   @SubscribeMessage('room:leave')
@@ -121,11 +163,10 @@ export class RoomGateway implements OnGatewayDisconnect {
     this.removeFromRoom(client);
   }
 
-  // a member changed their name and/or bear without leaving; update the roster in
-  // place and rebroadcast so everyone sees it live.
   @SubscribeMessage('member:update')
   handleMemberUpdate(@ConnectedSocket() client: Socket, @MessageBody() { member }: MemberUpdateDto) {
     if (!this.withinRate(client)) return;
+    if (!this.canCustomize(client)) return;
     const code = this.socketRoom.get(client.id);
     const current = code ? this.rooms.get(code)?.get(client.id) : undefined;
     if (!code || !current) return;
@@ -133,6 +174,7 @@ export class RoomGateway implements OnGatewayDisconnect {
     current.name = member.name;
     current.fur = member.fur;
     current.furDark = member.furDark;
+    current.avatar = member.avatar;
     this.broadcastMembers(code);
     const text = prevName !== member.name ? `🐻 ${prevName} is now ${member.name}` : `🐻 ${member.name} changed their look`;
     client.to(code).emit('room:system', { text });
@@ -164,9 +206,7 @@ export class RoomGateway implements OnGatewayDisconnect {
     client.to(code).emit('chat:typing', { fromId: client.id, from: member.name, typing });
   }
 
-  // silent video-sync channel, joins the room to receive control events without
-  // counting as a member. binding the socket to the code here is what later
-  // authorizes its video:control emits.
+  // binding the socket to the code here is what later authorizes its video:control emits
   @SubscribeMessage('video:subscribe')
   handleVideoSubscribe(@ConnectedSocket() client: Socket, @MessageBody() { code, anchor, key, url, title, name }: SubscribeDto) {
     if (!this.withinRate(client)) return;
@@ -180,7 +220,7 @@ export class RoomGateway implements OnGatewayDisconnect {
       // the anchor defines what the den watches; otherwise seed it if no one has yet
       if (anchor || !this.roomContent.has(code)) {
         if (anchor) this.roomAnchor.set(code, client.id);
-        this.setRoomContent(code, content); // broadcast tells the newcomer too
+        this.setRoomContent(code, content);
       } else {
         const canonical = this.roomContent.get(code);
         if (canonical) client.emit('room:content', canonical);
@@ -198,7 +238,7 @@ export class RoomGateway implements OnGatewayDisconnect {
     }
   }
 
-  // a client navigated to a different page/video; only the anchor moves the den label.
+  // only the anchor moves the den label
   @SubscribeMessage('video:content')
   handleVideoContent(@ConnectedSocket() client: Socket, @MessageBody() { key, url, title }: VideoContentDto) {
     if (!this.withinRate(client)) return;
@@ -212,8 +252,7 @@ export class RoomGateway implements OnGatewayDisconnect {
   @SubscribeMessage('video:control')
   handleVideoControl(@ConnectedSocket() client: Socket, @MessageBody() { time, paused, rate }: VideoControlDto) {
     if (!this.withinRate(client)) return;
-    // trust the server-tracked binding, never the code in the payload, so a client
-    // can only drive the room it actually joined or subscribed to.
+    // trust the server-tracked binding, never the payload code, so a client can't drive other rooms
     const code = this.socketRoom.get(client.id);
     if (!code) return;
 
@@ -226,8 +265,7 @@ export class RoomGateway implements OnGatewayDisconnect {
     client.to(code).emit('video:control', { time, paused, rate: nextRate });
   }
 
-  // turn a control event into a chat line ("Maple paused the video"), or undefined
-  // when the socket has no name or the move is too small to bother announcing.
+  // a chat line for a control event, or undefined when there's nothing worth announcing
   private describeControl(
     prev: { time: number; paused: boolean; rate?: number; updatedAt: number } | undefined,
     next: { time: number; paused: boolean; rate?: number },
@@ -276,8 +314,7 @@ export class RoomGateway implements OnGatewayDisconnect {
       if (room.size === 0) this.rooms.delete(code);
     }
 
-    // video side: reseat the anchor so remaining bears aren't stuck diverged,
-    // and tear the room's content down once nobody's watching anymore.
+    // reseat the anchor so remaining bears aren't stuck diverged, and tear down content when empty
     const remaining = this.contentSocketsIn(code);
     if (this.roomAnchor.get(code) === client.id) {
       this.roomAnchor.delete(code);

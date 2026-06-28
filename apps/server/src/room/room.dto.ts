@@ -1,8 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsNumber, IsOptional, IsString, Matches, Max, MaxLength, Min, ValidateNested } from 'class-validator';
 
-// WORD-XXXXXX, see generateCode in the extension. kept loose on the word/suffix
-// length so the format can evolve without breaking older clients.
+// WORD-XXXXXX (see generateCode in the extension); kept loose so the format can evolve
 const CODE = /^[A-Z]{2,8}-[A-Z0-9]{4,12}$/;
 const HEX = /^#[0-9a-fA-F]{6}$/;
 
@@ -18,6 +17,13 @@ export class MemberDto {
   @IsString()
   @Matches(HEX)
   furDark!: string;
+
+  // only honored for logged-in members (see gateway)
+  @IsString()
+  @MaxLength(512)
+  @Matches(/^https:\/\//)
+  @IsOptional()
+  avatar?: string;
 }
 
 export class JoinDto {
@@ -30,8 +36,8 @@ export class JoinDto {
   member!: MemberDto;
 }
 
-// in-room identity change; the code is read from the server-tracked socket binding,
-// never the payload, so a client can only update its own member in its own room.
+// no code field: it's read from the server-tracked socket binding, never the payload,
+// so a client can only update its own member in its own room
 export class MemberUpdateDto {
   @ValidateNested()
   @Type(() => MemberDto)
@@ -82,8 +88,7 @@ export class VideoContentDto {
   title!: string;
 }
 
-// the quoted message a reply points at. carried as a snapshot (not just an id)
-// because chat history isn't stored server-side, so a late joiner can still see it.
+// a snapshot, not just an id, since chat history isn't stored server-side
 export class ReplyToDto {
   @IsString()
   @MaxLength(64)
@@ -104,8 +109,7 @@ export class ChatDto {
   @MaxLength(500)
   text!: string;
 
-  // shared cross-client id the sender mints, so a reply can reference the same
-  // message on every client (also used to scroll/highlight the original).
+  // shared cross-client id so a reply can reference the same message everywhere
   @IsString()
   @MaxLength(64)
   @IsOptional()

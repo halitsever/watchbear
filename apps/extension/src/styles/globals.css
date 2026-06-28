@@ -28,7 +28,7 @@
 
   --animate-wb-pulse: wb-pulse 1.8s infinite;
   --animate-wb-spin: wb-spin 0.7s linear infinite;
-  --animate-wb-pop-in: wb-pop-in 0.14s ease-out;
+  --animate-wb-pop-in: wb-pop-in 0.14s ease-out backwards;
   --animate-wb-pop-out: wb-pop-out 0.2s ease-in forwards;
   --animate-wb-msg-in: wb-msg-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   --animate-wb-chip-in: wb-chip-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -39,6 +39,26 @@
   --animate-wb-shimmer: wb-shimmer 3.5s linear infinite;
   --animate-wb-breathe: wb-breathe 2.6s ease-in-out infinite;
   --animate-wb-fade-in: wb-fade-in 0.35s ease-out;
+  --animate-wb-backdrop-in: wb-backdrop-in 0.14s ease-out;
+  --animate-wb-backdrop-out: wb-backdrop-out 0.2s ease-in forwards;
+
+  @keyframes wb-backdrop-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes wb-backdrop-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
 
   @keyframes wb-pop-in {
     from {
@@ -191,6 +211,18 @@ html,
 body {
   margin: 0;
   font-family: var(--font-nunito);
+}
+
+/* every clickable element gets a pointer cursor; disabled controls stay default */
+@layer base {
+  button:not(:disabled),
+  [role='button'],
+  label,
+  select,
+  summary,
+  a[href] {
+    cursor: pointer;
+  }
 }
 
 /* brief honey glow when a reply jumps you to the quoted message */

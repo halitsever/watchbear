@@ -1,4 +1,4 @@
-import { BearFace } from './Bear';
+import { Avatar } from './Avatar';
 import { linkify } from '@/lib/linkify';
 import type { Member, Message } from '@/lib/types';
 import type { MenuAnchor } from './MessageMenu';
@@ -47,7 +47,7 @@ export function ChatLine({
       data-mid={msg.mid}
       className={`flex animate-wb-msg-in items-end gap-2 rounded-[14px] ${grouped ? 'mt-0.5' : 'mt-2'} ${mine ? 'flex-row-reverse' : 'flex-row'} ${highlighted ? 'wb-flash' : ''}`}
     >
-      {!mine && (grouped ? <span className="w-[24px] shrink-0" /> : <BearFace size={24} fur={m.fur} furDark={m.furDark} />)}
+      {!mine && (grouped ? <span className="w-[24px] shrink-0" /> : <Avatar size={24} fur={m.fur} furDark={m.furDark} avatar={(m as { avatar?: string }).avatar} />)}
       <div className="min-w-0 max-w-[76%]">
         {!mine && !grouped && <div className="mb-[3px] ml-1 text-[11px] font-bold text-wb-dim">{msg.from}</div>}
 

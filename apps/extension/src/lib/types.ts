@@ -3,12 +3,12 @@ export interface Member {
   name: string;
   fur: string;
   furDark: string;
+  avatar?: string;
   host?: boolean;
   you?: boolean;
 }
 
-// snapshot of the message a reply points at, carried inline so it renders even
-// for bears who never saw the original (chat history isn't persisted)
+// inline snapshot of the replied-to message, since chat history isn't persisted
 export interface ReplyRef {
   mid?: string;
   from: string;
@@ -17,7 +17,7 @@ export interface ReplyRef {
 
 export interface Message {
   id: number;
-  // shared cross-client id (chat only); lets a reply reference the same message everywhere
+  // shared cross-client id so a reply can reference the same message everywhere
   mid?: string;
   type: 'system' | 'chat';
   from?: string;

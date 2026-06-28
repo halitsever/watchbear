@@ -1,6 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { Server, Socket } from 'socket.io';
+import type { AuthService } from '../auth/auth.service';
 import { RoomGateway } from './room.gateway';
+
+// the gateway only calls verifyToken on connect; tests never set a handshake token.
+const fakeAuth = { verifyToken: () => null, isConfigured: () => true, customizeRequiresLogin: () => true } as unknown as AuthService;
+
+// enforcement disabled: guests keep their chosen name/color (extension-rollout mode)
+const lenientAuth = { verifyToken: () => null, isConfigured: () => true, customizeRequiresLogin: () => false } as unknown as AuthService;
 
 interface Emit {
   room?: string;
@@ -15,17 +22,21 @@ function makeServer(sink: Emit[]): Server {
 }
 
 let nextId = 0;
-function makeClient(sink: Emit[]): Socket {
+function makeClient(sink: Emit[], opts: { guest?: boolean } = {}): Socket {
   return {
     id: `sock-${nextId++}`,
-    join() {},
-    leave() {},
+    // logged-in by default so name/color assertions hold; pass guest:true to test enforcement.
+    data: opts.guest ? {} : { user: { id: 'u1', plan: 'free' } },
+    join() { },
+    leave() { },
     emit(event: string, payload?: unknown) {
       sink.push({ event, payload });
     },
     to: (room: string) => ({ emit: (event: string, payload?: unknown) => sink.push({ room, event, payload }) }),
   } as unknown as Socket;
 }
+
+const BEAR_NAMES = ['Cinnamon', 'Cocoa', 'Pumpkin', 'Maple', 'Hazel', 'Cloud', 'Smoke', 'Olive'];
 
 const CODE = 'BEAR-TEST01';
 const member = (name: string) => ({ name, fur: '#aabbcc', furDark: '#001122' });
@@ -35,7 +46,7 @@ describe('RoomGateway membership', () => {
   let sink: Emit[];
 
   beforeEach(() => {
-    gw = new RoomGateway();
+    gw = new RoomGateway(fakeAuth);
     sink = [];
     (gw as unknown as { server: Server }).server = makeServer(sink);
   });
@@ -155,6 +166,38 @@ describe('RoomGateway membership', () => {
     gw.handleDisconnect(a);
     expect(sink.some((e) => e.event === 'chat:typing' && (e.payload as { typing: boolean }).typing === false)).toBe(true);
   });
+
+  it('assigns a guest a random bear, ignoring their requested name, color and avatar', () => {
+    const guest = makeClient(sink, { guest: true });
+    gw.handleJoin(guest, { code: CODE, member: { name: 'Hacker', fur: '#000000', furDark: '#111111', avatar: 'https://evil/x.png' } });
+    const stored = rooms().get(CODE)!.get(guest.id)! as unknown as { name: string; fur: string; avatar?: string };
+    expect(stored.name).not.toBe('Hacker');
+    expect(stored.fur).not.toBe('#000000');
+    expect(stored.avatar).toBeUndefined();
+    expect(BEAR_NAMES).toContain(stored.name);
+  });
+
+  it('ignores a member update from a guest', () => {
+    const guest = makeClient(sink, { guest: true });
+    gw.handleJoin(guest, { code: CODE, member: member('ignored') });
+    const before = (rooms().get(CODE)!.get(guest.id)! as unknown as { name: string }).name;
+    sink.length = 0;
+    gw.handleMemberUpdate(guest, { member: { name: 'Custom', fur: '#7A4A2B', furDark: '#5E3720' } });
+    const after = (rooms().get(CODE)!.get(guest.id)! as unknown as { name: string }).name;
+    expect(after).toBe(before);
+    expect(sink.some((e) => e.event === 'room:members')).toBe(false);
+  });
+
+  it('keeps a guest chosen name when login is not enforced', () => {
+    const lenient = new RoomGateway(lenientAuth);
+    (lenient as unknown as { server: Server }).server = makeServer(sink);
+    const guest = makeClient(sink, { guest: true });
+    lenient.handleJoin(guest, { code: CODE, member: { name: 'Maple-Lover', fur: '#C06B3A', furDark: '#9E5328' } });
+    const roomsOf = (lenient as unknown as { rooms: Map<string, Map<string, { name: string; fur: string }>> }).rooms;
+    const stored = roomsOf.get(CODE)!.get(guest.id)!;
+    expect(stored.name).toBe('Maple-Lover');
+    expect(stored.fur).toBe('#C06B3A');
+  });
 });
 
 describe('RoomGateway video sync', () => {
@@ -162,7 +205,7 @@ describe('RoomGateway video sync', () => {
   let sink: Emit[];
 
   beforeEach(() => {
-    gw = new RoomGateway();
+    gw = new RoomGateway(fakeAuth);
     sink = [];
     (gw as unknown as { server: Server }).server = makeServer(sink);
   });
@@ -251,7 +294,7 @@ describe('RoomGateway video sync', () => {
 
 describe('RoomGateway rate limiting', () => {
   it('allows up to the limit then blocks within the window', () => {
-    const gw = new RoomGateway();
+    const gw = new RoomGateway(fakeAuth);
     const within = (gw as unknown as { withinRate: (c: Socket) => boolean }).withinRate.bind(gw);
     const client = makeClient([]);
     for (let i = 0; i < 25; i++) expect(within(client)).toBe(true);

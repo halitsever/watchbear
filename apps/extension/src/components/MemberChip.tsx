@@ -1,13 +1,12 @@
 import IconPencil from '~icons/lucide/pencil';
-import { BearFace } from './Bear';
+import { Avatar } from './Avatar';
 import type { Member } from '@/lib/types';
 
-// when onEdit is set (only your own chip) the chip becomes a button that opens the
-// identity editor, swapping the online dot for a pencil badge to hint it's editable.
+// onEdit is set only for your own chip, turning it into a button with a pencil badge
 export function MemberChip({ m, onEdit }: { m: Member; onEdit?: () => void }) {
   const inner = (
     <>
-      <BearFace size={26} fur={m.fur} furDark={m.furDark} ring={m.you ? 'var(--color-wb-honey)' : undefined} />
+      <Avatar size={26} fur={m.fur} furDark={m.furDark} avatar={m.avatar} ring={m.you ? 'var(--color-wb-honey)' : undefined} />
       {m.host && (
         <span className="absolute -top-[7px] left-1/2 -translate-x-1/2 rotate-[8deg] text-[11px]">👑</span>
       )}

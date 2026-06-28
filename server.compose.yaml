@@ -1,17 +1,47 @@
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: watchbear-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-watchbear}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-watchbear}
+      POSTGRES_DB: ${POSTGRES_DB:-watchbear}
+    ports:
+      - "${PGPORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-watchbear} -d ${POSTGRES_DB:-watchbear}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
   server:
     image: ghcr.io/halitsever/watchbear-server:latest
     pull_policy: always
     container_name: watchbear-server
     restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "${PORT:-3000}:3000"
     environment:
       NODE_ENV: production
       PORT: 3000
+      DB_SYNC: ${DB_SYNC:-true}
+      DATABASE_URL: postgres://${POSTGRES_USER:-watchbear}:${POSTGRES_PASSWORD:-watchbear}@db:5432/${POSTGRES_DB:-watchbear}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      JWT_SECRET: ${JWT_SECRET:-}
+      ENFORCE_LOGIN_CUSTOMIZE: ${ENFORCE_LOGIN_CUSTOMIZE:-true}
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3000').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 10s
+
+volumes:
+  pgdata:

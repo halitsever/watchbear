@@ -97,6 +97,25 @@ export function SidePanel() {
     void getServerUrl().then(setServerUrl);
   }, []);
 
+  // keep identity in sync with storage so a change made elsewhere (the popup) reaches
+  // an already-open side panel; otherwise the next join would send a stale snapshot
+  useEffect(() => {
+    function onChanged(changes: Record<string, chrome.storage.StorageChange>, area: string) {
+      if (area !== "local" || !("wb_identity" in changes) || editorOpen) return;
+      void getIdentity().then((id) => {
+        const prev = identityRef.current;
+        if (prev && prev.name === id.name && prev.fur === id.fur && prev.furDark === id.furDark && prev.avatar === id.avatar) return;
+        identityRef.current = id;
+        setIdentity(id);
+        setIdentityDraft(id);
+        setMembers((ms) => ms.map((m) => (m.you ? { ...m, name: id.name, fur: id.fur, furDark: id.furDark, avatar: id.avatar } : m)));
+        conn.current?.updateMember(id);
+      });
+    }
+    chrome.storage.onChanged.addListener(onChanged);
+    return () => chrome.storage.onChanged.removeListener(onChanged);
+  }, [editorOpen]);
+
   // optimistic local state until the server sends the real roster
   useEffect(() => {
     const id = identityRef.current;
@@ -118,8 +137,7 @@ export function SidePanel() {
     setStatus("connecting");
     conn.current = joinRoom(serverUrl, roomCode, id, {
       onMembers: (list, selfId) => setMembers(list.map((m) => ({ ...m, you: m.id === selfId }))),
-      onChat: ({ from, text, mid, replyTo: r }) =>
-        setMessages((m) => [...m, { id: nextId(), mid, type: "chat", from, text, ts: Date.now(), replyTo: r }]),
+      onChat: ({ from, text, mid, replyTo: r }) => setMessages((m) => [...m, { id: nextId(), mid, type: "chat", from, text, ts: Date.now(), replyTo: r }]),
       onTyping: ({ fromId, from, typing }) => applyTyping(fromId, from, typing),
       onSystem: (text) => setMessages((m) => [...m, { id: nextId(), type: "system", text }]),
       onStatus: setStatus,
@@ -259,7 +277,7 @@ export function SidePanel() {
   }
 
   function toggleDraftAvatar(use: boolean) {
-    const url = use ? user?.picture ?? undefined : undefined;
+    const url = use ? (user?.picture ?? undefined) : undefined;
     setIdentityDraft((d) => (d ? { ...d, avatar: url } : d));
   }
 
@@ -284,10 +302,7 @@ export function SidePanel() {
     !!identityDraft &&
     !!identity &&
     draftName.length > 0 &&
-    (draftName !== identity.name ||
-      identityDraft.fur !== identity.fur ||
-      identityDraft.furDark !== identity.furDark ||
-      identityDraft.avatar !== identity.avatar);
+    (draftName !== identity.name || identityDraft.fur !== identity.fur || identityDraft.furDark !== identity.furDark || identityDraft.avatar !== identity.avatar);
 
   function postChat(text: string, extra?: { replyTo?: ReplyRef }) {
     const from = identity?.name ?? "You";
@@ -309,7 +324,7 @@ export function SidePanel() {
   // carry a snapshot so the quote renders even for bears who never saw the original
   function startReply(msg: Message) {
     if (msg.type !== "chat") return;
-    const from = msg.mine ? identity?.name ?? "You" : msg.from ?? "bear";
+    const from = msg.mine ? (identity?.name ?? "You") : (msg.from ?? "bear");
     setReplyTo({ mid: msg.mid, from, text: msg.text.slice(0, 200) });
   }
 
@@ -369,9 +384,7 @@ export function SidePanel() {
         <div className="mt-3 font-fredoka text-[16px] font-semibold text-wb-text">
           Watch<span className="wb-shimmer-text animate-wb-shimmer">bear</span>
         </div>
-        <div className="mt-2 text-[12.5px] font-medium leading-[1.5] text-wb-dim">
-          Start a watch party, or open an invite link a friend sent you.
-        </div>
+        <div className="mt-2 text-[12.5px] font-medium leading-[1.5] text-wb-dim">Start a watch party, or open an invite link a friend sent you.</div>
         <button
           type="button"
           onClick={openPopup}

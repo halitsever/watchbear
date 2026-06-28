@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import IconLogOut from "~icons/lucide/log-out";
-import { isGoogleLoginConfigured, loginWithGoogle, logout } from "@/lib/auth";
+import { isGoogleLoginConfigured, requestGoogleLogin, logout } from "@/lib/auth";
 import { useAuth } from "@/hooks/useAuth";
 
 export function AccountChip({ onAuthChange }: { onAuthChange?: () => void }) {
@@ -30,10 +30,11 @@ export function AccountChip({ onAuthChange }: { onAuthChange?: () => void }) {
   async function signIn() {
     setBusy(true);
     try {
-      await loginWithGoogle();
-      onAuthChange?.();
+      const res = await requestGoogleLogin();
+      if (res.ok) onAuthChange?.();
+      // failure/cancel: nothing to surface in the header
     } catch {
-      // user cancelled or the flow failed; nothing to surface in the header
+      // popup may have closed mid-flow; the background finishes and useAuth updates
     } finally {
       setBusy(false);
     }

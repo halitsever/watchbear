@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { isGoogleLoginConfigured, loginWithGoogle } from "@/lib/auth";
+import { isGoogleLoginConfigured, requestGoogleLogin } from "@/lib/auth";
 
 export function GoogleLoginButton({ onAuthChange }: { onAuthChange?: () => void }) {
   const [busy, setBusy] = useState(false);
@@ -11,8 +11,9 @@ export function GoogleLoginButton({ onAuthChange }: { onAuthChange?: () => void 
     setBusy(true);
     setError(false);
     try {
-      await loginWithGoogle();
-      onAuthChange?.();
+      const res = await requestGoogleLogin();
+      if (res.ok) onAuthChange?.();
+      else setError(true);
     } catch {
       setError(true);
     } finally {

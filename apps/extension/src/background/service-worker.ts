@@ -1,13 +1,22 @@
 import { STORAGE_KEYS, isValidCode } from '@/lib/room';
 import { PANEL_PORT_NAME } from '@/lib/panelPort';
+import { loginWithGoogle } from '@/lib/auth';
 import type { PopupMessage, ContentMessage } from '@/lib/messages';
 
 function clearRoomState() {
   void chrome.storage.local.set({ [STORAGE_KEYS.inRoom]: false, [STORAGE_KEYS.roomCode]: '', [STORAGE_KEYS.anchorTabId]: null });
 }
 
-chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender) => {
+chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender, sendResponse) => {
   if (sender.id !== chrome.runtime.id) return;
+
+  if (msg.type === 'WB_LOGIN') {
+    loginWithGoogle()
+      .then(() => sendResponse({ ok: true }))
+      .catch((e: unknown) => sendResponse({ ok: false, error: String(e) }));
+    return true; // keep the channel open for the async sendResponse
+  }
+
   if (msg.type === 'ROOM_STATE') {
     const tabId = sender.tab?.id;
     if (!tabId) return;

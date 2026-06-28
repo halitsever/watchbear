@@ -79,6 +79,13 @@ export async function loginWithGoogle(): Promise<AuthUser> {
   return stored.user;
 }
 
+// the popup closes when launchWebAuthFlow takes focus, killing the flow; run it in the
+// background instead and let useAuth pick up the stored session via storage events
+export async function requestGoogleLogin(): Promise<{ ok: boolean; error?: string }> {
+  const res = (await chrome.runtime.sendMessage({ type: 'WB_LOGIN' })) as { ok: boolean; error?: string } | undefined;
+  return res ?? { ok: false };
+}
+
 // adopt the google first name only if the name is still a default bear (a chosen name is kept)
 async function prefillName(user: AuthUser): Promise<void> {
   const current = await getIdentity();

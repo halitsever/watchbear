@@ -1,7 +1,9 @@
 export type PopupMessage =
   | { type: 'WB_START_ROOM'; code: string; tabId: number }
   | { type: 'WB_JOIN_ROOM'; code: string; tabId: number }
-  | { type: 'WB_LEAVE_ROOM'; tabId?: number };
+  | { type: 'WB_LEAVE_ROOM'; tabId?: number }
+  // runs the Google OAuth flow in the background so it survives the popup closing
+  | { type: 'WB_LOGIN' };
 
 export type ContentMessage =
   | { type: 'ROOM_STATE'; inRoom: boolean; memberCount: number }

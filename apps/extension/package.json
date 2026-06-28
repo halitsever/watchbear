@@ -1,7 +1,7 @@
 {
   "name": "@watchbear/extension",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "description": "The sweet way to watch together",
   "license": "Apache-2.0",

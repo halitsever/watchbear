@@ -23,6 +23,7 @@ export interface PublicUser {
 export class AuthService {
   private readonly google: OAuth2Client;
   private readonly clientId: string;
+  private readonly enforceCustomize: boolean;
 
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
@@ -30,12 +31,19 @@ export class AuthService {
     config: ConfigService,
   ) {
     this.clientId = config.get<string>('GOOGLE_CLIENT_ID', '');
+    this.enforceCustomize = config.get<string>('ENFORCE_LOGIN_CUSTOMIZE', 'true') !== 'false';
     this.google = new OAuth2Client(this.clientId);
   }
 
   // only an auth-configured deployment gates identity; self-hosters without a Google client don't
   isConfigured(): boolean {
     return !!this.clientId;
+  }
+
+  // customization (name/color/avatar) needs login only when enforced and auth is configured;
+  // set ENFORCE_LOGIN_CUSTOMIZE=false to let guests keep chosen names during an extension rollout
+  customizeRequiresLogin(): boolean {
+    return this.enforceCustomize && this.isConfigured();
   }
 
   async loginWithGoogle(idToken: string, nonce: string): Promise<{ token: string; user: PublicUser }> {

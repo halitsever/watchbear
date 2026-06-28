@@ -113,9 +113,9 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return (client.data as { user?: AuthUser }).user;
   }
 
-  // logged-in members can always customize; with no auth configured (self-host) everyone can
+  // logged-in members can always customize; otherwise it depends on the auth policy
   private canCustomize(client: Socket): boolean {
-    return !this.auth.isConfigured() || !!this.userOf(client);
+    return !this.auth.customizeRequiresLogin() || !!this.userOf(client);
   }
 
   // crude per-socket sliding window; @nestjs/throttler has no first-class ws path

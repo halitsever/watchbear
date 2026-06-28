@@ -4,7 +4,10 @@ import type { AuthService } from '../auth/auth.service';
 import { RoomGateway } from './room.gateway';
 
 // the gateway only calls verifyToken on connect; tests never set a handshake token.
-const fakeAuth = { verifyToken: () => null, isConfigured: () => true } as unknown as AuthService;
+const fakeAuth = { verifyToken: () => null, isConfigured: () => true, customizeRequiresLogin: () => true } as unknown as AuthService;
+
+// enforcement disabled: guests keep their chosen name/color (extension-rollout mode)
+const lenientAuth = { verifyToken: () => null, isConfigured: () => true, customizeRequiresLogin: () => false } as unknown as AuthService;
 
 interface Emit {
   room?: string;
@@ -24,8 +27,8 @@ function makeClient(sink: Emit[], opts: { guest?: boolean } = {}): Socket {
     id: `sock-${nextId++}`,
     // logged-in by default so name/color assertions hold; pass guest:true to test enforcement.
     data: opts.guest ? {} : { user: { id: 'u1', plan: 'free' } },
-    join() {},
-    leave() {},
+    join() { },
+    leave() { },
     emit(event: string, payload?: unknown) {
       sink.push({ event, payload });
     },
@@ -183,6 +186,17 @@ describe('RoomGateway membership', () => {
     const after = (rooms().get(CODE)!.get(guest.id)! as unknown as { name: string }).name;
     expect(after).toBe(before);
     expect(sink.some((e) => e.event === 'room:members')).toBe(false);
+  });
+
+  it('keeps a guest chosen name when login is not enforced', () => {
+    const lenient = new RoomGateway(lenientAuth);
+    (lenient as unknown as { server: Server }).server = makeServer(sink);
+    const guest = makeClient(sink, { guest: true });
+    lenient.handleJoin(guest, { code: CODE, member: { name: 'Maple-Lover', fur: '#C06B3A', furDark: '#9E5328' } });
+    const roomsOf = (lenient as unknown as { rooms: Map<string, Map<string, { name: string; fur: string }>> }).rooms;
+    const stored = roomsOf.get(CODE)!.get(guest.id)!;
+    expect(stored.name).toBe('Maple-Lover');
+    expect(stored.fur).toBe('#C06B3A');
   });
 });
 

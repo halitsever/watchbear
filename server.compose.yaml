@@ -35,6 +35,7 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER:-watchbear}:${POSTGRES_PASSWORD:-watchbear}@db:5432/${POSTGRES_DB:-watchbear}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       JWT_SECRET: ${JWT_SECRET:-}
+      ENFORCE_LOGIN_CUSTOMIZE: ${ENFORCE_LOGIN_CUSTOMIZE:-true}
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3000').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s

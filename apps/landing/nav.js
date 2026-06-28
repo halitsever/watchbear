@@ -55,6 +55,7 @@
     { href: "index.html", label: "Home" },
     { href: "servers.html", label: "Servers" },
     { href: "privacy.html", label: "Privacy" },
+    { href: "support.html", label: "Support" },
   ];
 
   var STYLE =

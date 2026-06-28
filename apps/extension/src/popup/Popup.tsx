@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import IconPanelRight from "~icons/lucide/panel-right-open";
 import IconPlay from "~icons/lucide/play";
 import IconVideoOff from "~icons/lucide/video-off";
+import IconLifeBuoy from "~icons/lucide/life-buoy";
 import { BearMark } from "@/components/Bear";
 import { useRoomState } from "@/hooks/useRoomState";
 import { useAuth } from "@/hooks/useAuth";
@@ -176,6 +177,24 @@ export function Popup() {
           </div>
         </>
       )}
+
+      <div className="flex items-center justify-between border-t border-wb-line px-4 py-2.5">
+        <a
+          href="mailto:watchbear@deepfeld.com"
+          className="flex cursor-pointer items-center gap-1.5 text-[11.5px] font-bold text-wb-faint transition-colors hover:text-wb-honey"
+        >
+          <IconLifeBuoy className="h-[13px] w-[13px]" />
+          Need help?
+        </a>
+        <a
+          href="https://watchbear.deepfeld.com/privacy.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="cursor-pointer text-[11.5px] font-bold text-wb-faint transition-colors hover:text-wb-honey"
+        >
+          Privacy
+        </a>
+      </div>
     </div>
   );
 }

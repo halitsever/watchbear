@@ -1,31 +1,36 @@
 import { useEffect, useRef, useState } from "react";
 import IconChevronDown from "~icons/lucide/chevron-down";
-import { BearFace } from "@/components/Bear";
+import IconLock from "~icons/lucide/lock";
+import { Avatar } from "@/components/Avatar";
 import { BearPicker } from "@/components/BearPicker";
 import type { Identity } from "@/lib/identity";
 
-// the bear button + name input + bear-picker dropdown, shared by the popup
-// (pre-room) and the sidepanel (in-room) so identity editing looks the same.
+// the inline name + bear-picker editor used by the pre-room popup
 export function IdentityEditor({
   identity,
   onChangeName,
   onChangeBear,
   onSave,
   saveDisabled,
+  locked,
+  googlePhoto,
+  onToggleAvatar,
 }: {
   identity: Identity | null;
   onChangeName: (name: string) => void;
   onChangeBear: (fur: string, furDark: string) => void;
-  // when provided, edits stay local until Save is pressed (used in-room)
   onSave?: () => void;
   saveDisabled?: boolean;
+  locked?: boolean;
+  googlePhoto?: string | null;
+  onToggleAvatar?: (use: boolean) => void;
 }) {
+  const usingPhoto = !!identity?.avatar;
   const [bearOpen, setBearOpen] = useState(false);
   const [bearClosing, setBearClosing] = useState(false);
   const bearRef = useRef<HTMLDivElement>(null);
   const bearTimer = useRef<number>(0);
 
-  // play the exit animation, then unmount once it finishes
   function closeBear() {
     setBearClosing(true);
     window.clearTimeout(bearTimer.current);
@@ -63,23 +68,29 @@ export function IdentityEditor({
         <button
           type="button"
           onClick={() => (bearOpen && !bearClosing ? closeBear() : openBear())}
-          title="Change your bear"
-          aria-label="Change your bear"
+          disabled={locked}
+          title={locked ? "Sign in to change your look" : "Change your look"}
+          aria-label="Change your look"
           aria-haspopup="true"
           aria-expanded={bearOpen && !bearClosing}
-          className="group relative shrink-0 rounded-full transition-transform hover:-translate-y-px"
+          className="group relative shrink-0 rounded-full transition-transform enabled:hover:-translate-y-px disabled:opacity-70"
         >
-          <BearFace
+          <Avatar
             size={30}
             fur={identity?.fur ?? "#B97C43"}
             furDark={identity?.furDark ?? "#9A6230"}
+            avatar={identity?.avatar}
             ring="var(--color-wb-honey)"
           />
           <span
             aria-hidden="true"
-            className="absolute -bottom-0.5 -right-0.5 flex h-[14px] w-[14px] items-center justify-center rounded-full bg-[#2c211a] text-wb-honey shadow-[0_0_0_1.5px_#2c211a] transition-colors group-hover:bg-[#3a2a1d]"
+            className="absolute -bottom-0.5 -right-0.5 flex h-[14px] w-[14px] items-center justify-center rounded-full bg-[#2c211a] text-wb-honey shadow-[0_0_0_1.5px_#2c211a] transition-colors group-enabled:group-hover:bg-[#3a2a1d]"
           >
-            <IconChevronDown className={`h-[10px] w-[10px] transition-transform ${bearOpen && !bearClosing ? "rotate-180" : ""}`} />
+            {locked ? (
+              <IconLock className="h-[9px] w-[9px]" />
+            ) : (
+              <IconChevronDown className={`h-[10px] w-[10px] transition-transform ${bearOpen && !bearClosing ? "rotate-180" : ""}`} />
+            )}
           </span>
         </button>
         <input
@@ -88,12 +99,13 @@ export function IdentityEditor({
           onKeyDown={(e) => {
             if (e.key === "Enter" && onSave && !saveDisabled) onSave();
           }}
+          disabled={locked}
           placeholder="your bear name"
           maxLength={20}
           autoComplete="off"
-          className="min-w-0 flex-1 rounded-xl border border-wb-line bg-[#1d150f] px-[13px] py-[10px] text-[13.5px] font-bold text-wb-text outline-none transition-colors placeholder:text-wb-faint focus:border-[rgba(255,178,62,.45)]"
+          className="min-w-0 flex-1 rounded-xl border border-wb-line bg-[#1d150f] px-[13px] py-[10px] text-[13.5px] font-bold text-wb-text outline-none transition-colors placeholder:text-wb-faint focus:border-[rgba(255,178,62,.45)] disabled:cursor-default disabled:opacity-60"
         />
-        {onSave && (
+        {!locked && onSave && (
           <button
             type="button"
             onClick={onSave}
@@ -105,12 +117,29 @@ export function IdentityEditor({
           </button>
         )}
       </div>
-      {(bearOpen || bearClosing) && (
+      {locked && (
+        <div className="mt-1.5 flex items-center gap-1.5 text-[11.5px] font-semibold text-wb-faint">
+          <IconLock className="h-[11px] w-[11px] shrink-0" />
+          Sign in to pick your bear and keep your name.
+        </div>
+      )}
+      {!locked && (bearOpen || bearClosing) && (
         <div className={`mt-2 origin-top ${bearClosing ? "animate-wb-pop-out" : "animate-wb-pop-in"}`}>
           <BearPicker
             selectedFur={identity?.fur ?? ""}
+            googlePhoto={googlePhoto}
+            usingPhoto={usingPhoto}
+            onPickPhoto={
+              onToggleAvatar
+                ? () => {
+                    onToggleAvatar(true);
+                    closeBear();
+                  }
+                : undefined
+            }
             onPick={(fur, furDark) => {
               onChangeBear(fur, furDark);
+              if (usingPhoto) onToggleAvatar?.(false);
               closeBear();
             }}
           />

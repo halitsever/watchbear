@@ -4,16 +4,19 @@ import IconPlay from "~icons/lucide/play";
 import IconVideoOff from "~icons/lucide/video-off";
 import { BearMark } from "@/components/Bear";
 import { useRoomState } from "@/hooks/useRoomState";
+import { useAuth } from "@/hooks/useAuth";
 import { getActiveTab, getVideoTime, sendToBackground } from "@/lib/messages";
 import { generateCode } from "@/lib/room";
-import { getIdentity, setIdentityName, setIdentityCharacter, type Identity } from "@/lib/identity";
+import { getIdentity, setIdentityName, setIdentityCharacter, setIdentityAvatar, type Identity } from "@/lib/identity";
 import { getServerUrl } from "@/lib/server";
 import { pingServer } from "@/lib/socket";
 import { ServerSettings } from "@/components/ServerSettings";
 import { IdentityEditor } from "@/components/IdentityEditor";
+import { AccountChip } from "@/components/AccountChip";
 
 export function Popup() {
   const { inRoom, roomCode } = useRoomState();
+  const user = useAuth();
   const [you, setYou] = useState<Identity | null>(null);
   const [hasVideo, setHasVideo] = useState<boolean | null>(null);
   const [serverUp, setServerUp] = useState<boolean | null>(null);
@@ -46,8 +49,13 @@ export function Popup() {
     void setIdentityCharacter(fur, furDark);
   }
 
-  // re-verify the server right before acting, so we never close the popup into a
-  // dead connection; on failure we surface the banner instead.
+  function toggleAvatar(use: boolean) {
+    const url = use ? user?.picture ?? undefined : undefined;
+    setYou((y) => (y ? { ...y, avatar: url } : y));
+    void setIdentityAvatar(url);
+  }
+
+  // re-verify the server right before acting so we never open into a dead connection
   async function ensureServer(): Promise<boolean> {
     if (serverUp === true) return true;
     const ok = await pingServer(await getServerUrl());
@@ -90,6 +98,7 @@ export function Popup() {
           </div>
           <div className="mt-[3px] text-[11.5px] font-medium text-wb-dim">the sweet way to watch together</div>
         </div>
+        <AccountChip onAuthChange={() => void getIdentity().then(setYou)} />
         <span title="connected" className="h-[9px] w-[9px] shrink-0 animate-wb-breathe rounded-full bg-wb-online shadow-[0_0_0_4px_rgba(123,201,111,.16)]" />
       </div>
 
@@ -127,7 +136,14 @@ export function Popup() {
               </div>
             )}
             <div className="mb-[11px]">
-              <IdentityEditor identity={you} onChangeName={changeName} onChangeBear={chooseBear} />
+              <IdentityEditor
+                identity={you}
+                onChangeName={changeName}
+                onChangeBear={chooseBear}
+                locked={!user}
+                googlePhoto={user?.picture}
+                onToggleAvatar={toggleAvatar}
+              />
             </div>
             <button
               type="button"

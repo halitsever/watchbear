@@ -12,10 +12,11 @@ import { MemberChip } from "@/components/MemberChip";
 import { ChatLine } from "@/components/ChatLine";
 import { MessageMenu, type MenuAnchor } from "@/components/MessageMenu";
 import { EmojiPicker } from "@/components/EmojiPicker";
-import { IdentityEditor } from "@/components/IdentityEditor";
+import { IdentityModal } from "@/components/IdentityModal";
 import { useRoomState } from "@/hooks/useRoomState";
+import { useAuth } from "@/hooks/useAuth";
 import { getActiveTab, getVideoTime, sendToBackground, sendToTab } from "@/lib/messages";
-import { getIdentity, setIdentityName, setIdentityCharacter, type Identity } from "@/lib/identity";
+import { getIdentity, setIdentityName, setIdentityCharacter, setIdentityAvatar, type Identity } from "@/lib/identity";
 import { buildInviteLink, STORAGE_KEYS } from "@/lib/room";
 import { getServerUrl } from "@/lib/server";
 import { joinRoom, type RoomConnection, type ConnStatus, type VideoContentInfo, type ChatOpts } from "@/lib/socket";
@@ -24,7 +25,6 @@ import type { Member, Message, ReplyRef } from "@/lib/types";
 
 const SPEEDS = [0.5, 1, 1.25, 1.5, 2];
 
-// short cross-client message id; both sender and receivers key the same message by it
 const newMid = () => crypto.randomUUID();
 
 // group key for collapsing a run of messages from the same sender
@@ -49,8 +49,9 @@ function formatTime(sec: number): string {
 
 export function SidePanel() {
   const { inRoom, roomCode } = useRoomState();
+  const user = useAuth();
   const [identity, setIdentity] = useState<Identity | null>(null);
-  // editable copy shown in the in-room editor; committed to `identity` on Save
+  // editable copy; committed to `identity` on Save
   const [identityDraft, setIdentityDraft] = useState<Identity | null>(null);
   const [serverUrl, setServerUrl] = useState<string | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
@@ -66,7 +67,6 @@ export function SidePanel() {
   const [replyTo, setReplyTo] = useState<ReplyRef | null>(null);
   const [menu, setMenu] = useState<{ msg: Message; anchor: MenuAnchor } | null>(null);
   const [emojiOpen, setEmojiOpen] = useState(false);
-  // the identity editor is hidden until you click your own bear chip
   const [editorOpen, setEditorOpen] = useState(false);
   const [editorClosing, setEditorClosing] = useState(false);
   const [highlightMid, setHighlightMid] = useState<string | null>(null);
@@ -85,7 +85,7 @@ export function SidePanel() {
   const identityRef = useRef<Identity | null>(null);
 
   const nextId = () => ++msgId.current;
-  // only the null -> loaded transition should (re)open the connection, not later edits
+  // only the null -> loaded transition should reopen the connection, not later edits
   const identityReady = identity != null;
 
   useEffect(() => {
@@ -112,7 +112,6 @@ export function SidePanel() {
     }
   }, [inRoom, roomCode, identityReady]);
 
-  // live room over websocket
   useEffect(() => {
     const id = identityRef.current;
     if (!inRoom || !roomCode || !id || !serverUrl) return;
@@ -133,7 +132,8 @@ export function SidePanel() {
       lastTypingSent.current = 0;
       clearTypers();
     };
-  }, [inRoom, roomCode, identityReady, serverUrl]);
+    // reconnect on login/logout so the handshake carries (or drops) the auth token
+  }, [inRoom, roomCode, identityReady, serverUrl, user]);
 
   useEffect(() => {
     const el = feedRef.current;
@@ -220,7 +220,6 @@ export function SidePanel() {
     conn.current?.sendTyping(false);
   }
 
-  // play the exit animation, then unmount once it finishes (mirrors the popup bear picker)
   function closeEditor() {
     setEditorClosing(true);
     window.clearTimeout(editorTimer.current);
@@ -233,7 +232,7 @@ export function SidePanel() {
   function openEditor() {
     window.clearTimeout(editorTimer.current);
     setEditorClosing(false);
-    setIdentityDraft(identity); // start clean from the saved identity
+    setIdentityDraft(identity);
     setEditorOpen(true);
   }
 
@@ -242,7 +241,15 @@ export function SidePanel() {
     else openEditor();
   }
 
-  // the editor only touches the draft; nothing is persisted or broadcast until Save
+  // re-read storage after login picks up the prefilled Google name
+  function reloadIdentity() {
+    void getIdentity().then((id) => {
+      identityRef.current = id;
+      setIdentity(id);
+      setIdentityDraft(id);
+    });
+  }
+
   function changeDraftName(value: string) {
     setIdentityDraft((d) => (d ? { ...d, name: value } : d));
   }
@@ -251,7 +258,11 @@ export function SidePanel() {
     setIdentityDraft((d) => (d ? { ...d, fur, furDark } : d));
   }
 
-  // commit the draft: persist, update the local "you" chip, and announce to the den once
+  function toggleDraftAvatar(use: boolean) {
+    const url = use ? user?.picture ?? undefined : undefined;
+    setIdentityDraft((d) => (d ? { ...d, avatar: url } : d));
+  }
+
   function saveIdentity() {
     if (!identityDraft) return;
     const name = identityDraft.name.trim();
@@ -262,18 +273,21 @@ export function SidePanel() {
     setIdentityDraft(next);
     void setIdentityName(name);
     void setIdentityCharacter(next.fur, next.furDark);
-    setMembers((ms) => ms.map((m) => (m.you ? { ...m, name, fur: next.fur, furDark: next.furDark } : m)));
+    void setIdentityAvatar(next.avatar);
+    setMembers((ms) => ms.map((m) => (m.you ? { ...m, name, fur: next.fur, furDark: next.furDark, avatar: next.avatar } : m)));
     conn.current?.updateMember(next);
     closeEditor();
   }
 
-  // Save is live only when the draft is a valid, actual change from the saved identity
   const draftName = identityDraft?.name.trim() ?? "";
   const identityDirty =
     !!identityDraft &&
     !!identity &&
     draftName.length > 0 &&
-    (draftName !== identity.name || identityDraft.fur !== identity.fur || identityDraft.furDark !== identity.furDark);
+    (draftName !== identity.name ||
+      identityDraft.fur !== identity.fur ||
+      identityDraft.furDark !== identity.furDark ||
+      identityDraft.avatar !== identity.avatar);
 
   function postChat(text: string, extra?: { replyTo?: ReplyRef }) {
     const from = identity?.name ?? "You";
@@ -292,8 +306,7 @@ export function SidePanel() {
     stopTyping();
   }
 
-  // reply targets carry a snapshot (from + truncated text) so the quote renders
-  // for everyone, even bears who never received the original message.
+  // carry a snapshot so the quote renders even for bears who never saw the original
   function startReply(msg: Message) {
     if (msg.type !== "chat") return;
     const from = msg.mine ? identity?.name ?? "You" : msg.from ?? "bear";
@@ -309,7 +322,6 @@ export function SidePanel() {
     setEmojiOpen(false);
   }
 
-  // scroll the quoted message into view and flash it; no-op if it's scrolled off history
   function jumpTo(mid: string) {
     const el = feedRef.current?.querySelector<HTMLElement>(`[data-mid="${CSS.escape(mid)}"]`);
     if (!el) return;
@@ -320,8 +332,7 @@ export function SidePanel() {
   }
 
   async function copyInvite() {
-    // prefer the anchor tab's current url (what the den is actually watching);
-    // fall back to this tab. host_permissions <all_urls> means tab.url is populated.
+    // prefer the anchor tab's url (what the den is watching), fall back to this tab
     const data = await chrome.storage.local.get(STORAGE_KEYS.anchorTabId);
     const anchorId = data[STORAGE_KEYS.anchorTabId];
     let tab: chrome.tabs.Tab | undefined;
@@ -334,7 +345,7 @@ export function SidePanel() {
   }
 
   function changeRate(next: number) {
-    setRate(next); // optimistic; the poll confirms from the page
+    setRate(next);
     const tabId = activeTabId.current;
     if (tabId != null) sendToTab(tabId, { type: "SET_RATE", rate: next });
   }
@@ -345,8 +356,7 @@ export function SidePanel() {
   }
 
   function openPopup() {
-    // chrome.action.openPopup() is stable since Chrome 127; it can reject on
-    // older/unsupported builds, in which case we fall back to the toolbar hint.
+    // openPopup can reject on older/unsupported builds; fall back to the toolbar hint
     chrome.action.openPopup().catch(() => setPopupHint(true));
   }
 
@@ -415,18 +425,23 @@ export function SidePanel() {
         </div>
       )}
 
+      {editorOpen && identityDraft && (
+        <IdentityModal
+          identity={identityDraft}
+          onChangeName={changeDraftName}
+          onChangeBear={changeDraftBear}
+          onToggleAvatar={toggleDraftAvatar}
+          onSave={saveIdentity}
+          saveDisabled={!identityDirty}
+          onClose={closeEditor}
+          closing={editorClosing}
+          locked={!user}
+          googlePhoto={user?.picture}
+          onLogin={reloadIdentity}
+        />
+      )}
+
       <div className="border-b border-wb-line px-3 py-2.5">
-        {editorOpen && identityDraft && (
-          <div className={`mb-2.5 origin-top ${editorClosing ? "animate-wb-pop-out" : "animate-wb-pop-in"}`}>
-            <IdentityEditor
-              identity={identityDraft}
-              onChangeName={changeDraftName}
-              onChangeBear={changeDraftBear}
-              onSave={saveIdentity}
-              saveDisabled={!identityDirty}
-            />
-          </div>
-        )}
         <div className="mb-2 flex flex-wrap items-center gap-1.5">
           {members.map((m) => (
             <MemberChip key={m.id ?? m.name} m={m} onEdit={m.you ? toggleEditor : undefined} />
@@ -447,7 +462,6 @@ export function SidePanel() {
           </div>
         )}
 
-        {/* playback speed, synced to the den */}
         <div className="mt-2 flex items-center gap-1.5">
           <IconGauge className="h-[13px] w-[13px] shrink-0 text-wb-dim" />
           <div className="flex flex-1 gap-1">

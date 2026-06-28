@@ -1,9 +1,20 @@
 import { io, type Socket } from 'socket.io-client';
 import type { Member, ReplyRef } from './types';
 import type { Identity } from './identity';
+import { getAuthToken } from './auth';
 
-// the server url is chosen at runtime (self-host), so every entry point takes it
-// as an argument; callers resolve it with getServerUrl() from ./server.
+// defer autoConnect so the async token read lands in the handshake first (no token = guest)
+function connectWithAuth(serverUrl: string): Socket {
+  const socket = io(serverUrl, { transports: ['websocket'], autoConnect: false });
+  getAuthToken()
+    .then((token) => {
+      if (token) socket.auth = { token };
+    })
+    .catch(() => {})
+    .finally(() => socket.connect());
+  return socket;
+}
+
 export async function pingServer(serverUrl: string, timeoutMs = 5000): Promise<boolean> {
   try {
     const ctrl = new AbortController();
@@ -27,7 +38,6 @@ interface ChatPayload {
   replyTo?: ReplyRef;
 }
 
-// extra fields a chat message can carry beyond its text
 export interface ChatOpts {
   mid?: string;
   replyTo?: ReplyRef;
@@ -54,7 +64,6 @@ export interface RoomConnection {
   sendChat: (text: string, opts?: ChatOpts) => void;
   sendTyping: (typing: boolean) => void;
   sendReaction: (emoji: string) => void;
-  // push a name/bear change to the room without rejoining
   updateMember: (member: Identity) => void;
   disconnect: () => void;
 }
@@ -62,11 +71,10 @@ export interface RoomConnection {
 export interface VideoControl {
   time: number;
   paused: boolean;
-  // playback speed, synced room-wide; optional so older clients (no rate) still validate
+  // optional so older clients without a rate still validate
   rate?: number;
 }
 
-// what the page is watching, used to keep everyone on the same video
 export interface VideoContentInfo {
   key: string;
   url: string;
@@ -76,7 +84,6 @@ export interface VideoContentInfo {
 export interface VideoChannelOpts {
   anchor: boolean;
   content: VideoContentInfo;
-  // attributes control events (pause/play/seek) to a bear in the chat feed
   name: string;
   onControl: (c: VideoControl) => void;
   onReaction: (p: { emoji: string }) => void;
@@ -86,15 +93,14 @@ export interface VideoChannel {
   send: (c: VideoControl) => void;
   // call after a same-tab (SPA) navigation so the server knows our new content
   setContent: (c: VideoContentInfo) => void;
-  // promote this socket to anchor (covers the storage-arm vs message race)
+  // promote this socket to anchor; covers the storage-arm vs message race
   claimAnchor: (c: VideoContentInfo) => void;
   disconnect: () => void;
 }
 
-// connection used only to sync the page video. joins the room to receive
-// control events but isn't registered as a member.
+// video-only sync channel: joins the room for control events but isn't a member
 export function joinVideoChannel(serverUrl: string, code: string, opts: VideoChannelOpts): VideoChannel {
-  const socket: Socket = io(serverUrl, { transports: ['websocket'] });
+  const socket: Socket = connectWithAuth(serverUrl);
   let anchor = opts.anchor;
   let content = opts.content;
   const name = opts.name;
@@ -118,7 +124,7 @@ export function joinVideoChannel(serverUrl: string, code: string, opts: VideoCha
 }
 
 export function joinRoom(serverUrl: string, code: string, member: Identity, handlers: RoomHandlers): RoomConnection {
-  const socket: Socket = io(serverUrl, { transports: ['websocket'] });
+  const socket: Socket = connectWithAuth(serverUrl);
 
   socket.on('connect', () => {
     handlers.onStatus('connected');

@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "description": "Watchbear monorepo: browser extension + server",
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "pnpm -r --parallel dev",
     "dev:ext": "pnpm --filter @watchbear/extension dev",

@@ -24,6 +24,7 @@ export class AuthService {
   private readonly google: OAuth2Client;
   private readonly clientId: string;
   private readonly enforceCustomize: boolean;
+  private readonly enforceJoin: boolean;
 
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
@@ -32,6 +33,7 @@ export class AuthService {
   ) {
     this.clientId = config.get<string>('GOOGLE_CLIENT_ID', '');
     this.enforceCustomize = config.get<string>('ENFORCE_LOGIN_CUSTOMIZE', 'true') !== 'false';
+    this.enforceJoin = config.get<string>('ENFORCE_LOGIN_JOIN', 'true') !== 'false';
     this.google = new OAuth2Client(this.clientId);
   }
 
@@ -44,6 +46,12 @@ export class AuthService {
   // set ENFORCE_LOGIN_CUSTOMIZE=false to let guests keep chosen names during an extension rollout
   customizeRequiresLogin(): boolean {
     return this.enforceCustomize && this.isConfigured();
+  }
+
+  // joining a room needs login only when enforced and auth is configured;
+  // set ENFORCE_LOGIN_JOIN=false to let guests join (self-host / rollback)
+  joinRequiresLogin(): boolean {
+    return this.enforceJoin && this.isConfigured();
   }
 
   async loginWithGoogle(idToken: string, nonce: string): Promise<{ token: string; user: PublicUser }> {

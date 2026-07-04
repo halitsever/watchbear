@@ -14,6 +14,8 @@ import { pingServer } from "@/lib/socket";
 import { ServerSettings } from "@/components/ServerSettings";
 import { IdentityEditor } from "@/components/IdentityEditor";
 import { AccountChip } from "@/components/AccountChip";
+import { isGoogleLoginConfigured } from "@/lib/auth";
+import { LoginGate } from "@/components/LoginGate";
 
 export function Popup() {
   const { inRoom, roomCode } = useRoomState();
@@ -81,6 +83,17 @@ export function Popup() {
     if (!tabId) return;
     chrome.sidePanel.open({ tabId }).catch(() => {});
     window.close();
+  }
+
+  // hold the frame during the initial auth read so signed-in users never see the gate
+  if (isGoogleLoginConfigured() && user === undefined) return null;
+
+  if (isGoogleLoginConfigured() && user === null) {
+    return (
+      <div className="font-nunito">
+        <LoginGate onOpen={() => window.close()} />
+      </div>
+    );
   }
 
   return (

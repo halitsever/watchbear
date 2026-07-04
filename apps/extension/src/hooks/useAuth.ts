@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { AUTH_KEY, getAuth, type AuthUser } from '@/lib/auth';
 
 // logged-in user, kept in sync with storage so login/logout reflects live across popup and sidepanel
-export function useAuth(): AuthUser | null {
-  const [user, setUser] = useState<AuthUser | null>(null);
+// undefined = first read still pending, null = definitely signed out
+export function useAuth(): AuthUser | null | undefined {
+  const [user, setUser] = useState<AuthUser | null | undefined>(undefined);
 
   useEffect(() => {
     let active = true;

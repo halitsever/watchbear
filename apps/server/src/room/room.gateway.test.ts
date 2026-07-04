@@ -4,10 +4,13 @@ import type { AuthService } from '../auth/auth.service';
 import { RoomGateway } from './room.gateway';
 
 // the gateway only calls verifyToken on connect; tests never set a handshake token.
-const fakeAuth = { verifyToken: () => null, isConfigured: () => true, customizeRequiresLogin: () => true } as unknown as AuthService;
+const fakeAuth = { verifyToken: () => null, isConfigured: () => true, customizeRequiresLogin: () => true, joinRequiresLogin: () => false } as unknown as AuthService;
 
 // enforcement disabled: guests keep their chosen name/color (extension-rollout mode)
-const lenientAuth = { verifyToken: () => null, isConfigured: () => true, customizeRequiresLogin: () => false } as unknown as AuthService;
+const lenientAuth = { verifyToken: () => null, isConfigured: () => true, customizeRequiresLogin: () => false, joinRequiresLogin: () => false } as unknown as AuthService;
+
+// full enforcement: guests cannot join at all
+const strictAuth = { verifyToken: () => null, isConfigured: () => true, customizeRequiresLogin: () => true, joinRequiresLogin: () => true } as unknown as AuthService;
 
 interface Emit {
   room?: string;
@@ -299,5 +302,49 @@ describe('RoomGateway rate limiting', () => {
     const client = makeClient([]);
     for (let i = 0; i < 25; i++) expect(within(client)).toBe(true);
     expect(within(client)).toBe(false);
+  });
+});
+
+describe('RoomGateway join enforcement', () => {
+  let gw: RoomGateway;
+  let sink: Emit[];
+
+  beforeEach(() => {
+    gw = new RoomGateway(strictAuth);
+    sink = [];
+    (gw as unknown as { server: Server }).server = makeServer(sink);
+  });
+
+  const rooms = () => (gw as unknown as { rooms: Map<string, Map<string, unknown>> }).rooms;
+
+  it('denies a guest join and tells the socket why', () => {
+    const guest = makeClient(sink, { guest: true });
+    gw.handleJoin(guest, { code: CODE, member: member('Guest') });
+    expect(rooms().has(CODE)).toBe(false);
+    expect(sink).toContainEqual({ event: 'room:denied', payload: { reason: 'auth' } });
+  });
+
+  it('lets an authenticated user join when login is enforced', () => {
+    const a = makeClient(sink);
+    gw.handleJoin(a, { code: CODE, member: member('A') });
+    expect(rooms().get(CODE)!.has(a.id)).toBe(true);
+    expect(sink.some((e) => e.event === 'room:denied')).toBe(false);
+  });
+
+  it('denies a guest video subscribe and tells the socket why', () => {
+    const guest = makeClient(sink, { guest: true });
+    gw.handleVideoSubscribe(guest, { code: CODE, anchor: true, key: 'K1', url: 'https://x/1' });
+    const roomContent = (gw as unknown as { roomContent: Map<string, unknown> }).roomContent;
+    expect(roomContent.has(CODE)).toBe(false);
+    expect(sink).toContainEqual({ event: 'room:denied', payload: { reason: 'auth' } });
+  });
+
+  it('lets a guest join when enforcement is off', () => {
+    const lenient = new RoomGateway(fakeAuth);
+    (lenient as unknown as { server: Server }).server = makeServer(sink);
+    const guest = makeClient(sink, { guest: true });
+    lenient.handleJoin(guest, { code: CODE, member: member('Guest') });
+    const roomsOf = (lenient as unknown as { rooms: Map<string, Map<string, unknown>> }).rooms;
+    expect(roomsOf.get(CODE)!.has(guest.id)).toBe(true);
   });
 });

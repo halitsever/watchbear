@@ -58,6 +58,7 @@ export interface RoomHandlers {
   onSystem: (text: string) => void;
   onStatus: (status: ConnStatus) => void;
   onContent: (c: VideoContentInfo) => void;
+  onDenied: () => void;
 }
 
 export interface RoomConnection {
@@ -139,6 +140,7 @@ export function joinRoom(serverUrl: string, code: string, member: Identity, hand
   socket.on('chat:typing', (p: TypingPayload) => handlers.onTyping(p));
   socket.on('room:system', (p: { text: string }) => handlers.onSystem(p.text));
   socket.on('room:content', (c: VideoContentInfo) => handlers.onContent(c));
+  socket.on('room:denied', () => handlers.onDenied());
 
   return {
     sendChat: (text, opts) => socket.emit('chat:send', { text, ...opts }),

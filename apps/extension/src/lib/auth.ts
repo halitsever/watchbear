@@ -91,6 +91,12 @@ export async function requestGoogleLogin(): Promise<LoginResult> {
   return res ?? { ok: false };
 }
 
+const ONBOARDING_PATH = 'src/onboarding/index.html';
+
+export function openOnboarding(): void {
+  void chrome.tabs.create({ url: chrome.runtime.getURL(ONBOARDING_PATH) });
+}
+
 // adopt the google first name only if the name is still a default bear (a chosen name is kept)
 async function prefillName(user: AuthUser): Promise<void> {
   const current = await getIdentity();

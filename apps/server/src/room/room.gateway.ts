@@ -118,6 +118,13 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return !this.auth.customizeRequiresLogin() || !!this.userOf(client);
   }
 
+  // when enforced, a socket with no verified user cannot join or subscribe
+  private denyGuest(client: Socket): boolean {
+    if (!this.auth.joinRequiresLogin() || this.userOf(client)) return false;
+    client.emit('room:denied', { reason: 'auth' });
+    return true;
+  }
+
   // crude per-socket sliding window; @nestjs/throttler has no first-class ws path
   private withinRate(client: Socket): boolean {
     const now = Date.now();
@@ -134,6 +141,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('room:join')
   handleJoin(@ConnectedSocket() client: Socket, @MessageBody() { code, member }: JoinDto) {
     if (!this.withinRate(client)) return;
+    if (this.denyGuest(client)) return;
     const existing = this.rooms.get(code);
     if (!existing && this.rooms.size >= MAX_ROOMS) return;
     const room = existing ?? new Map<string, Member>();
@@ -210,6 +218,7 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('video:subscribe')
   handleVideoSubscribe(@ConnectedSocket() client: Socket, @MessageBody() { code, anchor, key, url, title, name }: SubscribeDto) {
     if (!this.withinRate(client)) return;
+    if (this.denyGuest(client)) return;
     void client.join(code);
     this.socketRoom.set(client.id, code);
     if (name) this.socketName.set(client.id, name);

@@ -20,6 +20,8 @@ import { getIdentity, setIdentityName, setIdentityCharacter, setIdentityAvatar, 
 import { buildInviteLink, STORAGE_KEYS } from "@/lib/room";
 import { getServerUrl } from "@/lib/server";
 import { joinRoom, type RoomConnection, type ConnStatus, type VideoContentInfo, type ChatOpts } from "@/lib/socket";
+import { requestGoogleLogin, isGoogleLoginConfigured } from "@/lib/auth";
+import { LoginGate } from "@/components/LoginGate";
 import { QUICK_REACTIONS } from "@/lib/emoji";
 import type { Member, Message, ReplyRef } from "@/lib/types";
 
@@ -60,6 +62,7 @@ export function SidePanel() {
   const [draft, setDraft] = useState("");
   const [copied, setCopied] = useState(false);
   const [popupHint, setPopupHint] = useState(false);
+  const [denied, setDenied] = useState(false);
   const [videoTime, setVideoTime] = useState<number | null>(null);
   const [rate, setRate] = useState(1);
   const [status, setStatus] = useState<ConnStatus>("connecting");
@@ -135,6 +138,7 @@ export function SidePanel() {
     const id = identityRef.current;
     if (!inRoom || !roomCode || !id || !serverUrl) return;
     setStatus("connecting");
+    setDenied(false);
     conn.current = joinRoom(serverUrl, roomCode, id, {
       onMembers: (list, selfId) => setMembers(list.map((m) => ({ ...m, you: m.id === selfId }))),
       onChat: ({ from, text, mid, replyTo: r }) => setMessages((m) => [...m, { id: nextId(), mid, type: "chat", from, text, ts: Date.now(), replyTo: r }]),
@@ -142,6 +146,7 @@ export function SidePanel() {
       onSystem: (text) => setMessages((m) => [...m, { id: nextId(), type: "system", text }]),
       onStatus: setStatus,
       onContent: setContent,
+      onDenied: () => setDenied(true),
     });
     return () => {
       conn.current?.disconnect();
@@ -375,6 +380,16 @@ export function SidePanel() {
     chrome.action.openPopup().catch(() => setPopupHint(true));
   }
 
+  if (isGoogleLoginConfigured() && user === undefined) return null;
+
+  if (isGoogleLoginConfigured() && user === null) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <LoginGate />
+      </div>
+    );
+  }
+
   if (!inRoom) {
     return (
       <div className="flex h-full animate-wb-fade-in flex-col items-center justify-center px-6 text-center font-nunito">
@@ -393,6 +408,25 @@ export function SidePanel() {
           Start a Party
         </button>
         {popupHint && <div className="mt-3 text-[12px] font-medium text-wb-dim">Click the bear in the toolbar to start a party.</div>}
+      </div>
+    );
+  }
+
+  if (denied) {
+    return (
+      <div className="flex h-full animate-wb-fade-in flex-col items-center justify-center px-6 text-center font-nunito">
+        <div className="animate-wb-float opacity-60">
+          <BearMark size={56} />
+        </div>
+        <div className="mt-3 font-fredoka text-[16px] font-semibold text-wb-text">Sign in to join the den</div>
+        <div className="mt-2 text-[12.5px] font-medium leading-[1.5] text-wb-dim">This den needs a Google sign-in before you can join.</div>
+        <button
+          type="button"
+          onClick={() => void requestGoogleLogin()}
+          className="mt-4 animate-wb-glow rounded-[12px] bg-[linear-gradient(180deg,#FFC156,#F2912A)] px-5 py-2 text-[13.5px] font-bold text-[#3a2410] shadow-md transition-all hover:scale-[1.02] hover:brightness-105 active:scale-95"
+        >
+          Sign in with Google
+        </button>
       </div>
     );
   }

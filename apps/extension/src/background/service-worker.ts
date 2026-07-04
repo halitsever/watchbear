@@ -1,10 +1,31 @@
 import { STORAGE_KEYS, isValidCode } from '@/lib/room';
 import { PANEL_PORT_NAME } from '@/lib/panelPort';
-import { loginWithGoogle } from '@/lib/auth';
+import { getAuth, isGoogleLoginConfigured, loginWithGoogle, openOnboarding } from '@/lib/auth';
 import type { PopupMessage, ContentMessage } from '@/lib/messages';
 
 function clearRoomState() {
   void chrome.storage.local.set({ [STORAGE_KEYS.inRoom]: false, [STORAGE_KEYS.roomCode]: '', [STORAGE_KEYS.anchorTabId]: null });
+}
+
+async function joinInvite(tabId: number, code: string, url: string | null): Promise<void> {
+  if (isGoogleLoginConfigured() && !(await getAuth())) {
+    try {
+      await loginWithGoogle();
+    } catch {
+      // cancelled or failed: no room join without login; land the user on onboarding
+      openOnboarding();
+      return;
+    }
+  }
+  // after a login flow the click's user activation has expired, so open() can
+  // reject; room state still lands and the popup's "Go to room" button recovers
+  chrome.sidePanel.open({ tabId }).catch(() => {});
+  chrome.storage.local.set(
+    { [STORAGE_KEYS.inRoom]: true, [STORAGE_KEYS.roomCode]: code, [STORAGE_KEYS.anchorTabId]: null },
+    () => {
+      if (url) chrome.tabs.update(tabId, { url }).catch(() => {});
+    },
+  );
 }
 
 chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender, sendResponse) => {
@@ -44,7 +65,8 @@ chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender
     return;
   }
 
-  // one-click join from the landing page: open the panel, write room state, then navigate the tab
+  // one-click join from the landing page: require login, then open the panel,
+  // write room state, and navigate the tab
   if (msg.type === 'WB_JOIN_INVITE') {
     const tabId = sender.tab?.id;
     if (!tabId || !isValidCode(msg.code)) return;
@@ -55,13 +77,7 @@ chrome.runtime.onMessage.addListener((msg: PopupMessage | ContentMessage, sender
     } catch {
       url = null;
     }
-    chrome.sidePanel.open({ tabId }).catch(() => {});
-    chrome.storage.local.set(
-      { [STORAGE_KEYS.inRoom]: true, [STORAGE_KEYS.roomCode]: msg.code, [STORAGE_KEYS.anchorTabId]: null },
-      () => {
-        if (url) chrome.tabs.update(tabId, { url }).catch(() => {});
-      },
-    );
+    void joinInvite(tabId, msg.code, url);
     return;
   }
 
@@ -90,4 +106,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
     if (!d[STORAGE_KEYS.inRoom] || typeof code !== 'string' || d[STORAGE_KEYS.anchorTabId] !== tabId) return;
     chrome.tabs.sendMessage(tabId, { type: 'START_ROOM', code, anchor: true }).catch(() => {});
   });
+});
+
+// first install only, never updates: send new users through Google sign-in
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason !== 'install' || !isGoogleLoginConfigured()) return;
+  openOnboarding();
 });

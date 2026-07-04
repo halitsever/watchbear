@@ -18,4 +18,11 @@ export default defineConfig({
     strictPort: true,
     hmr: { port: 5173 },
   },
+  build: {
+    rollupOptions: {
+      input: {
+        onboarding: 'src/onboarding/index.html',
+      },
+    },
+  },
 });

@@ -1,0 +1,2062 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Watchbear · Watch Together Chrome Extension for Watch Parties</title>
+    <meta
+      name="description"
+      content="Watchbear is a free watch together Chrome extension and open-source Teleparty alternative. Start a watch party, share a code, and stream videos in perfect sync with friends, with live chat and reactions built in."
+    />
+    <link rel="canonical" href="https://watchbear.deepfeld.com/" />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light" />
+    <meta
+      name="keywords"
+      content="watch together, watch together chrome extension, watch party, watch party chrome extension, teleparty alternative, netflix party alternative, watch movies together online, sync video, synced playback, watch videos with friends"
+    />
+    <meta name="author" content="Watchbear" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Watchbear" />
+    <meta property="og:title" content="Watchbear · Watch Together Chrome Extension for Watch Parties" />
+    <meta
+      property="og:description"
+      content="Start a watch party, share a code, and stream videos in perfect sync with friends. Live chat and reactions built in. Free and open source."
+    />
+    <meta property="og:url" content="https://watchbear.deepfeld.com/" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://watchbear.deepfeld.com/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Watchbear, watch videos together in perfect sync" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Watchbear · Watch Together Chrome Extension for Watch Parties" />
+    <meta
+      name="twitter:description"
+      content="Start a watch party, share a code, and stream videos in perfect sync with friends. Live chat and reactions built in. Free and open source."
+    />
+    <meta name="twitter:image" content="https://watchbear.deepfeld.com/og.png" />
+    <meta name="twitter:image:alt" content="Watchbear, watch videos together in perfect sync" />
+
+    <link rel="icon" type="image/svg+xml" href="bear.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="icon32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="icon16.png" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://code.iconify.design" crossorigin />
+    <link rel="preconnect" href="https://api.iconify.design" crossorigin />
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" async></script>
+    <script src="nav.js" defer></script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://watchbear.deepfeld.com/#org",
+            "name": "Watchbear",
+            "url": "https://watchbear.deepfeld.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://watchbear.deepfeld.com/og.png",
+              "width": 1200,
+              "height": 630
+            },
+            "description": "Watchbear makes a free watch together Chrome extension for synced watch parties with live chat and reactions.",
+            "sameAs": [
+              "https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn",
+              "https://github.com/halitsever/watchbear"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://watchbear.deepfeld.com/#website",
+            "name": "Watchbear",
+            "url": "https://watchbear.deepfeld.com/",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://watchbear.deepfeld.com/#org" }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://watchbear.deepfeld.com/#app",
+            "name": "Watchbear",
+            "description": "Watchbear is a free watch together Chrome extension. Start a watch party, share a code, and stream videos in perfect sync with friends, with live chat and reactions built in.",
+            "applicationCategory": "BrowserApplication",
+            "operatingSystem": "Chrome",
+            "browserRequirements": "Requires Google Chrome",
+            "url": "https://watchbear.deepfeld.com/",
+            "downloadUrl": "https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn",
+            "image": "https://watchbear.deepfeld.com/og.png",
+            "isAccessibleForFree": true,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+            "publisher": { "@id": "https://watchbear.deepfeld.com/#org" },
+            "author": { "@id": "https://watchbear.deepfeld.com/#org" },
+            "featureList": ["Synced video playback across everyone in the room", "Invite friends with a room code", "Live chat and reactions next to the video"]
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://watchbear.deepfeld.com/#webpage",
+            "url": "https://watchbear.deepfeld.com/",
+            "name": "Watchbear · Watch Together Chrome Extension for Watch Parties",
+            "description": "Watchbear is a free watch together Chrome extension and open-source Teleparty alternative. Start a watch party, share a code, and stream videos in perfect sync with friends, with live chat and reactions built in.",
+            "inLanguage": "en",
+            "isPartOf": { "@id": "https://watchbear.deepfeld.com/#website" },
+            "about": { "@id": "https://watchbear.deepfeld.com/#app" },
+            "primaryImageOfPage": "https://watchbear.deepfeld.com/og.png"
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://watchbear.deepfeld.com/#faq",
+            "inLanguage": "en",
+            "isPartOf": { "@id": "https://watchbear.deepfeld.com/#website" },
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is Watchbear?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Watchbear is a free watch together Chrome extension. You start a room, share the code with friends, and everyone's video stays in sync while you chat and react in a side panel."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is Watchbear free to use?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Watchbear is completely free for hosting a watch party. It syncs playback and adds live chat and reactions. You sign in with your free Google account; there are no fees or subscriptions."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I watch videos together with friends online?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Install the Chrome extension, open a video, start a room, and share the room code. Your friends join with the code and watch in perfect sync."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which sites does Watchbear work with?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Watchbear works on YouTube, Vimeo, and most sites that have a standard video player. It automatically finds the main video on the page and keeps it in sync."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do my friends need an account to join?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. On the public server everyone signs in with Google. It's free and takes seconds. Self-hosted servers can turn this requirement off."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does playback stay in sync?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. When anyone plays, pauses, or skips, everyone's screen follows so the whole room stays on the exact same frame."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How is Watchbear different from Teleparty?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Watchbear is a free, open-source Teleparty alternative. It works on most sites with a standard video player instead of a fixed list of streaming services, and you can self-host the sync server for full control."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <style>
+      /* page-specific styles; shared tokens and primitives live in styles.css */
+      body {
+        font-size: 17px;
+        overflow-x: hidden;
+        position: relative;
+      }
+      .page {
+        position: relative;
+        z-index: 1;
+      }
+
+      .cta-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .badge {
+        font-family: var(--font-body);
+        font-weight: 700;
+        font-size: 12px;
+        color: var(--accent-text);
+        background: var(--accent-tint);
+        padding: 3px 9px;
+        border-radius: 6px;
+      }
+
+      /* hero */
+      .hero {
+        text-align: center;
+        padding: 92px 0 68px;
+        max-width: 980px;
+        margin: 0 auto;
+      }
+      .hero h1 {
+        font-size: 54px;
+        line-height: 1.06;
+        color: var(--ink);
+        text-wrap: balance;
+      }
+      .hero h1 .accent {
+        color: var(--accent-text);
+      }
+      .hero p {
+        color: var(--muted);
+        font-weight: 400;
+        font-size: 19px;
+        line-height: 1.55;
+        max-width: 600px;
+        margin: 22px auto 36px;
+        text-wrap: pretty;
+      }
+      .note {
+        margin-top: 20px;
+        color: var(--faint);
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      /* demo */
+      .demo {
+        padding: 40px 0 80px;
+      }
+      .demowrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 0 28px;
+      }
+      .demo-head {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      .demo-head h2 {
+        font-size: 38px;
+        margin: 0 0 12px;
+      }
+      .demo-head .accent {
+        color: var(--accent-text);
+      }
+      .demo-head p {
+        color: var(--muted);
+        font-weight: 400;
+        font-size: 17px;
+        max-width: 560px;
+        margin: 0 auto;
+        text-wrap: pretty;
+      }
+      .win {
+        display: grid;
+        grid-template-columns: 1.55fr 1fr;
+        gap: 18px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: var(--shadow-md);
+      }
+      .player {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        min-width: 0;
+      }
+      .urlrow {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--faint);
+        font-size: 13px;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 9px 14px;
+      }
+      .dots {
+        display: flex;
+        gap: 5px;
+      }
+      .dots i {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #d5cbb8;
+        display: block;
+      }
+      .urlbar {
+        font-family: ui-monospace, monospace;
+        margin-left: 6px;
+      }
+      .ext-pin {
+        margin-left: auto;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .ext-pin svg {
+        display: block;
+      }
+      .screen {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #17130e;
+        border: 1px solid var(--line);
+      }
+      .screen .scene {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .screen .scene .ttl {
+        font-weight: 700;
+        font-size: 19px;
+        letter-spacing: -0.01em;
+        color: #f4ede1;
+        opacity: 0.95;
+      }
+      .screen .scene .sub {
+        font-size: 13px;
+        font-weight: 500;
+        color: #b3a68f;
+      }
+      .screen .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(20, 16, 11, 0.1), rgba(20, 16, 11, 0.65));
+        pointer-events: none;
+      }
+      .live-tag {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(23, 19, 14, 0.65);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: #cfc4b0;
+      }
+      .live-tag i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #8a7c66;
+      }
+      .live-tag.on {
+        border-color: rgba(106, 201, 135, 0.4);
+        color: #bfeccb;
+        animation: wbPulse 2.4s infinite;
+      }
+      .live-tag.on i {
+        background: #6ac987;
+      }
+      @keyframes wbPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(106, 201, 135, 0.5);
+        }
+        50% {
+          box-shadow: 0 0 0 6px rgba(106, 201, 135, 0);
+        }
+      }
+      .bigplay {
+        position: absolute;
+        inset: 0;
+        margin: auto;
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        background: var(--accent);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          opacity 0.2s,
+          background 0.15s;
+      }
+      .bigplay:hover {
+        background: var(--accent-hover);
+      }
+      .bigplay.hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .bigplay .tri {
+        width: 0;
+        height: 0;
+        border-left: 22px solid var(--on-accent);
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+        margin-left: 6px;
+      }
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 2px 4px;
+      }
+      .pp {
+        flex: none;
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        border: 1px solid var(--line-strong);
+        background: var(--surface);
+        color: var(--ink);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+      }
+      .pp:hover {
+        background: var(--surface-2);
+      }
+      .pp .i-play {
+        width: 0;
+        height: 0;
+        border-left: 12px solid var(--ink);
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+        margin-left: 3px;
+      }
+      .pp .i-pause {
+        display: flex;
+        gap: 4px;
+      }
+      .pp .i-pause span {
+        width: 4px;
+        height: 14px;
+        background: var(--ink);
+        border-radius: 1px;
+        display: block;
+      }
+      .time {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+        flex: none;
+        min-width: 96px;
+      }
+      .track {
+        flex: 1;
+        height: 6px;
+        background: var(--track);
+        border-radius: 999px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+      .fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0%;
+        background: var(--accent);
+        border-radius: 999px;
+      }
+      .status {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--faint);
+        min-width: 62px;
+        text-align: right;
+        flex: none;
+      }
+      .status.on {
+        color: var(--online);
+      }
+
+      /* side panel */
+      /* the cell stays sized by the player column; the panel is absolutely
+         positioned inside it so a growing chat feed can't expand the card */
+      .panelcell {
+        position: relative;
+        min-width: 0;
+        min-height: 520px;
+      }
+      .panel {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        min-width: 0;
+      }
+      .p-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+      }
+      .p-head .l {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        min-width: 0;
+      }
+      .p-head .pm {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .p-head .pm svg {
+        display: block;
+      }
+      .p-head .pt {
+        font-weight: 700;
+        font-size: 16px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .avstack {
+        display: flex;
+        align-items: center;
+      }
+      .avx {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid var(--surface);
+        background: var(--surface-2);
+        margin-left: -8px;
+        flex-shrink: 0;
+      }
+      .avx:first-child {
+        margin-left: 0;
+      }
+      .avx svg {
+        display: block;
+        width: 22px;
+        height: 22px;
+      }
+      .avx.more {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: var(--muted);
+      }
+      .invite-bar {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+      }
+      .invite {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: none;
+        border-radius: 8px;
+        background: var(--accent);
+        color: var(--on-accent);
+        font-family: var(--font-body);
+        font-size: 13px;
+        font-weight: 700;
+        padding: 9px 0;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .invite:hover {
+        background: var(--accent-hover);
+      }
+      .invite .ic {
+        display: inline-flex;
+        width: 15px;
+        height: 15px;
+      }
+      .invite .ic svg {
+        width: 15px;
+        height: 15px;
+      }
+      .status-banner {
+        padding: 6px 14px;
+        text-align: center;
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--accent-text);
+        background: var(--accent-tint);
+        animation: slideDown 0.3s ease;
+      }
+      .status-banner.hide {
+        display: none;
+      }
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .roster {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+      }
+      .members {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 10px;
+      }
+      .chip {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 3px 10px 3px 3px;
+        font-size: 12px;
+        font-weight: 600;
+        animation: chipIn 0.2s ease both;
+      }
+      @keyframes chipIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .chip .av {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+      .chip .av svg {
+        width: 20px;
+        height: 20px;
+      }
+      .chip.you {
+        border-color: #ecd9b0;
+        background: var(--accent-tint);
+      }
+      .count {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--faint);
+      }
+      .sync {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+      .sync + .sync {
+        margin-top: 6px;
+      }
+      .sync .ic {
+        display: inline-flex;
+        width: 13px;
+        height: 13px;
+        flex-shrink: 0;
+        color: var(--muted);
+      }
+      .sync .ic svg {
+        width: 13px;
+        height: 13px;
+      }
+      .sync .np {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .feed {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+      }
+      .msg {
+        display: flex;
+        align-items: flex-end;
+        gap: 9px;
+        margin-top: 12px;
+        animation: msgIn 0.28s ease both;
+      }
+      .msg:first-child {
+        margin-top: 0;
+      }
+      .msg.grouped {
+        margin-top: 3px;
+      }
+      .msg.mine {
+        flex-direction: row-reverse;
+      }
+      .msg .av {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+      .msg .av svg {
+        width: 28px;
+        height: 28px;
+      }
+      .msg .body {
+        max-width: 76%;
+        min-width: 0;
+      }
+      .msg .who {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--muted);
+        margin: 0 0 2px 2px;
+      }
+      .msg .row {
+        display: flex;
+        align-items: flex-end;
+        gap: 6px;
+      }
+      .msg.mine .row {
+        flex-direction: row-reverse;
+      }
+      .msg .bub {
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 4px 13px 13px 13px;
+        padding: 8px 12px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.45;
+        color: var(--ink);
+        word-wrap: break-word;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        min-width: 0;
+      }
+      .msg.grouped .bub {
+        border-radius: 13px;
+      }
+      .msg.mine .bub {
+        background: var(--accent);
+        border-color: transparent;
+        border-radius: 13px 4px 13px 13px;
+        font-weight: 500;
+        color: var(--on-accent);
+      }
+      .msg.mine.grouped .bub {
+        border-radius: 13px;
+      }
+      .msg .time {
+        font-size: 10px;
+        color: var(--faint);
+        flex-shrink: 0;
+        margin-bottom: 2px;
+        min-width: 0;
+      }
+      .msg.emoji .bub {
+        font-size: 24px;
+        padding: 2px 6px;
+        background: none;
+        border: none;
+      }
+      @keyframes msgIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .sys {
+        align-self: center;
+        margin-top: 12px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--faint);
+        text-align: center;
+        background: var(--surface-2);
+        border-radius: 999px;
+        padding: 4px 12px;
+        animation: msgIn 0.28s ease both;
+      }
+      .typing {
+        height: 18px;
+        padding: 0 16px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--faint);
+        line-height: 18px;
+      }
+      .typing .d {
+        display: inline-block;
+        animation: bob 1.2s infinite;
+      }
+      .typing .d:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .typing .d:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+      @keyframes bob {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.4;
+        }
+        30% {
+          transform: translateY(-3px);
+          opacity: 1;
+        }
+      }
+      .reactions {
+        display: flex;
+        gap: 7px;
+        padding: 0 14px;
+      }
+      .reactions button {
+        flex: 1;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        border-radius: 8px;
+        padding: 7px 0;
+        font-size: 18px;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+      .reactions button:hover {
+        background: var(--accent-tint);
+        border-color: var(--line-strong);
+      }
+      .composer {
+        display: flex;
+        gap: 8px;
+        padding: 12px 14px;
+      }
+      .composer input {
+        flex: 1;
+        min-width: 0;
+        background: var(--surface);
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        padding: 10px 12px;
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-weight: 400;
+        font-size: 14px;
+        outline: none;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .composer input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-tint);
+      }
+      .composer input::placeholder {
+        color: var(--faint);
+      }
+      .composer .send {
+        flex: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 8px;
+        background: var(--accent);
+        color: var(--on-accent);
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          opacity 0.15s;
+      }
+      .composer .send svg {
+        width: 16px;
+        height: 16px;
+      }
+      .composer .send:hover {
+        background: var(--accent-hover);
+      }
+      .composer .send:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+
+      /* invite callout */
+      .invite-callout {
+        margin-top: 18px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+        background: var(--bg-soft);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 20px 26px;
+      }
+      .invite-callout .ic-mark {
+        flex: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: var(--accent-tint);
+        color: var(--accent-text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .invite-callout .ic-mark svg {
+        width: 20px;
+        height: 20px;
+      }
+      .invite-callout .ic-body {
+        flex: 1;
+        min-width: 220px;
+      }
+      .invite-callout .ic-title {
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        margin-bottom: 3px;
+      }
+      .invite-callout .ic-sub {
+        font-size: 14.5px;
+        color: var(--muted);
+        text-wrap: pretty;
+      }
+      .invite-callout .ic-sub.warn {
+        color: var(--danger);
+      }
+      .invite-callout .joinrow {
+        margin-top: 10px;
+      }
+      .invite-callout input {
+        width: 320px;
+        max-width: 100%;
+        background: var(--surface);
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-weight: 400;
+        font-size: 13px;
+        padding: 10px 13px;
+        outline: none;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .invite-callout input::placeholder {
+        color: var(--faint);
+      }
+      .invite-callout input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-tint);
+      }
+      .invite-callout .jb {
+        flex: none;
+      }
+
+      /* CTA band */
+      .cta-band {
+        padding: 0 0 80px;
+      }
+      .band {
+        position: relative;
+        text-align: center;
+        background: var(--bg-soft);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 56px 32px;
+        overflow: hidden;
+      }
+      .band h2 {
+        position: relative;
+        font-size: 38px;
+        margin: 0 0 14px;
+        color: var(--ink);
+      }
+      .band p {
+        position: relative;
+        font-size: 18px;
+        color: var(--muted);
+        max-width: 560px;
+        margin: 0 auto 30px;
+        font-weight: 400;
+        text-wrap: pretty;
+      }
+      .band-cta {
+        position: relative;
+      }
+      .band-rate {
+        position: relative;
+        display: inline-block;
+        margin-top: 18px;
+        font-size: 14.5px;
+        font-weight: 600;
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+      .band-rate .stars {
+        color: var(--accent);
+        letter-spacing: 2px;
+        margin-right: 6px;
+      }
+      .band-rate:hover {
+        color: var(--ink);
+      }
+      .coming {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--faint);
+        font-weight: 600;
+        font-size: 15px;
+        padding: 15px 22px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+      }
+
+      /* features */
+      .feat {
+        padding: 0 0 84px;
+      }
+      .feat-head {
+        text-align: center;
+        margin-bottom: 44px;
+      }
+      .feat-head h2 {
+        font-size: 38px;
+        margin: 0 0 12px;
+        color: var(--ink);
+      }
+      .feat-head p {
+        color: var(--muted);
+        font-weight: 400;
+        font-size: 17px;
+        max-width: 540px;
+        margin: 0 auto;
+        text-wrap: pretty;
+      }
+      .feat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .f {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 30px 26px;
+        box-shadow: var(--shadow-sm);
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .f:hover {
+        border-color: var(--line-strong);
+        box-shadow: var(--shadow-md);
+      }
+      .f .ficon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        background: var(--accent-tint);
+        border: 1px solid #f3e2c0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: var(--accent-text);
+        margin-bottom: 20px;
+      }
+      .f .ficon iconify-icon {
+        display: block;
+      }
+      .f h2 {
+        font-weight: 700;
+        font-size: 20px;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+      .f p {
+        color: var(--muted);
+        font-weight: 400;
+        font-size: 15px;
+        margin: 10px 0 0;
+        line-height: 1.55;
+        text-wrap: pretty;
+      }
+
+      /* faq */
+      .faq {
+        padding: 0 0 90px;
+      }
+      .faq .wrap {
+        max-width: 780px;
+      }
+      .faq > .wrap > h2 {
+        font-size: 38px;
+        text-align: center;
+        color: var(--ink);
+        margin: 0 0 40px;
+      }
+      .faq-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .faq-item {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface);
+        overflow: hidden;
+        transition: border-color 0.2s;
+      }
+      .faq-item.open {
+        border-color: var(--line-strong);
+      }
+      .faq-q {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        text-align: left;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 20px 24px;
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 17px;
+        color: var(--ink);
+      }
+      .faq-ic {
+        flex: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--accent-tint);
+        color: var(--accent-text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: transform 0.25s;
+      }
+      .faq-item.open .faq-ic {
+        transform: rotate(45deg);
+      }
+      .faq-a {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      .faq-item.open .faq-a {
+        max-height: 240px;
+      }
+      .faq-a p {
+        margin: 0;
+        padding: 0 24px 22px;
+        font-size: 15.5px;
+        line-height: 1.6;
+        color: var(--muted);
+        text-wrap: pretty;
+      }
+      .faq-a a {
+        color: var(--accent-text);
+        font-weight: 600;
+      }
+      .faq-a a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 860px) {
+        .win {
+          grid-template-columns: 1fr;
+        }
+        .panel {
+          position: static;
+          inset: auto;
+          height: 520px;
+        }
+        .urlbar {
+          display: none;
+        }
+        .demo-head h2 {
+          font-size: 30px;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .hero {
+          padding: 64px 0 50px;
+        }
+        .hero h1 {
+          font-size: 40px;
+        }
+        .feat-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .wrap,
+        .demowrap {
+          padding: 0 18px;
+        }
+        .hero {
+          padding: 56px 0 44px;
+        }
+        .hero h1 {
+          font-size: 32px;
+        }
+        .hero p {
+          font-size: 17px;
+        }
+        .btn.lg {
+          padding: 13px 22px;
+          font-size: 15.5px;
+        }
+        .demo-head h2 {
+          font-size: 25px;
+        }
+        .band h2,
+        .feat-head h2,
+        .faq > .wrap > h2 {
+          font-size: 27px;
+        }
+        .band {
+          padding: 44px 22px;
+        }
+        .invite-callout {
+          padding: 18px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <wb-nav></wb-nav>
+
+      <main>
+        <header class="hero wrap">
+          <h1>Watch videos together, <span class="accent">perfectly in sync.</span></h1>
+          <p>Watchbear is a free Chrome extension for watch parties. Start a room, share the link, and everyone's playback stays in sync, with chat right beside the video.</p>
+          <div class="cta-row">
+            <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener" class="btn lg">Add to Chrome</a>
+            <a href="#demo" class="btn lg ghost">See the live demo</a>
+          </div>
+          <p class="note">Free. Sign in with Google. Works on YouTube, Vimeo, and more.</p>
+        </header>
+
+        <section class="demo" id="demo">
+          <div class="demowrap">
+            <div class="demo-head">
+              <h2>See it in action</h2>
+              <p>Press play, send a message, and watch the room stay in sync. A live simulation of the real extension.</p>
+            </div>
+
+            <div class="win">
+              <div class="player">
+                <div class="urlrow">
+                  <span class="dots"><i></i><i></i><i></i></span>
+                  <span class="urlbar">watchparty.example/movie-night</span>
+                  <span class="ext-pin" id="pinBear"></span>
+                </div>
+                <div class="screen">
+                  <div class="scene">
+                    <div class="ttl">Movie Night</div>
+                    <div class="sub">Demo video · 24 min</div>
+                  </div>
+                  <div class="overlay"></div>
+                  <div class="live-tag" id="liveTag"><i></i><span id="liveTxt">Paused</span></div>
+                  <button class="bigplay" id="bigPlay" aria-label="play/pause"><span class="tri"></span></button>
+                </div>
+                <div class="controls">
+                  <button class="pp" id="pp" aria-label="play/pause">
+                    <span class="i-play" id="ppIcon"></span>
+                  </button>
+                  <span class="time" id="time">0:00 / 24:00</span>
+                  <div class="track" id="track"><div class="fill" id="fill"></div></div>
+                  <span class="status" id="statusLbl">Paused</span>
+                </div>
+              </div>
+
+              <div class="panelcell">
+                <div class="panel">
+                <div class="p-head">
+                  <div class="l">
+                    <span class="pm" id="panelBear"></span>
+                    <div class="pt">Watch party</div>
+                  </div>
+                  <div class="avstack" id="avatarStack"></div>
+                </div>
+
+                <div class="invite-bar">
+                  <button class="invite" id="copyBtn" type="button">
+                    <span class="ic" id="copyIc"></span>
+                    <span id="copyLabel">Copy invite link</span>
+                  </button>
+                </div>
+
+                <div class="status-banner" id="statusBanner">Connecting…</div>
+
+                <div class="roster">
+                  <div class="members" id="members"></div>
+                  <div class="sync">
+                    <span class="ic">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </span>
+                    <span id="syncTime">0:00</span>
+                  </div>
+                  <div class="sync">
+                    <span class="ic">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+                    </span>
+                    <span class="np">Now playing: Movie Night</span>
+                  </div>
+                </div>
+
+                <div class="feed" id="feed"></div>
+
+                <div class="typing" id="typing"></div>
+
+                <div class="reactions" id="reactions"></div>
+
+                <form class="composer" id="composer" autocomplete="off">
+                  <input id="draft" placeholder="Send a message" maxlength="300" />
+                  <button class="send" id="send" type="submit" aria-label="send" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                  </button>
+                </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="invite-callout">
+              <div class="ic-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </div>
+              <div class="ic-body">
+                <div class="ic-title">Got an invite link from a friend?</div>
+                <div class="ic-sub" id="hint">Paste an <b>invite link</b>, sign in with Google, and you're in the room in seconds.</div>
+                <div class="joinrow">
+                  <input id="joinCode" placeholder="watchbear.deepfeld.com/j#wb=BEAR-…" />
+                </div>
+              </div>
+              <button class="btn jb" id="joinBtn" type="button">Join room</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="cta-band" id="get">
+          <div class="wrap">
+            <div class="band">
+              <h2>Start your first watch party</h2>
+              <p>Add the free extension, open any video, and invite friends in seconds. Free with your Google account.</p>
+              <div class="band-cta cta-row">
+                <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener" class="btn lg">Add to Chrome</a>
+                <span class="coming">Desktop app <span class="badge">Coming soon</span></span>
+              </div>
+              <a class="band-rate" href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn/reviews" target="_blank" rel="noopener"><span class="stars">★★★★★</span>Loving Watchbear? Rate us on the Chrome Web Store</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="feat">
+          <div class="wrap">
+            <div class="feat-head">
+              <h2>Everything you need for a watch party</h2>
+              <p>Watchbear keeps the video, the people, and the conversation in one synced room.</p>
+            </div>
+            <div class="feat-grid">
+              <div class="f">
+                <div class="ficon"><iconify-icon icon="lucide:circle-play" aria-hidden="true"></iconify-icon></div>
+                <h2>Synced video playback</h2>
+                <p>Play, pause or skip. Everyone's screen stays on the exact same frame, automatically.</p>
+              </div>
+              <div class="f">
+                <div class="ficon"><iconify-icon icon="lucide:key-round" aria-hidden="true"></iconify-icon></div>
+                <h2>Invite with a code</h2>
+                <p>Send your room code to friends. They sign in with Google and join the watch party in seconds.</p>
+              </div>
+              <div class="f">
+                <div class="ficon"><iconify-icon icon="lucide:message-circle" aria-hidden="true"></iconify-icon></div>
+                <h2>Live chat &amp; reactions</h2>
+                <p>A side panel keeps live messages and emoji reactions right next to the video.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="faq">
+          <div class="wrap">
+            <h2>Frequently asked questions</h2>
+            <div class="faq-list">
+              <div class="faq-item open" data-faq>
+                <button class="faq-q" type="button"><span>What is Watchbear?</span><span class="faq-ic">+</span></button>
+                <div class="faq-a">
+                  <p>
+                    Watchbear is a free watch together Chrome extension. You start a room, share the code with friends, and everyone's video stays in sync while you chat and react in a
+                    side panel.
+                  </p>
+                </div>
+              </div>
+              <div class="faq-item" data-faq>
+                <button class="faq-q" type="button"><span>Is Watchbear free to use?</span><span class="faq-ic">+</span></button>
+                <div class="faq-a">
+                  <p>Yes. Watchbear is completely free for hosting a watch party. It syncs playback and adds live chat and reactions. You sign in with your free Google account; there are no fees or subscriptions.</p>
+                </div>
+              </div>
+              <div class="faq-item" data-faq>
+                <button class="faq-q" type="button"><span>How do I watch videos together with friends online?</span><span class="faq-ic">+</span></button>
+                <div class="faq-a">
+                  <p>Install the Chrome extension, open a video, start a room, and share the room code. Your friends join with the code and watch in perfect sync.</p>
+                </div>
+              </div>
+              <div class="faq-item" data-faq>
+                <button class="faq-q" type="button"><span>Which sites does Watchbear work with?</span><span class="faq-ic">+</span></button>
+                <div class="faq-a">
+                  <p>Watchbear works on YouTube, Vimeo, and most sites that have a standard video player. It automatically finds the main video on the page and keeps it in sync.</p>
+                </div>
+              </div>
+              <div class="faq-item" data-faq>
+                <button class="faq-q" type="button"><span>Do my friends need an account to join?</span><span class="faq-ic">+</span></button>
+                <div class="faq-a">
+                  <p>Yes. On the public server everyone signs in with Google. It's free and takes seconds. Self-hosted servers can turn this requirement off.</p>
+                </div>
+              </div>
+              <div class="faq-item" data-faq>
+                <button class="faq-q" type="button"><span>Does playback stay in sync?</span><span class="faq-ic">+</span></button>
+                <div class="faq-a">
+                  <p>Yes. When anyone plays, pauses, or skips, everyone's screen follows so the whole room stays on the exact same frame.</p>
+                </div>
+              </div>
+              <div class="faq-item" data-faq>
+                <button class="faq-q" type="button"><span>How is Watchbear different from Teleparty?</span><span class="faq-ic">+</span></button>
+                <div class="faq-a">
+                  <p>
+                    Watchbear is a free, open-source Teleparty alternative. It works on most sites with a standard video player instead of a fixed list of streaming services, and you
+                    can self-host the sync server for full control. See the full <a href="teleparty-alternative.html">Watchbear vs Teleparty comparison</a>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="foot-wrap">
+        <div class="foot">
+          <div class="foot-brand">
+            <span class="mk" id="footBear"></span>
+            <span class="tag">Watchbear · watch videos together, in sync</span>
+          </div>
+          <div class="foot-links">
+            <a href="teleparty-alternative.html">Watchbear vs Teleparty</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener">Add to Chrome</a>
+            <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn/reviews" target="_blank" rel="noopener">Rate us ★</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var _n = 0;
+        window.bearSVG = function bearSVG(o) {
+          o = o || {};
+          var size = o.size || 200;
+          var u = "wb" + ++_n; // unique id prefix
+          var ink = o.ink || "#3A2412";
+          var cheek = o.cheek || "#FF9E7A";
+          var ring = o.playRing || "#E07F1C";
+          var defs =
+            "<defs>" +
+            '<radialGradient id="' +
+            u +
+            'b" cx="38%" cy="30%" r="80%"><stop offset="0" stop-color="#D89A5C"/><stop offset="1" stop-color="#BC7E40"/></radialGradient>' +
+            '<radialGradient id="' +
+            u +
+            'h" cx="36%" cy="28%" r="82%"><stop offset="0" stop-color="#DC9E60"/><stop offset="1" stop-color="#C0823F"/></radialGradient>' +
+            '<radialGradient id="' +
+            u +
+            'y" cx="50%" cy="34%" r="74%"><stop offset="0" stop-color="#FFF4E2"/><stop offset="1" stop-color="#F2DEBE"/></radialGradient>' +
+            '<radialGradient id="' +
+            u +
+            'p" cx="50%" cy="26%" r="82%"><stop offset="0" stop-color="#FFC862"/><stop offset="1" stop-color="#F59022"/></radialGradient>' +
+            '<radialGradient id="' +
+            u +
+            'e" cx="50%" cy="40%" r="72%"><stop offset="0" stop-color="#C98A4B"/><stop offset="1" stop-color="#AB7037"/></radialGradient>' +
+            "</defs>";
+          return (
+            '<svg width="' +
+            size +
+            '" height="' +
+            size +
+            '" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible" aria-label="Watchbear">' +
+            defs +
+            '<ellipse cx="40" cy="106" rx="11" ry="9" fill="#A86B30"/><ellipse cx="80" cy="106" rx="11" ry="9" fill="#A86B30"/>' +
+            '<ellipse cx="40" cy="107" rx="5.4" ry="4" fill="url(#' +
+            u +
+            'y)"/><ellipse cx="80" cy="107" rx="5.4" ry="4" fill="url(#' +
+            u +
+            'y)"/>' +
+            '<ellipse cx="26" cy="80" rx="9.5" ry="13" fill="url(#' +
+            u +
+            'e)"/><ellipse cx="94" cy="80" rx="9.5" ry="13" fill="url(#' +
+            u +
+            'e)"/>' +
+            '<ellipse cx="60" cy="86" rx="32" ry="27" fill="url(#' +
+            u +
+            'b)"/>' +
+            '<circle cx="60" cy="88" r="19" fill="url(#' +
+            u +
+            'y)"/>' +
+            '<circle cx="60" cy="88" r="19" fill="none" stroke="#E7CFA8" stroke-width="1.2" opacity="0.7"/>' +
+            '<circle cx="60" cy="88" r="13.5" fill="url(#' +
+            u +
+            'p)"/>' +
+            '<circle cx="60" cy="88" r="13.5" fill="none" stroke="' +
+            ring +
+            '" stroke-width="2"/>' +
+            '<path d="M47 84 A 13.5 13.5 0 0 1 73 84 L73 76 L47 76 Z" fill="#fff" opacity="0.22"/>' +
+            '<path d="M55.4 81.5 L55.4 94.5 L67 88 Z" fill="#fff" stroke-linejoin="round"/>' +
+            '<circle cx="36" cy="24" r="13" fill="url(#' +
+            u +
+            'e)"/><circle cx="84" cy="24" r="13" fill="url(#' +
+            u +
+            'e)"/>' +
+            '<circle cx="36" cy="24" r="6.4" fill="#F6E2C4"/><circle cx="84" cy="24" r="6.4" fill="#F6E2C4"/>' +
+            '<circle cx="60" cy="46" r="28" fill="url(#' +
+            u +
+            'h)"/>' +
+            '<ellipse cx="49" cy="33" rx="12" ry="8" fill="#fff" opacity="0.14"/>' +
+            '<ellipse cx="42" cy="52" rx="6" ry="4.4" fill="' +
+            cheek +
+            '" opacity="0.85"/>' +
+            '<ellipse cx="78" cy="52" rx="6" ry="4.4" fill="' +
+            cheek +
+            '" opacity="0.85"/>' +
+            '<ellipse cx="60" cy="54" rx="13" ry="10" fill="url(#' +
+            u +
+            'y)"/>' +
+            '<circle cx="50" cy="43" r="3.6" fill="' +
+            ink +
+            '"/><circle cx="70" cy="43" r="3.6" fill="' +
+            ink +
+            '"/>' +
+            '<circle cx="51.3" cy="41.6" r="1.2" fill="#fff"/><circle cx="71.3" cy="41.6" r="1.2" fill="#fff"/>' +
+            '<ellipse cx="60" cy="50" rx="3.8" ry="3" fill="' +
+            ink +
+            '"/>' +
+            '<path d="M60 53 L60 57 M60 57 C56.6 59 54.2 57.3 53.6 55.2 M60 57 C63.4 59 65.8 57.3 66.4 55.2" stroke="' +
+            ink +
+            '" stroke-width="1.8" stroke-linecap="round" fill="none"/>' +
+            "</svg>"
+          );
+        };
+
+        window.initialAvatar = function initialAvatar(name, color, size) {
+          return (
+            '<svg width="' +
+            size +
+            '" height="' +
+            size +
+            '" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="display:block">' +
+            '<circle cx="16" cy="16" r="16" fill="' +
+            color +
+            '"/>' +
+            '<text x="16" y="21" text-anchor="middle" font-family="Hanken Grotesk, system-ui, sans-serif" font-size="14" font-weight="700" fill="#fff">' +
+            name.charAt(0).toUpperCase() +
+            "</text></svg>"
+          );
+        };
+      })();
+    </script>
+    <script>
+      document.getElementById("pinBear").innerHTML = bearSVG({ size: 22 });
+      document.getElementById("panelBear").innerHTML = bearSVG({ size: 26 });
+      document.getElementById("footBear").innerHTML = bearSVG({ size: 28 });
+
+      var DURATION = 24 * 60; // 24:00 in seconds
+      var state = { time: 0, playing: false };
+
+      // room members, each with a distinct avatar color
+      var members = [
+        { id: "you", name: "You", you: true, color: "#b45309" },
+        { id: "maya", name: "Maya", color: "#4f6f8f" },
+        { id: "daniel", name: "Daniel", color: "#5a7a52" },
+      ];
+
+      var feedEl = document.getElementById("feed");
+      var typingEl = document.getElementById("typing");
+      var membersEl = document.getElementById("members");
+      var stackEl = document.getElementById("avatarStack");
+
+      function fmt(sec) {
+        sec = Math.max(0, Math.floor(sec));
+        var m = Math.floor(sec / 60);
+        var s = sec % 60;
+        return m + ":" + (s < 10 ? "0" : "") + s;
+      }
+
+      // overlapping avatar stack in the panel header, mirroring the live roster
+      function renderStack() {
+        stackEl.innerHTML = "";
+        var shown = members.slice(0, 3);
+        shown.forEach(function (m) {
+          var a = document.createElement("span");
+          a.className = "avx";
+          a.innerHTML = initialAvatar(m.name, m.color, 22);
+          stackEl.appendChild(a);
+        });
+        if (members.length > 3) {
+          var extra = document.createElement("span");
+          extra.className = "avx more";
+          extra.textContent = "+" + (members.length - 3);
+          stackEl.appendChild(extra);
+        }
+      }
+
+      function renderMembers() {
+        membersEl.innerHTML = "";
+        members.forEach(function (m) {
+          var chip = document.createElement("div");
+          chip.className = "chip" + (m.you ? " you" : "");
+          var av = document.createElement("span");
+          av.className = "av";
+          av.innerHTML = initialAvatar(m.name, m.color, 20);
+          chip.appendChild(av);
+          chip.appendChild(document.createTextNode(m.name + (m.you ? " (you)" : "")));
+          membersEl.appendChild(chip);
+        });
+        var count = document.createElement("span");
+        count.className = "count";
+        count.textContent = members.length + " in room";
+        membersEl.appendChild(count);
+        renderStack();
+      }
+
+      function colorFor(name) {
+        for (var i = 0; i < members.length; i++) {
+          if (members[i].name === name) return members[i].color;
+        }
+        return "#7c7060";
+      }
+
+      function fmtClock(d) {
+        var h = d.getHours();
+        var m = d.getMinutes();
+        var ap = h >= 12 ? "PM" : "AM";
+        h = h % 12;
+        if (h === 0) h = 12;
+        return h + ":" + (m < 10 ? "0" : "") + m + " " + ap;
+      }
+
+      function atBottom() {
+        return feedEl.scrollHeight - feedEl.scrollTop - feedEl.clientHeight < 40;
+      }
+      function scrollFeed() {
+        feedEl.scrollTop = feedEl.scrollHeight;
+      }
+
+      // group key for collapsing a run of messages from the same sender
+      var lastSender = null;
+
+      function addChat(from, text, opts) {
+        opts = opts || {};
+        var mine = !!opts.mine;
+        var key = mine ? "me" : from;
+        var grouped = key === lastSender;
+        lastSender = key;
+        var stick = atBottom();
+
+        var wrap = document.createElement("div");
+        wrap.className = "msg" + (mine ? " mine" : "") + (opts.emoji ? " emoji" : "") + (grouped ? " grouped" : "");
+
+        // avatar for others; a spacer keeps alignment on grouped runs
+        if (!mine) {
+          var av = document.createElement("span");
+          av.className = "av";
+          if (!grouped) {
+            av.innerHTML = initialAvatar(from, colorFor(from), 28);
+          }
+          wrap.appendChild(av);
+        }
+
+        var body = document.createElement("div");
+        body.className = "body";
+        if (!mine && !grouped) {
+          var who = document.createElement("div");
+          who.className = "who";
+          who.textContent = from;
+          body.appendChild(who);
+        }
+        var row = document.createElement("div");
+        row.className = "row";
+        var bub = document.createElement("div");
+        bub.className = "bub";
+        bub.textContent = text;
+        var time = document.createElement("span");
+        time.className = "time";
+        time.textContent = fmtClock(new Date());
+        row.appendChild(bub);
+        row.appendChild(time);
+        body.appendChild(row);
+        wrap.appendChild(body);
+
+        feedEl.appendChild(wrap);
+        if (stick || mine) scrollFeed();
+      }
+
+      function addSys(text) {
+        var stick = atBottom();
+        lastSender = null; // a system line breaks the message grouping
+        var s = document.createElement("div");
+        s.className = "sys";
+        s.textContent = text;
+        feedEl.appendChild(s);
+        if (stick) scrollFeed();
+      }
+
+      // grammatical typing label, mirroring the real side panel
+      var typers = [];
+      function typingLabel(names) {
+        if (names.length === 1) return names[0] + " is typing";
+        if (names.length === 2) return names[0] + " and " + names[1] + " are typing";
+        return "Several people are typing";
+      }
+      function renderTyping() {
+        if (typers.length === 0) {
+          typingEl.innerHTML = "";
+          return;
+        }
+        typingEl.innerHTML = typingLabel(typers) + "<span class='d'>.</span><span class='d'>.</span><span class='d'>.</span>";
+      }
+      function showTyping(name) {
+        if (typers.indexOf(name) === -1) typers.push(name);
+        renderTyping();
+      }
+      function clearTyping(name) {
+        if (name) {
+          var i = typers.indexOf(name);
+          if (i !== -1) typers.splice(i, 1);
+        } else {
+          typers = [];
+        }
+        renderTyping();
+      }
+
+      // scripted replies, picked in order so it feels intentional
+      var replies = [
+        { who: "Maya", text: "Pause anytime, it syncs for everyone." },
+        { who: "Daniel", text: "Picture is perfectly in sync on my end." },
+        { who: "Maya", text: "Can we go back about ten seconds?" },
+        { who: "Daniel", text: "Grabbing a drink, back in a minute." },
+        { who: "Maya", text: "This part is great, no spoilers." },
+      ];
+      var replyIdx = 0;
+      function botReply() {
+        var r = replies[replyIdx % replies.length];
+        replyIdx++;
+        showTyping(r.who);
+        setTimeout(function () {
+          clearTyping();
+          addChat(r.who, r.text);
+        }, 1100);
+      }
+
+      // ---- video sync ----
+      var pp = document.getElementById("pp");
+      var ppIcon = document.getElementById("ppIcon");
+      var bigPlay = document.getElementById("bigPlay");
+      var fill = document.getElementById("fill");
+      var timeEl = document.getElementById("time");
+      var track = document.getElementById("track");
+      var liveTag = document.getElementById("liveTag");
+      var liveTxt = document.getElementById("liveTxt");
+      var statusLbl = document.getElementById("statusLbl");
+      var syncTimeEl = document.getElementById("syncTime");
+
+      function renderVideo() {
+        var pct = (state.time / DURATION) * 100;
+        fill.style.width = pct + "%";
+        timeEl.textContent = fmt(state.time) + " / " + fmt(DURATION);
+        // the panel's sync clock tracks the player one-to-one
+        syncTimeEl.textContent = fmt(state.time);
+        if (state.playing) {
+          ppIcon.className = "i-pause";
+          ppIcon.innerHTML = "<span></span><span></span>";
+          bigPlay.classList.add("hide");
+          liveTag.classList.add("on");
+          liveTxt.textContent = "LIVE · " + members.length + " watching";
+          statusLbl.textContent = "Playing";
+          statusLbl.classList.add("on");
+        } else {
+          ppIcon.className = "i-play";
+          ppIcon.innerHTML = "";
+          bigPlay.classList.remove("hide");
+          liveTag.classList.remove("on");
+          liveTxt.textContent = "Paused";
+          statusLbl.textContent = "Paused";
+          statusLbl.classList.remove("on");
+        }
+      }
+
+      var ticker = null;
+      function setPlaying(on) {
+        state.playing = on;
+        renderVideo();
+        if (on && !ticker) {
+          ticker = setInterval(function () {
+            state.time += 1;
+            if (state.time >= DURATION) {
+              state.time = DURATION;
+              setPlaying(false);
+              return;
+            }
+            renderVideo();
+          }, 1000);
+        } else if (!on && ticker) {
+          clearInterval(ticker);
+          ticker = null;
+        }
+      }
+      function toggle() {
+        var goingOn = !state.playing;
+        setPlaying(goingOn);
+        addSys(goingOn ? "Playback resumed for everyone" : "Playback paused for everyone");
+      }
+      pp.addEventListener("click", toggle);
+      bigPlay.addEventListener("click", toggle);
+
+      track.addEventListener("click", function (e) {
+        var rect = track.getBoundingClientRect();
+        var ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+        state.time = Math.round(ratio * DURATION);
+        renderVideo();
+        addSys("Jumped to " + fmt(state.time) + " · everyone follows");
+      });
+
+      // ---- chat ----
+      var composer = document.getElementById("composer");
+      var draft = document.getElementById("draft");
+      var sendBtn = document.getElementById("send");
+      draft.addEventListener("input", function () {
+        sendBtn.disabled = !draft.value.trim();
+      });
+      composer.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var text = draft.value.trim();
+        if (!text) return;
+        addChat("You", text, { mine: true });
+        draft.value = "";
+        sendBtn.disabled = true;
+        setTimeout(botReply, 600);
+      });
+
+      // ---- reactions ----
+      var REACTIONS = ["👍", "😂", "❤️", "😮", "👏"];
+      var reactionsEl = document.getElementById("reactions");
+      REACTIONS.forEach(function (emoji) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "wbReact";
+        b.textContent = emoji;
+        b.addEventListener("click", function () {
+          addChat("You", emoji, { mine: true, emoji: true });
+        });
+        reactionsEl.appendChild(b);
+      });
+
+      // ---- copy invite link ----
+      var copyBtn = document.getElementById("copyBtn");
+      var copyLabel = document.getElementById("copyLabel");
+      var copyIc = document.getElementById("copyIc");
+      var COPY_SVG =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>';
+      var CHECK_SVG =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      // matches the real extension's buildInviteLink: base/j#wb=CODE&u=<videoUrl>
+      var INVITE_LINK = "https://watchbear.deepfeld.com/j#wb=BEAR-K7M2QX&u=" + encodeURIComponent("https://watchparty.example/movie-night");
+      copyIc.innerHTML = COPY_SVG;
+      var copyTimer = null;
+      copyBtn.addEventListener("click", function () {
+        if (navigator.clipboard) navigator.clipboard.writeText(INVITE_LINK).catch(function () {});
+        copyLabel.textContent = "Link copied!";
+        copyIc.innerHTML = CHECK_SVG;
+        if (copyTimer) clearTimeout(copyTimer);
+        copyTimer = setTimeout(function () {
+          copyLabel.textContent = "Copy invite link";
+          copyIc.innerHTML = COPY_SVG;
+        }, 1600);
+      });
+
+      // ---- connection status banner ----
+      var statusBanner = document.getElementById("statusBanner");
+      setTimeout(function () {
+        statusBanner.classList.add("hide");
+      }, 1200);
+
+      // ---- join flow ----
+      var CODE_RE = /^[A-Z]{2,8}-[A-Z0-9]{4,12}$/;
+      var GUESTS = [
+        { name: "Sam", color: "#7a5ea6" },
+        { name: "Priya", color: "#a05c74" },
+        { name: "Alex", color: "#3f7d7a" },
+      ];
+      var guestIdx = 0;
+      var joinCode = document.getElementById("joinCode");
+      var joinBtn = document.getElementById("joinBtn");
+      var hint = document.getElementById("hint");
+
+      // pull the room code out of an invite link, mirroring the real /j page:
+      // the code rides in the hash as #wb=CODE. a bare code is accepted too.
+      function parseInvite(value) {
+        var v = value.trim();
+        var code = null;
+        var i = v.toLowerCase().indexOf("wb=");
+        if (i !== -1) {
+          code = v.slice(i + 3).split("&")[0].split("#")[0];
+        } else if (v.indexOf("/") === -1 && v.indexOf(".") === -1) {
+          code = v; // looks like someone pasted just the code
+        }
+        if (!code) return null;
+        try {
+          code = decodeURIComponent(code);
+        } catch (e) {}
+        code = code.toUpperCase();
+        return CODE_RE.test(code) ? code : null;
+      }
+
+      function doJoin() {
+        var code = parseInvite(joinCode.value);
+        if (!code) {
+          hint.innerHTML = "Paste your friend's invite link, the <b>watchbear.deepfeld.com/j#…</b> one.";
+          hint.classList.add("warn");
+          return;
+        }
+        hint.classList.remove("warn");
+        var g = GUESTS[guestIdx % GUESTS.length];
+        guestIdx++;
+        var name = g.name;
+        if (
+          members.some(function (m) {
+            return m.name === name;
+          })
+        )
+          name = name + "·" + (guestIdx + 1);
+        members.push({ id: "g" + guestIdx, name: name, color: g.color });
+        renderMembers();
+        renderVideo();
+        addSys(name + " joined the room");
+        hint.innerHTML = "<b>" + name + "</b> joined from the invite link. That's all it takes.";
+        joinCode.value = "";
+        setTimeout(function () {
+          showTyping(name);
+          setTimeout(function () {
+            clearTyping();
+            addChat(name, "Just joined. What did I miss?");
+          }, 1000);
+        }, 700);
+      }
+      joinBtn.addEventListener("click", doJoin);
+      joinCode.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") doJoin();
+      });
+
+      // ---- faq accordion ----
+      var faqItems = document.querySelectorAll("[data-faq]");
+      faqItems.forEach(function (item) {
+        var btn = item.querySelector(".faq-q");
+        btn.addEventListener("click", function () {
+          var isOpen = item.classList.contains("open");
+          faqItems.forEach(function (o) {
+            o.classList.remove("open");
+          });
+          if (!isOpen) item.classList.add("open");
+        });
+      });
+
+      // ---- seed ----
+      renderMembers();
+      renderVideo();
+      addSys("Room created · code BEAR-K7M2QX");
+      addChat("Maya", "Hey! Ready when you are.");
+      addChat("Daniel", "Press play whenever. We're synced.");
+    </script>
+  </body>
+</html>

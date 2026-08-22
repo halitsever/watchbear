@@ -1,0 +1,232 @@
+/* Shared design tokens and primitives for all Watchbear landing pages. */
+
+:root {
+  /* surfaces */
+  --bg: #ffffff;
+  --bg-soft: #faf7f1;
+  --surface: #ffffff;
+  --surface-2: #f5f1e8;
+  --track: #e9e2d4;
+
+  /* lines and shadows */
+  --line: #e8e1d3;
+  --line-soft: #efe9dd;
+  --line-strong: #d8cfbc;
+  --shadow-sm: 0 1px 2px rgba(26, 20, 13, 0.05), 0 1px 6px rgba(26, 20, 13, 0.04);
+  --shadow-md: 0 4px 12px rgba(26, 20, 13, 0.06), 0 16px 40px rgba(26, 20, 13, 0.08);
+
+  /* ink */
+  --ink: #1a140d;
+  --text: #1a140d;
+  --muted: #5c5142;
+  --faint: #7c7060;
+
+  /* brand accent */
+  --accent: #f0a830;
+  --accent-hover: #e2991f;
+  --on-accent: #241704;
+  --accent-text: #9a6200;
+  --accent-tint: #fdf3e0;
+
+  /* status */
+  --online: #1e8e4e;
+  --danger: #c2513a;
+
+  --font-body: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+  --r-btn: 9px;
+  --r-input: 8px;
+  --r-card: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent-tint);
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-body);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0;
+}
+
+button,
+a,
+label,
+summary,
+[role="button"] {
+  cursor: pointer;
+}
+
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* buttons */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  border: none;
+  border-radius: var(--r-btn);
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 11px 20px;
+  font-size: 15px;
+  box-shadow: 0 1px 2px rgba(26, 20, 13, 0.1);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--accent-hover);
+}
+
+.btn.lg {
+  padding: 15px 28px;
+  font-size: 16px;
+  border-radius: 10px;
+}
+
+.btn.ghost {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  box-shadow: none;
+}
+
+.btn.ghost:hover {
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+}
+
+/* form fields */
+
+.field-input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-input);
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field-input::placeholder {
+  color: var(--faint);
+  font-weight: 400;
+}
+
+.field-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-tint);
+}
+
+/* footer */
+
+.foot-wrap {
+  border-top: 1px solid var(--line);
+  background: var(--bg-soft);
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 34px 28px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.foot-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.foot-brand .mk {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.foot-brand .mk svg {
+  display: block;
+}
+
+.foot .tag {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 14.5px;
+}
+
+.foot-links {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.foot-links a {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 15px;
+  transition: color 0.15s ease;
+}
+
+.foot-links a:hover {
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

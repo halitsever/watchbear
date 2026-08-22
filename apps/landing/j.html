@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Watchbear · Join the party</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#faf7f1" />
+    <meta name="color-scheme" content="light" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Watchbear" />
+    <meta property="og:title" content="Watchbear · Join the party" />
+    <meta
+      property="og:description"
+      content="You're invited to a Watchbear watch party. Open the link to join the room and watch videos in perfect sync, with live chat and reactions."
+    />
+    <meta property="og:url" content="https://watchbear.deepfeld.com/j.html" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://watchbear.deepfeld.com/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Watchbear, watch videos together in perfect sync" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Watchbear · Join the party" />
+    <meta
+      name="twitter:description"
+      content="You're invited to a Watchbear watch party. Open the link to join the room and watch in perfect sync."
+    />
+    <meta name="twitter:image" content="https://watchbear.deepfeld.com/og.png" />
+    <meta name="twitter:image:alt" content="Watchbear, watch videos together in perfect sync" />
+
+    <link rel="icon" type="image/svg+xml" href="bear.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="icon32.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* page-specific styles; shared tokens and primitives live in styles.css */
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: var(--bg-soft);
+        line-height: 1.55;
+      }
+      .card {
+        width: 100%;
+        max-width: 440px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 30px 28px 26px;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+      }
+      .mk {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 14px;
+      }
+      h1 {
+        font-weight: 800;
+        font-size: 22px;
+        letter-spacing: -0.02em;
+        margin: 0 0 6px;
+      }
+      h1 .w2 {
+        color: var(--accent-text);
+      }
+      .sub {
+        font-size: 14.5px;
+        font-weight: 400;
+        color: var(--muted);
+        margin: 0 0 20px;
+      }
+      .dest {
+        display: block;
+        margin: 0 0 22px;
+        padding: 11px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: var(--surface-2);
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink);
+        word-break: break-all;
+      }
+      .dest .lbl {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: var(--faint);
+        margin-bottom: 4px;
+      }
+      .dest .host {
+        display: block;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .dest .url {
+        display: block;
+        margin-top: 3px;
+        font-size: 12px;
+        font-weight: 400;
+        color: var(--muted);
+      }
+      /* anti-phishing: show the attacker-controlled destination before the click */
+      .caution {
+        display: flex;
+        gap: 8px;
+        margin: 0 0 18px;
+        padding: 10px 13px;
+        border-radius: 10px;
+        border: 1px solid #ecd9b0;
+        background: var(--accent-tint);
+        font-size: 12.5px;
+        font-weight: 600;
+        line-height: 1.45;
+        color: #7a5200;
+        text-align: left;
+      }
+      .caution.danger {
+        border-color: #ebc4b8;
+        background: #fbeae5;
+        color: var(--danger);
+      }
+      .btn {
+        width: 100%;
+        font-weight: 700;
+        border-radius: 10px;
+        padding: 15px 22px;
+        font-size: 16px;
+        text-decoration: none;
+      }
+      .btn.ghost {
+        margin-top: 12px;
+        color: var(--muted);
+      }
+      .btn.ghost:hover {
+        color: var(--ink);
+      }
+      .link {
+        display: inline-block;
+        margin-top: 14px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--faint);
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .link:hover {
+        color: var(--accent-text);
+      }
+      .hidden {
+        display: none !important;
+      }
+      .note {
+        font-size: 12.5px;
+        font-weight: 400;
+        color: var(--faint);
+        margin-top: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <img class="mk" src="bear.svg" alt="Watchbear" />
+
+      <!-- invalid / missing invite -->
+      <div id="bad" class="hidden">
+        <h1>Invalid invite</h1>
+        <p class="sub">This invite link looks broken. Ask your friend to send it again.</p>
+        <a class="btn ghost" href="https://watchbear.deepfeld.com/">Go to Watchbear</a>
+      </div>
+
+      <!-- valid invite: extension present -> join, else install -->
+      <div id="ok" class="hidden">
+        <h1>You're invited to a <span class="w2">watch party</span></h1>
+        <p class="sub">A friend invited you to watch together on Watchbear.</p>
+
+        <span class="dest">
+          <span class="lbl">You'll be taken to</span>
+          <span id="dest-host" class="host"></span>
+          <span id="dest-url" class="url"></span>
+        </span>
+
+        <p id="caution" class="caution">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+          <span id="caution-text">Only continue if you trust whoever sent you this link. It will take you to the site above.</span>
+        </p>
+
+        <!-- extension installed -->
+        <div id="install-yes" class="hidden">
+          <a id="join-link" class="btn" href="#">Join watch party</a>
+          <div class="note">This takes you to the video and joins the watch party. You'll sign in with Google to join.</div>
+        </div>
+
+        <!-- extension missing -->
+        <div id="install-no" class="hidden">
+          <a class="btn" href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener">
+            Install Watchbear
+          </a>
+          <a class="link" id="retry">I've installed it, try again</a>
+          <div class="note">Watchbear is required to join. After installing, come back to this link.</div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      (function () {
+        // read the room code + destination from the hash, never sent to the server
+        function parseHash() {
+          var h = location.hash.charAt(0) === "#" ? location.hash.slice(1) : location.hash;
+          var out = { code: null, url: null };
+          h.split("&").forEach(function (part) {
+            var i = part.indexOf("=");
+            if (i < 0) return;
+            var k = part.slice(0, i);
+            var v = decodeURIComponent(part.slice(i + 1));
+            if (k === "wb") out.code = v.toUpperCase();
+            else if (k === "u") out.url = v;
+          });
+          return out;
+        }
+
+        var ROOM_CODE_RE = /^[A-Z]{2,8}-[A-Z0-9]{4,12}$/;
+
+        // only allow http(s) destinations, so a crafted u= can't run javascript: urls
+        function safeUrl(raw) {
+          if (!raw) return null;
+          try {
+            var u = new URL(raw);
+            return u.protocol === "http:" || u.protocol === "https:" ? u : null;
+          } catch (e) {
+            return null;
+          }
+        }
+
+        var data = parseHash();
+        var dest = safeUrl(data.url);
+        var validCode = data.code && ROOM_CODE_RE.test(data.code);
+
+        function show(id) {
+          document.getElementById(id).classList.remove("hidden");
+        }
+
+        if (!validCode || !dest) {
+          show("bad");
+          return;
+        }
+        show("ok");
+
+        // video + #wb=CODE so the content script auto-joins on arrival
+        var target = dest.origin + dest.pathname + dest.search + "#wb=" + data.code;
+        document.getElementById("dest-host").textContent = dest.hostname;
+        document.getElementById("dest-url").textContent = dest.href;
+        document.getElementById("join-link").setAttribute("href", target);
+
+        // a non-https destination is a stronger phishing/eavesdrop signal, so escalate
+        if (dest.protocol !== "https:") {
+          document.getElementById("caution").classList.add("danger");
+          document.getElementById("caution-text").textContent =
+            "This link is NOT secure (http) and points to " +
+            dest.hostname +
+            ". Only continue if you fully trust the sender.";
+        }
+
+        // the content script sets data-wb-installed at document_idle; poll briefly before giving up
+        var tries = 0;
+        function detect() {
+          if (document.documentElement.dataset.wbInstalled === "1") {
+            document.getElementById("install-no").classList.add("hidden");
+            show("install-yes");
+            return;
+          }
+          if (++tries > 12) {
+            show("install-no");
+            return;
+          }
+          setTimeout(detect, 150);
+        }
+        detect();
+
+        document.getElementById("retry").addEventListener("click", function () {
+          location.reload();
+        });
+      })();
+    </script>
+  </body>
+</html>

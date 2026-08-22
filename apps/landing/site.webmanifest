@@ -1,0 +1,14 @@
+{
+  "name": "Watchbear · Watch Together Chrome Extension",
+  "short_name": "Watchbear",
+  "description": "Free watch together Chrome extension. Start a watch party and stream videos in sync with friends.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "icon16.png", "sizes": "16x16", "type": "image/png" },
+    { "src": "icon32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "bear.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

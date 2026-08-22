@@ -13,12 +13,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://watchbear.deepfeld.com/servers.html</loc>
-    <lastmod>2026-07-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://watchbear.deepfeld.com/support.html</loc>
     <lastmod>2026-07-04</lastmod>
     <changefreq>monthly</changefreq>

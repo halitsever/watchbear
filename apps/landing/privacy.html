@@ -220,11 +220,10 @@
         <div class="tldr">
           <h2>The short version</h2>
           <ul>
-            <li>Starting or joining a watch party on the public server requires signing in with Google. Self-hosted servers can run without accounts.</li>
+            <li>Starting or joining a watch party on the public server requires signing in with Google.</li>
             <li>When you sign in, we store your Google email, name, and profile picture so your account works across devices. You can delete it any time by emailing us.</li>
             <li>We don't run analytics or trackers, and we never sell or rent your data.</li>
             <li>Watch-party data (chat, playback position, the video you're on) lives only in the server's memory while the room is open, and is gone the moment the room ends.</li>
-            <li>Watchbear is open source and self-hostable, so you can run the whole thing yourself.</li>
           </ul>
         </div>
       </div>
@@ -237,7 +236,7 @@
             Watchbear sync server (the "Service") handle information. It applies to the extension
             published on the Chrome Web Store and to the default public server at
             <strong>watchbear-server.deepfeld.com</strong>. If you connect the extension to a
-            self-hosted server, the operator of that server is responsible for its data handling.
+            different server, the operator of that server is responsible for its data handling.
           </p>
 
           <h2>What Watchbear does not collect</h2>
@@ -258,7 +257,7 @@
           </p>
           <ul>
             <li><strong>Display name and bear color:</strong> the nickname and avatar color you pick, so you look consistent in rooms.</li>
-            <li><strong>Sync server address:</strong> which server the extension connects to (the default public server, or your own).</li>
+            <li><strong>Sync server address:</strong> which server the extension connects to (the default public server, or a custom one).</li>
             <li><strong>Current room state:</strong> the active room code and which tab is leading playback, so a room survives a popup close or reload.</li>
             <li><strong>Sign-in session:</strong> if you sign in, your login token and basic Google profile (email, name, picture) are cached here so you stay signed in. Signing out removes it.</li>
           </ul>
@@ -267,8 +266,7 @@
           <h2>Accounts and signing in</h2>
           <p>
             On the default public server, signing in with Google is required to start or join a watch
-            party and to pick a custom display name, bear color, or avatar. Self-hosted servers can
-            turn this requirement off, in which case guests join without an account.
+            party and to pick a custom display name, bear color, or avatar.
           </p>
           <p>
             Signing in goes through <strong>Google</strong>, and we never see your Google password.
@@ -341,11 +339,10 @@
             itself does not.
           </p>
 
-          <h2>Self-hosting</h2>
+          <h2>Custom servers</h2>
           <p>
-            Watchbear is open source and the server is fully self-hostable. You can point the extension
-            at your own server from its settings, in which case your room data flows only to the server
-            you control. See the <a href="servers.html">Servers</a> page for details.
+            You can point the extension at a different server from its settings, in which case your
+            room data flows only to that server.
           </p>
 
           <h2>Children's privacy</h2>
@@ -364,8 +361,7 @@
           <h2>Contact</h2>
           <p>
             Questions about this policy or your data? Email
-            <a href="mailto:hello@deepfeld.com">hello@deepfeld.com</a>, or open an issue on our
-            <a href="https://github.com/halitsever/watchbear" target="_blank" rel="noopener">GitHub repository</a>.
+            <a href="mailto:hello@deepfeld.com">hello@deepfeld.com</a>.
           </p>
         </div>
       </section>

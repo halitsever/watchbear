@@ -7,7 +7,7 @@
     <title>Watchbear Privacy Policy · How We Handle Your Data</title>
     <meta
       name="description"
-      content="Watchbear's privacy policy. Google sign-in is required on the public server, room data stays in memory only while a watch party is live, we run no analytics, and we never sell your data."
+      content="Watchbear's privacy policy. Google sign-in is required, room data stays in memory only while a watch party is live, usage analytics go only to our own server, and we never sell your data."
     />
     <link rel="canonical" href="https://watchbear.deepfeld.com/privacy.html" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
@@ -19,7 +19,7 @@
     <meta property="og:title" content="Watchbear Privacy Policy" />
     <meta
       property="og:description"
-      content="Google sign-in, no analytics, no data selling. See exactly what Watchbear stores and shares."
+      content="Google sign-in, first-party usage analytics, no data selling. See exactly what Watchbear stores and shares."
     />
     <meta property="og:url" content="https://watchbear.deepfeld.com/privacy.html" />
     <meta property="og:locale" content="en_US" />
@@ -33,7 +33,7 @@
     <meta name="twitter:title" content="Watchbear Privacy Policy" />
     <meta
       name="twitter:description"
-      content="Google sign-in, no analytics, no data selling. See exactly what Watchbear stores and shares."
+      content="Google sign-in, first-party usage analytics, no data selling. See exactly what Watchbear stores and shares."
     />
     <meta name="twitter:image" content="https://watchbear.deepfeld.com/og.png" />
     <meta name="twitter:image:alt" content="Watchbear, watch videos together in perfect sync" />
@@ -57,7 +57,7 @@
             "@id": "https://watchbear.deepfeld.com/privacy.html#webpage",
             "url": "https://watchbear.deepfeld.com/privacy.html",
             "name": "Watchbear Privacy Policy · How We Handle Your Data",
-            "description": "Watchbear's privacy policy. Google sign-in is required on the public server, room data stays in memory only while a watch party is live, we run no analytics, and we never sell your data.",
+            "description": "Watchbear's privacy policy. Google sign-in is required, room data stays in memory only while a watch party is live, usage analytics go only to our own server, and we never sell your data.",
             "inLanguage": "en",
             "isPartOf": { "@id": "https://watchbear.deepfeld.com/#website" },
             "publisher": { "@id": "https://watchbear.deepfeld.com/#org" }
@@ -212,7 +212,7 @@
       <header class="hero">
         <div class="wrap">
           <h1>Privacy <span class="accent">policy</span></h1>
-          <p class="updated">Last updated: July 4, 2026</p>
+          <p class="updated">Last updated: September 8, 2026</p>
         </div>
       </header>
 
@@ -220,10 +220,10 @@
         <div class="tldr">
           <h2>The short version</h2>
           <ul>
-            <li>Starting or joining a watch party on the public server requires signing in with Google.</li>
+            <li>Starting or joining a watch party requires signing in with Google.</li>
             <li>When you sign in, we store your Google email, name, and profile picture so your account works across devices. You can delete it any time by emailing us.</li>
-            <li>We don't run analytics or trackers, and we never sell or rent your data.</li>
-            <li>Watch-party data (chat, playback position, the video you're on) lives only in the server's memory while the room is open, and is gone the moment the room ends.</li>
+            <li>We record how the extension is used (for example that a party was started or an invite link was copied) on our own server, to improve Watchbear and to see which marketing brings people in. No third-party trackers, and we never sell or rent your data.</li>
+            <li>Chat messages, page URLs, page titles and the video itself are never part of those records. Watch-party data lives only in the server's memory while the room is open, and is gone the moment the room ends.</li>
           </ul>
         </div>
       </div>
@@ -232,34 +232,34 @@
         <div class="wrap">
           <h2>Who this policy covers</h2>
           <p>
-            This policy explains how the <strong>Watchbear</strong> browser extension and the public
-            Watchbear sync server (the "Service") handle information. It applies to the extension
-            published on the Chrome Web Store and to the default public server at
-            <strong>watchbear-server.deepfeld.com</strong>. If you connect the extension to a
-            different server, the operator of that server is responsible for its data handling.
+            This policy explains how the <strong>Watchbear</strong> browser extension, the Watchbear
+            server at <strong>watchbear-server.deepfeld.com</strong>, and this website
+            (watchbear.deepfeld.com) handle information (together, the "Service"). It applies to the
+            extension published on the Chrome Web Store.
           </p>
 
           <h2>What Watchbear does not collect</h2>
           <p>Watchbear is built to know as little about you as possible. We do <strong>not</strong> collect:</p>
           <ul>
             <li>Passwords. Signing in goes through Google, so we never see or store one.</li>
-            <li>Your browsing history, the content of the pages you visit, or your search queries.</li>
+            <li>Your browsing history, the content of the pages you visit, or your search queries. Usage records keep only the domain of the video site (such as youtube.com), never the page.</li>
+            <li>The text of your chat messages. They are relayed to your room and never written down.</li>
             <li>Cookies, login sessions, or credentials from the websites you watch on.</li>
-            <li>IP addresses for logging or profiling, device fingerprints, or location data.</li>
-            <li>Any data for advertising, marketing, or sale to third parties.</li>
+            <li>IP addresses or device fingerprints. The server may note a two-letter country code for a request (see "Product analytics"), but does not store the address it came from.</li>
+            <li>Any data for sale to third parties, or for advertising to you.</li>
           </ul>
 
           <h2>Information stored on your device</h2>
           <p>
             The following is saved using your browser's local extension storage
-            (<strong>chrome.storage.local</strong>). It stays on your device and is not sent to us
-            unless you join a watch party:
+            (<strong>chrome.storage.local</strong>):
           </p>
           <ul>
             <li><strong>Display name and bear color:</strong> the nickname and avatar color you pick, so you look consistent in rooms.</li>
-            <li><strong>Sync server address:</strong> which server the extension connects to (the default public server, or a custom one).</li>
             <li><strong>Current room state:</strong> the active room code and which tab is leading playback, so a room survives a popup close or reload.</li>
             <li><strong>Sign-in session:</strong> if you sign in, your login token and basic Google profile (email, name, picture) are cached here so you stay signed in. Signing out removes it.</li>
+            <li><strong>Analytics identifiers:</strong> a random device identifier created when the extension is first used, a usage-session identifier that resets after 30 idle minutes, and a short queue of usage events waiting to be sent to our server.</li>
+            <li><strong>Campaign and invite details:</strong> if you arrived through an ad, a link with campaign parameters, or a friend's invite link, the campaign parameters, referring site, and invite identifier are kept so the extension can tell us what brought you here (see "Product analytics").</li>
           </ul>
           <p>You can clear all of this at any time by removing the extension or clearing its storage.</p>
 
@@ -278,9 +278,15 @@
             subscription data.
           </p>
           <p>
+            When you sign in, the extension also sends the device identifier and any campaign or invite
+            details it holds (see "Product analytics"). The server attaches them to your account so we
+            can tell which campaign or which friend's invite brought you, and it records whether the
+            sign-in created a new account or matched an existing one.
+          </p>
+          <p>
             Your account record stays in the server's database until you ask us to remove it. To delete
             it, email <a href="mailto:watchbear@deepfeld.com">watchbear@deepfeld.com</a> and we'll erase
-            your record and anything tied to it.
+            your record and anything tied to it, including usage records.
           </p>
 
           <h2>Information shared during a watch party</h2>
@@ -297,7 +303,51 @@
           </ul>
           <p>
             This information is relayed to the other members of your room so the experience stays in
-            sync. It is only shared while you are in a room, and only with that room.
+            sync. It is only shared while you are in a room, and only with that room. The server keeps
+            none of it once the room ends; what it does keep about the party is described next.
+          </p>
+
+          <h2>Product analytics</h2>
+          <p>
+            Watchbear records how the extension is used so we can improve it, find bugs, and understand
+            which marketing brings people who keep using it. These records are stored on our own server
+            only. There are no third-party analytics or advertising SDKs, and nothing is shared with ad
+            networks.
+          </p>
+          <p><strong>What is recorded.</strong> Usage events such as:</p>
+          <ul>
+            <li>Opening the popup, side panel, or setup page, and which setup step you reached.</li>
+            <li>Starting, joining, and leaving a party, and how many people were in it.</li>
+            <li>Copying an invite link, opening one, and joining through it.</li>
+            <li>How long a party had video playing and how much of it each member was present for, in seconds.</li>
+            <li>That a chat message or reaction was sent, that voice chat was joined, and which reaction emoji was used. The text of messages is never recorded.</li>
+            <li>Errors the extension ran into, described in a few words without page addresses.</li>
+          </ul>
+          <p>
+            Each event carries the extension version, browser name and version, operating system,
+            browser language, the random device identifier, the usage-session identifier, the room code
+            if you were in a room, and the domain of the video site (for example youtube.com or
+            netflix.com). When a request reaches our server through a hosting provider that supplies
+            one, a two-letter <strong>country code</strong> is stored with it; the IP address itself is not.
+          </p>
+          <p>
+            <strong>Never recorded:</strong> chat text, page URLs, page titles, the video being played,
+            your Google profile, passwords, login tokens, or cookies.
+          </p>
+          <p>
+            <strong>Marketing attribution.</strong> When you reach this website from an ad or a shared
+            link, the site keeps the campaign parameters in the address (such as utm_source, fbclid, or
+            gclid), the referring site, and a random visitor identifier in your browser's local storage.
+            If you then install the extension, it reads those values from the open Watchbear tab so we
+            know which campaign led to the install. Invite links carry an invite identifier, so when a
+            friend joins through your link we can count it and link the two accounts as inviter and
+            invitee. The first campaign that brought you is kept unchanged; later visits only update the
+            most recent one.
+          </p>
+          <p>
+            Usage records are kept on the server and tied to your device identifier and, after you sign
+            in, to your account. Deleting your account deletes them. We may keep aggregate statistics
+            that cannot identify anyone.
           </p>
 
           <h2>How long data is kept</h2>
@@ -308,9 +358,9 @@
             not keep chat logs, history, or backups, and the server does not log your IP address.
           </p>
           <p>
-            Account data is the exception. If you sign in, your account record is saved in the server's
-            database and kept until you ask us to delete it. That is the only thing Watchbear writes to
-            disk about you.
+            Two things are written to disk: your account record, if you sign in, and the usage records
+            described under "Product analytics" (including that a party or invite happened, but not what
+            was said or watched). Both are kept until you ask us to delete your account.
           </p>
 
           <h2>What the extension can access on web pages</h2>
@@ -318,31 +368,30 @@
             To sync playback, Watchbear's content script reads only what it needs from the page you're
             watching: the main video element's <strong>current time, play/pause state, and duration</strong>,
             plus the page's <strong>title and URL</strong> so the room knows which video you're on. It
-            does not read other page content, form inputs, cookies, or stored site data.
+            does not read other page content, form inputs, cookies, or stored site data. On
+            watchbear.deepfeld.com only, it also reads the campaign parameters in the address and the
+            visitor identifier this site stored, and right after installation it checks whether a
+            Watchbear tab is open to read the same values.
           </p>
 
           <h2>Permissions we request, and why</h2>
           <ul>
-            <li><strong>storage:</strong> to save your display name, bear color, server address, and current room on your device.</li>
-            <li><strong>activeTab</strong> and <strong>scripting:</strong> to detect and sync the video in the tab you're actively watching.</li>
+            <li><strong>storage:</strong> to save your display name, bear color, current room, sign-in session, and the analytics identifiers and event queue on your device.</li>
+            <li><strong>activeTab</strong> and <strong>scripting:</strong> to detect and sync the video in the tab you're actively watching, and to read campaign details from an open Watchbear tab at install time.</li>
             <li><strong>sidePanel:</strong> to show the chat and reactions panel next to your video.</li>
+            <li><strong>identity:</strong> to sign you in with Google through the browser's standard sign-in flow.</li>
+            <li><strong>tabGroups:</strong> to put the tab hosting your party in a small labeled tab group so you can spot it, and to remove that group when you leave.</li>
             <li><strong>Host access to websites (&lt;all_urls&gt;):</strong> because a watch party can happen on any site with a video player; the extension only reads video state and the page title/URL, and only acts when you're in a room.</li>
           </ul>
 
           <h2>Third parties and tracking</h2>
           <p>
-            Watchbear contains <strong>no analytics, no advertising, and no third-party tracking SDKs</strong>.
-            The extension's main network connection is the real-time link to the sync server you've
-            selected (the public server by default). If you choose to sign in, it also talks to Google
-            to verify your login and to our auth server to set up your session. This website
-            (watchbear.deepfeld.com) loads fonts from Google Fonts to render its pages; the extension
-            itself does not.
-          </p>
-
-          <h2>Custom servers</h2>
-          <p>
-            You can point the extension at a different server from its settings, in which case your
-            room data flows only to that server.
+            Watchbear contains <strong>no advertising and no third-party analytics or tracking SDKs</strong>.
+            The usage records described above go only to our own server. The extension talks to two
+            places: the Watchbear server for watch parties and usage records, Google to verify your
+            sign-in, and nowhere else. This website (watchbear.deepfeld.com) loads fonts from Google
+            Fonts and an icon script from iconify.design to render its pages; the extension itself does
+            not.
           </p>
 
           <h2>Children's privacy</h2>

@@ -262,8 +262,20 @@
         }
         show("ok");
 
-        // video + #wb=CODE so the content script auto-joins on arrival
-        var target = dest.origin + dest.pathname + dest.search + "#wb=" + data.code;
+        // video + #wb=CODE so the content script auto-joins on arrival.
+        // Preserve any hash the video already uses, and update the room code
+        // in place so a changed video keeps the extra state and the room.
+        function withRoomCode(video, code) {
+          var hash = video.hash ? video.hash.slice(1) : "";
+          var pairs = hash.split("&").filter(function (part) {
+            if (!part) return false;
+            var i = part.indexOf("=");
+            return i < 0 || part.slice(0, i) !== "wb";
+          });
+          pairs.push("wb=" + code);
+          return video.origin + video.pathname + video.search + "#" + pairs.join("&");
+        }
+        var target = withRoomCode(dest, data.code);
         document.getElementById("dest-host").textContent = dest.hostname;
         document.getElementById("dest-url").textContent = dest.href;
         document.getElementById("join-link").setAttribute("href", target);

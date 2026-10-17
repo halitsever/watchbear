@@ -61,31 +61,31 @@
     ":host{display:block}" +
     "*{box-sizing:border-box}" +
     "a{color:inherit;text-decoration:none}" +
-    ".nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:var(--nav-bg,rgba(255,255,255,0.85));border-bottom:1px solid var(--nav-line,var(--line,#e8e1d3))}" +
+    ".nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:var(--nav-bg,rgba(34,22,12,0.85));border-bottom:1px solid var(--nav-line,var(--line,#3f2d1c))}" +
     ".wrap{max-width:1180px;margin:0 auto;padding:0 28px}" +
     ".nav-in{display:flex;align-items:center;justify-content:space-between;height:72px}" +
     ".brand{display:flex;align-items:center;gap:10px}" +
     ".brand .mk{width:36px;height:36px;display:flex;align-items:center;justify-content:center}" +
     ".brand .mk svg{display:block}" +
-    ".wordmark{font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-weight:800;font-size:21px;letter-spacing:-0.02em;color:var(--nav-ink,var(--ink,#1a140d))}" +
-    ".wordmark .w2{color:var(--nav-accent,var(--accent-text,#9a6200))}" +
+    ".wordmark{font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-weight:800;font-size:21px;letter-spacing:-0.02em;color:var(--nav-ink,var(--ink,#f6e7cf))}" +
+    ".wordmark .w2{color:var(--nav-accent,var(--accent-text,#f2b54d))}" +
     ".nav-right{display:flex;align-items:center;gap:28px}" +
-    ".nav-link{font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-weight:500;font-size:15px;color:var(--nav-muted,var(--muted,#5c5142));transition:color 0.15s}" +
-    ".nav-link:hover,.nav-link[aria-current=\"page\"]{color:var(--nav-ink,var(--ink,#1a140d))}" +
+    ".nav-link{font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-weight:500;font-size:15px;color:var(--nav-muted,var(--muted,#cbb89b));transition:color 0.15s}" +
+    ".nav-link:hover,.nav-link[aria-current=\"page\"]{color:var(--nav-ink,var(--ink,#f6e7cf))}" +
     ".btn{display:inline-flex;align-items:center;gap:9px;font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-weight:700;cursor:pointer;border:none;border-radius:9px;background:var(--accent,#f0a830);color:var(--on-accent,#241704);padding:10px 18px;font-size:15px;box-shadow:0 1px 2px rgba(26,20,13,0.1);transition:background 0.15s}" +
     ".btn:hover{background:var(--accent-hover,#e2991f)}" +
-    ".nav-toggle{display:none;flex-direction:column;justify-content:center;gap:5px;width:42px;height:42px;padding:0 9px;background:transparent;border:1px solid var(--nav-line,var(--line-strong,#d8cfbc));border-radius:9px;cursor:pointer}" +
-    ".nav-toggle span{display:block;width:100%;height:2px;background:var(--nav-ink,var(--ink,#1a140d));border-radius:2px;transition:transform 0.2s,opacity 0.2s}" +
+    ".nav-toggle{display:none;flex-direction:column;justify-content:center;gap:5px;width:42px;height:42px;padding:0 9px;background:transparent;border:1px solid var(--nav-line,var(--line-strong,#58432d));border-radius:9px;cursor:pointer}" +
+    ".nav-toggle span{display:block;width:100%;height:2px;background:var(--nav-ink,var(--ink,#f6e7cf));border-radius:2px;transition:transform 0.2s,opacity 0.2s}" +
     ".nav.open .nav-toggle span:nth-child(1){transform:translateY(7px) rotate(45deg)}" +
     ".nav.open .nav-toggle span:nth-child(2){opacity:0}" +
     ".nav.open .nav-toggle span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}" +
     "@media (max-width:760px){" +
     ".nav-in{position:relative}" +
     ".nav-toggle{display:flex}" +
-    ".nav-right{position:absolute;top:calc(100% + 1px);left:0;right:0;flex-direction:column;align-items:stretch;gap:4px;background:var(--nav-menu-bg,#fff);border:1px solid var(--nav-line,var(--line,#e8e1d3));border-radius:0 0 12px 12px;padding:10px;box-shadow:0 16px 40px rgba(26,20,13,0.12);display:none;z-index:50}" +
+    ".nav-right{position:absolute;top:calc(100% + 1px);left:0;right:0;flex-direction:column;align-items:stretch;gap:4px;background:var(--nav-menu-bg,#2e1e11);border:1px solid var(--nav-line,var(--line,#3f2d1c));border-radius:0 0 12px 12px;padding:10px;box-shadow:0 16px 40px rgba(0,0,0,0.4);display:none;z-index:50}" +
     ".nav.open .nav-right{display:flex}" +
     ".nav-right .nav-link{padding:12px 14px;border-radius:8px;font-size:15px}" +
-    ".nav-right .nav-link:hover{background:var(--nav-hover,var(--surface-2,#f5f1e8))}" +
+    ".nav-right .nav-link:hover{background:var(--nav-hover,var(--surface-2,#392615))}" +
     ".nav-right .btn{justify-content:center;margin-top:4px}" +
     "}";
 

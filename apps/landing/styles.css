@@ -1,41 +1,71 @@
 /* Shared design tokens and primitives for all Watchbear landing pages. */
 
 :root {
+  color-scheme: dark;
+
   /* surfaces */
-  --bg: #ffffff;
-  --bg-soft: #faf7f1;
-  --surface: #ffffff;
-  --surface-2: #f5f1e8;
-  --track: #e9e2d4;
+  --bg: #22160c;
+  --bg-soft: #281a0e;
+  --surface: #2e1e11;
+  --surface-2: #392615;
+  --track: #4a3622;
 
   /* lines and shadows */
-  --line: #e8e1d3;
-  --line-soft: #efe9dd;
-  --line-strong: #d8cfbc;
-  --shadow-sm: 0 1px 2px rgba(26, 20, 13, 0.05), 0 1px 6px rgba(26, 20, 13, 0.04);
-  --shadow-md: 0 4px 12px rgba(26, 20, 13, 0.06), 0 16px 40px rgba(26, 20, 13, 0.08);
+  --line: #3f2d1c;
+  --line-soft: #352619;
+  --line-strong: #58432d;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px 6px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25), 0 16px 40px rgba(0, 0, 0, 0.35);
 
   /* ink */
-  --ink: #1a140d;
-  --text: #1a140d;
-  --muted: #5c5142;
-  --faint: #7c7060;
+  --ink: #f6e7cf;
+  --text: #f6e7cf;
+  --muted: #cbb89b;
+  --faint: #a08c72;
 
   /* brand accent */
   --accent: #f0a830;
-  --accent-hover: #e2991f;
+  --accent-hover: #f7ba4c;
   --on-accent: #241704;
-  --accent-text: #9a6200;
-  --accent-tint: #fdf3e0;
+  --accent-text: #f2b54d;
+  --accent-tint: rgba(240, 168, 48, 0.14);
 
   /* status */
-  --online: #1e8e4e;
-  --danger: #c2513a;
+  --online: #5cc785;
+  --danger: #ff8f73;
+
+  /* shared nav */
+  --nav-bg: rgba(34, 22, 12, 0.85);
+  --nav-menu-bg: #2e1e11;
+  --nav-hover: rgba(246, 231, 207, 0.08);
 
   --font-body: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
   --r-btn: 9px;
   --r-input: 8px;
   --r-card: 14px;
+}
+
+/* product mockups keep the extension's own light look */
+.ui-light {
+  color-scheme: light;
+  --bg: #ffffff;
+  --bg-soft: #faf7f1;
+  --surface: #ffffff;
+  --surface-2: #f5f1e8;
+  --track: #e9e2d4;
+  --line: #e8e1d3;
+  --line-soft: #efe9dd;
+  --line-strong: #d8cfbc;
+  --ink: #1a140d;
+  --text: #1a140d;
+  --muted: #5c5142;
+  --faint: #7c7060;
+  --accent-hover: #e2991f;
+  --accent-text: #9a6200;
+  --accent-tint: #fdf3e0;
+  --online: #1e8e4e;
+  --danger: #c2513a;
+  color: var(--ink);
 }
 
 * {

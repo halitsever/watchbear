@@ -11,8 +11,8 @@
     />
     <link rel="canonical" href="https://watchbear.deepfeld.com/" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
-    <meta name="theme-color" content="#fffbf4" />
-    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#22160c" />
+    <meta name="color-scheme" content="dark" />
     <meta
       name="keywords"
       content="watch together, watch together chrome extension, watch party, watch party chrome extension, teleparty alternative, netflix party alternative, watch movies together online, sync video, synced playback, watch videos with friends"
@@ -180,35 +180,43 @@
       /* page-specific styles; shared tokens and primitives live in styles.css */
       :root {
         --nav-h: 72px;
-        /* 0 in daylight, 1 with the lights down; driven by scroll */
+        /* 0 with the house lights on, 1 once the movie starts; driven by scroll */
         --dark: 0;
-        --milk: #fffbf4;
-        --cocoa: #26170c;
+        --theater: #140c05;
+        --cocoa: #2e1d0f;
         --cream: #f6e7cf;
         --cream-dim: #cbb89b;
         --honey: #f0a830;
         --ember: #e07f1c;
         --blush: #ff9e7a;
         --font-display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
-        --room: color-mix(in srgb, var(--cocoa) calc(var(--dark) * 100%), var(--milk));
-        --room-ink: color-mix(in srgb, var(--cream) calc(var(--dark) * 100%), var(--ink));
-        --room-muted: color-mix(in srgb, var(--cream-dim) calc(var(--dark) * 100%), var(--muted));
-        --room-line: color-mix(in srgb, rgb(246 231 207 / 0.14) calc(var(--dark) * 100%), var(--line));
-        --nav-bg: color-mix(in srgb, rgb(38 23 12 / 0.84) calc(var(--dark) * 100%), rgb(255 251 244 / 0.86));
-        --nav-ink: var(--room-ink);
-        --nav-muted: var(--room-muted);
-        --nav-line: var(--room-line);
-        --nav-accent: color-mix(in srgb, var(--honey) calc(var(--dark) * 100%), var(--accent-text));
-        --nav-menu-bg: color-mix(in srgb, #342011 calc(var(--dark) * 100%), #fff);
-        --nav-hover: color-mix(in srgb, rgb(246 231 207 / 0.08) calc(var(--dark) * 100%), var(--surface-2));
+        --room: color-mix(in srgb, var(--theater) calc(var(--dark) * 100%), var(--bg));
+        --room-ink: var(--ink);
+        --room-muted: var(--muted);
+        --room-line: var(--line);
+        --nav-bg: color-mix(in srgb, rgb(20 12 5 / 0.86) calc(var(--dark) * 100%), rgb(34 22 12 / 0.85));
       }
       body {
         font-size: 17px;
         background: var(--room);
         color: var(--room-ink);
       }
+      /* house lights: a warm wash from above that fades as the room darkens */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background:
+          radial-gradient(70% 55% at 50% -12%, rgb(240 168 48 / 0.26), rgb(240 168 48 / 0) 72%),
+          radial-gradient(40% 40% at 50% 0%, rgb(255 210 140 / 0.1), rgb(255 210 140 / 0));
+        opacity: calc(1 - var(--dark));
+        pointer-events: none;
+        will-change: opacity;
+      }
       .page {
         position: relative;
+        z-index: 1;
         overflow-x: clip;
       }
       wb-nav {
@@ -326,11 +334,12 @@
         gap: 10px;
         padding: 9px 16px 9px 11px;
         border-radius: 999px;
+        border: 1px solid rgb(246 231 207 / 0.16);
         background: var(--cocoa);
         color: var(--cream);
         font-size: 14px;
         font-weight: 600;
-        box-shadow: 0 12px 30px rgb(38 23 12 / 0.3);
+        box-shadow: 0 12px 30px rgb(0 0 0 / 0.4);
         animation: hintIn 0.7s ease 1.5s both;
       }
       .hint-pill .bulb {
@@ -480,7 +489,7 @@
         box-shadow:
           0 0 0 1px rgb(38 23 12 / 0.1),
           0 50px 100px -30px rgb(20 12 5 / 0.55),
-          0 0 180px rgb(240 168 48 / calc(var(--dark) * 0.3));
+          0 0 180px rgb(240 168 48 / calc(0.1 + var(--dark) * 0.22));
         animation: bwIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s both;
       }
       @keyframes bwIn {
@@ -1433,7 +1442,7 @@
         box-shadow:
           0 0 0 1px rgb(246 231 207 / 0.08),
           0 40px 100px -30px rgb(0 0 0 / 0.6),
-          0 0 140px rgb(240 168 48 / calc(var(--dark) * 0.16));
+          0 0 140px rgb(240 168 48 / 0.16);
       }
       .player {
         display: flex;
@@ -2510,7 +2519,7 @@
             </div>
 
             <div class="stage-host" inert aria-hidden="true">
-              <div class="stage" id="stage">
+              <div class="stage ui-light" id="stage">
                 <div class="bw">
                   <div class="bw-tabs">
                     <span class="bw-dots"><i></i><i></i><i></i></span>
@@ -2689,7 +2698,7 @@
               <p>A live simulation of the side panel. Press play, send a message, or paste an invite link to see a friend join.</p>
             </div>
 
-            <div class="win">
+            <div class="win ui-light">
               <div class="player">
                 <div class="urlrow">
                   <span class="dots"><i></i><i></i><i></i></span>
@@ -3803,7 +3812,7 @@
           var flip = d > 0.5 !== darkNow > 0.5;
           darkNow = d;
           root.style.setProperty("--dark", d);
-          if (flip && themeMeta) themeMeta.setAttribute("content", d > 0.5 ? "#26170c" : "#fffbf4");
+          if (flip && themeMeta) themeMeta.setAttribute("content", d > 0.5 ? "#140c05" : "#22160c");
         }
 
         var queued = false;

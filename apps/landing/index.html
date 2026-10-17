@@ -11,7 +11,7 @@
     />
     <link rel="canonical" href="https://watchbear.deepfeld.com/" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#fffbf4" />
     <meta name="color-scheme" content="light" />
     <meta
       name="keywords"
@@ -49,11 +49,8 @@
     <link rel="manifest" href="site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
-    <link rel="preconnect" href="https://code.iconify.design" crossorigin />
-    <link rel="preconnect" href="https://api.iconify.design" crossorigin />
-    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" async></script>
     <script src="nav.js" defer></script>
 
     <script type="application/ld+json">
@@ -181,14 +178,78 @@
     </script>
     <style>
       /* page-specific styles; shared tokens and primitives live in styles.css */
+      :root {
+        --nav-h: 72px;
+        /* 0 in daylight, 1 with the lights down; driven by scroll */
+        --dark: 0;
+        --milk: #fffbf4;
+        --cocoa: #26170c;
+        --cream: #f6e7cf;
+        --cream-dim: #cbb89b;
+        --honey: #f0a830;
+        --ember: #e07f1c;
+        --blush: #ff9e7a;
+        --font-display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+        --room: color-mix(in srgb, var(--cocoa) calc(var(--dark) * 100%), var(--milk));
+        --room-ink: color-mix(in srgb, var(--cream) calc(var(--dark) * 100%), var(--ink));
+        --room-muted: color-mix(in srgb, var(--cream-dim) calc(var(--dark) * 100%), var(--muted));
+        --room-line: color-mix(in srgb, rgb(246 231 207 / 0.14) calc(var(--dark) * 100%), var(--line));
+        --nav-bg: color-mix(in srgb, rgb(38 23 12 / 0.84) calc(var(--dark) * 100%), rgb(255 251 244 / 0.86));
+        --nav-ink: var(--room-ink);
+        --nav-muted: var(--room-muted);
+        --nav-line: var(--room-line);
+        --nav-accent: color-mix(in srgb, var(--honey) calc(var(--dark) * 100%), var(--accent-text));
+        --nav-menu-bg: color-mix(in srgb, #342011 calc(var(--dark) * 100%), #fff);
+        --nav-hover: color-mix(in srgb, rgb(246 231 207 / 0.08) calc(var(--dark) * 100%), var(--surface-2));
+      }
       body {
         font-size: 17px;
-        overflow-x: hidden;
-        position: relative;
+        background: var(--room);
+        color: var(--room-ink);
       }
       .page {
         position: relative;
-        z-index: 1;
+        overflow-x: clip;
+      }
+      wb-nav {
+        position: sticky;
+        top: 0;
+        z-index: 60;
+        display: block;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+      .display {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-stretch: 80%;
+        letter-spacing: -0.025em;
+        line-height: 0.96;
+        color: inherit;
+        text-wrap: balance;
+      }
+
+      /* headline words start out of step and lock together, like players catching up */
+      [data-sync] .w {
+        display: inline-block;
+        transform: translateY(var(--o, 0));
+        opacity: 0.2;
+        filter: blur(4px);
+        transition:
+          transform 0.9s cubic-bezier(0.2, 1.35, 0.3, 1),
+          opacity 0.5s ease,
+          filter 0.6s ease;
+      }
+      [data-sync].synced .w {
+        transform: none;
+        opacity: 1;
+        filter: none;
       }
 
       .cta-row {
@@ -208,75 +269,1171 @@
         border-radius: 6px;
       }
 
-      /* hero */
+      /* theater: hero plus the pinned walkthrough */
+      .theater {
+        position: relative;
+        height: 620vh;
+        margin-top: calc(-1 * var(--nav-h));
+      }
+      .pin {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        height: 100svh;
+        overflow: hidden;
+      }
       .hero {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(var(--nav-h) + clamp(24px, 6.5vh, 76px));
+        z-index: 3;
+        padding: 0 24px;
         text-align: center;
-        padding: 92px 0 68px;
-        max-width: 980px;
-        margin: 0 auto;
       }
       .hero h1 {
-        font-size: 54px;
-        line-height: 1.06;
-        color: var(--ink);
-        text-wrap: balance;
+        font-size: clamp(46px, 7.4vw, 112px);
+        max-width: 12em;
+        margin: 0 auto;
       }
-      .hero h1 .accent {
-        color: var(--accent-text);
-      }
-      .hero p {
-        color: var(--muted);
-        font-weight: 400;
+      .hero-sub {
+        color: var(--room-muted);
         font-size: 19px;
         line-height: 1.55;
-        max-width: 600px;
-        margin: 22px auto 36px;
+        max-width: 34em;
+        margin: 24px auto 30px;
         text-wrap: pretty;
       }
       .note {
-        margin-top: 20px;
+        margin: 18px 0 0;
         color: var(--faint);
         font-weight: 500;
         font-size: 14px;
       }
+      .hint {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 22px;
+        z-index: 4;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+      }
+      .hint-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 16px 9px 11px;
+        border-radius: 999px;
+        background: var(--cocoa);
+        color: var(--cream);
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 12px 30px rgb(38 23 12 / 0.3);
+        animation: hintIn 0.7s ease 1.5s both;
+      }
+      .hint-pill .bulb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--honey);
+        animation: bulb 1.8s ease-in-out infinite;
+      }
+      @keyframes hintIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+      }
+      @keyframes bulb {
+        50% {
+          box-shadow: 0 0 0 6px rgb(240 168 48 / 0.22);
+          background: #ffd27a;
+        }
+      }
 
-      /* demo */
-      .demo {
-        padding: 40px 0 80px;
+      .chapters {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(var(--nav-h) + clamp(14px, 3vh, 34px));
+        z-index: 3;
+        padding: 0 24px;
+        text-align: center;
+        color: var(--cream);
+        opacity: 0;
+        visibility: hidden;
+      }
+      .ch-list {
+        list-style: none;
+        position: relative;
+        height: 94px;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0;
+      }
+      .ch-list li {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        opacity: 0;
+        transform: translateY(14px);
+        transition:
+          opacity 0.45s ease,
+          transform 0.45s ease;
+      }
+      .ch-list li.on {
+        opacity: 1;
+        transform: none;
+      }
+      .ch-list h3 {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-stretch: 82%;
+        font-size: clamp(28px, 3.4vw, 46px);
+        letter-spacing: -0.02em;
+        line-height: 1;
+        color: var(--cream);
+      }
+      .ch-list p {
+        margin: 10px 0 0;
+        font-size: 16.5px;
+        color: var(--cream-dim);
+      }
+      /* chapter markers, read like a video scrubber */
+      .scrub {
+        display: flex;
+        gap: 6px;
+        max-width: 460px;
+        margin: 12px auto 0;
+      }
+      .scrub button {
+        flex: 1;
+        position: relative;
+        height: 20px;
+        padding: 0;
+        border: 0;
+        background: none;
+      }
+      .scrub button::before,
+      .scrub i {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        height: 4px;
+        border-radius: 999px;
+      }
+      .scrub button::before {
+        right: 0;
+        background: rgb(246 231 207 / 0.18);
+        transition: background 0.15s;
+      }
+      .scrub button:hover::before {
+        background: rgb(246 231 207 / 0.34);
+      }
+      .scrub i {
+        width: calc(var(--f, 0) * 100%);
+        background: var(--honey);
+      }
+      .scrub button:focus-visible {
+        outline: 2px solid var(--honey);
+        outline-offset: 3px;
+        border-radius: 6px;
+      }
+
+      /* the browser mock */
+      .stage-host {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        perspective: 1700px;
+        perspective-origin: 50% 20%;
+        pointer-events: none;
+      }
+      .stage {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        width: 1120px;
+        height: 680px;
+        transform-origin: 50% 0;
+        transform: translate3d(-50%, 64vh, 0) rotateX(26deg) scale(0.8);
+        will-change: transform;
+      }
+      .stage.narrow {
+        width: 380px;
+        height: 700px;
+      }
+      .stage [hidden] {
+        display: none !important;
+      }
+      .bw {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        border-radius: 14px;
+        background: #fff;
+        color: var(--ink);
+        box-shadow:
+          0 0 0 1px rgb(38 23 12 / 0.1),
+          0 50px 100px -30px rgb(20 12 5 / 0.55),
+          0 0 180px rgb(240 168 48 / calc(var(--dark) * 0.3));
+        animation: bwIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s both;
+      }
+      @keyframes bwIn {
+        from {
+          opacity: 0;
+          transform: translateY(120px);
+        }
+      }
+      .bw-tabs {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        height: 40px;
+        padding: 0 14px;
+        background: #f0e6d4;
+      }
+      .bw-dots {
+        display: flex;
+        gap: 7px;
+        align-self: center;
+        margin-right: 8px;
+      }
+      .bw-dots i {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #dccbae;
+      }
+      .bw-tab {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 230px;
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 10px 10px 0 0;
+        background: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .bw-tab .fav {
+        position: relative;
+        flex: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        background: var(--ember);
+      }
+      .bw-tab .fav::after {
+        content: "";
+        position: absolute;
+        left: 6px;
+        top: 4px;
+        border-left: 6px solid #fff;
+        border-top: 4px solid transparent;
+        border-bottom: 4px solid transparent;
+      }
+      .bw-tab .x {
+        margin-left: auto;
+        color: var(--faint);
+        font-size: 15px;
+      }
+      .bw-plus {
+        align-self: center;
+        color: #9b8a70;
+        font-size: 20px;
+        line-height: 1;
+      }
+      .bw-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 44px;
+        padding: 0 14px;
+        border-bottom: 1px solid var(--line);
+      }
+      .bw-navs {
+        display: flex;
+        gap: 12px;
+        color: #a3927a;
+      }
+      .bw-navs svg,
+      .bw-ext .puzzle {
+        display: block;
+        width: 16px;
+        height: 16px;
+        color: #a3927a;
+      }
+      .bw-url {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 30px;
+        padding: 0 14px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #f6f0e5;
+        font-size: 13.5px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .bw-url svg {
+        flex: none;
+        width: 13px;
+        height: 13px;
+        color: #a3927a;
+      }
+      .caret {
+        flex: none;
+        width: 1.5px;
+        height: 15px;
+        margin-left: -7px;
+        background: var(--ink);
+        animation: caretBlink 1s steps(1) infinite;
+      }
+      .stage.f-url .caret {
+        visibility: hidden;
+      }
+      @keyframes caretBlink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .bw-ext {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .ext-bear {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        transition: background 0.3s;
+      }
+      .ext-bear::after {
+        content: "";
+        position: absolute;
+        inset: -3px;
+        border: 2px solid var(--honey);
+        border-radius: 10px;
+        opacity: 0;
+      }
+      .stage.f-cur-bear:not(.f-panel) .ext-bear::after {
+        animation: ring 1.2s ease-out infinite;
+      }
+      @keyframes ring {
+        from {
+          opacity: 0.9;
+          transform: scale(0.85);
+        }
+        to {
+          opacity: 0;
+          transform: scale(1.4);
+        }
+      }
+      .stage.f-panel .ext-bear {
+        background: var(--accent-tint);
+      }
+      .ext-me {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+      .bw-body {
+        position: absolute;
+        top: 84px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+      }
+      .site {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-columns: 712px 1fr;
+        gap: 24px;
+        padding: 22px 24px;
+        opacity: 0;
+        transition: opacity 0.6s ease;
+      }
+      .stage.f-url .site {
+        opacity: 1;
+      }
+      .vid {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #2a1a0e;
+      }
+      .film-host {
+        position: absolute;
+        inset: 0;
+      }
+      .title-card {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding-top: 8%;
+        background: rgb(38 23 12 / 0.26);
+        color: #fff8ea;
+        text-align: center;
+        transition: opacity 0.5s ease;
+      }
+      .title-card b {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-stretch: 78%;
+        font-size: 54px;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        text-shadow: 0 4px 24px rgb(38 23 12 / 0.45);
+      }
+      .title-card small {
+        font-size: 14px;
+        font-weight: 600;
+        opacity: 0.9;
+      }
+      .stage.f-play .title-card,
+      .title-card.hide {
+        opacity: 0;
+      }
+      .stage.f-play .bigplay {
+        opacity: 0;
+      }
+      .vid-bar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 28px 16px 12px;
+        background: linear-gradient(rgb(20 12 5 / 0), rgb(20 12 5 / 0.6));
+        color: #fff;
+        font-size: 12.5px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+      .vb-pp {
+        flex: none;
+        width: 0;
+        height: 0;
+        border-left: 11px solid #fff;
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+      }
+      .stage.f-play .vb-pp {
+        width: 10px;
+        height: 13px;
+        border: 0;
+        border-left: 3.5px solid #fff;
+        border-right: 3.5px solid #fff;
+      }
+      .vb-track {
+        position: relative;
+        flex: 1;
+        height: 4px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgb(255 255 255 / 0.3);
+      }
+      .vb-track i {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        border-radius: 999px;
+        background: var(--honey);
+      }
+      .floaters {
+        position: absolute;
+        right: 26px;
+        bottom: 50px;
+        width: 70px;
+        height: 230px;
+      }
+      .floaters span {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        font-size: 28px;
+        opacity: 0;
+      }
+      .floaters span:nth-child(2) {
+        --d: 0.5s;
+        --x: -26px;
+      }
+      .floaters span:nth-child(3) {
+        --d: 1s;
+        --x: 18px;
+      }
+      .floaters span:nth-child(4) {
+        --d: 1.5s;
+        --x: -12px;
+      }
+      .floaters span:nth-child(5) {
+        --d: 2s;
+        --x: 24px;
+      }
+      .stage.f-m3 .floaters span {
+        animation: floatUp 2.6s ease-out var(--d, 0s) infinite;
+      }
+      @keyframes floatUp {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, 0) scale(0.5);
+        }
+        12% {
+          opacity: 1;
+          transform: translate(-50%, -24px) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(calc(-50% + var(--x, 0px)), -210px) scale(1.1);
+        }
+      }
+      .vm-title {
+        margin-top: 14px;
+        font-weight: 800;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+      }
+      .vm-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .vm-row .chan {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #dcc49f;
+      }
+      .vm-row b {
+        color: var(--ink);
+      }
+      .site-next {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .nx {
+        display: flex;
+        gap: 10px;
+      }
+      .nx-thumb {
+        flex: none;
+        width: 140px;
+        height: 79px;
+        border-radius: 8px;
+        background: #ead6b4;
+      }
+      .nx:nth-child(2) .nx-thumb {
+        background: #c9d3dd;
+      }
+      .nx:nth-child(3) .nx-thumb {
+        background: #d8cbe0;
+      }
+      .nx:nth-child(4) .nx-thumb {
+        background: #cfdcc6;
+      }
+      .nx-lines {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        padding-top: 4px;
+      }
+      .nx-lines i {
+        display: block;
+        height: 9px;
+        border-radius: 4px;
+        background: #efe7d9;
+      }
+      .nx-lines i:nth-child(2) {
+        width: 60%;
+      }
+
+      /* the side panel inside the mock */
+      .sp {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        width: 344px;
+        background: #fff;
+        border-left: 1px solid var(--line);
+        box-shadow: -24px 0 50px -24px rgb(38 23 12 / 0.25);
+        transform: translateX(104%);
+        transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .stage.f-panel .sp {
+        transform: none;
+      }
+      .sp .feed {
+        justify-content: flex-end;
+        overflow: hidden;
+      }
+      .sp .avx,
+      .sp .chip {
+        animation: popIn 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+      }
+      @keyframes popIn {
+        from {
+          opacity: 0;
+          transform: scale(0.4);
+        }
+      }
+      .sp .lbl-copied,
+      .sp .ic-check,
+      .stage.f-copied:not(.f-maya) .sp .lbl-copy,
+      .stage.f-copied:not(.f-maya) .sp .ic-copy,
+      .stage.f-m2 [data-at="typing"] {
+        display: none !important;
+      }
+      .stage.f-copied:not(.f-maya) .sp .lbl-copied,
+      .stage.f-copied:not(.f-maya) .sp .ic-check {
+        display: inline-flex !important;
+      }
+      .stage.f-m3 [data-cursor="react"] {
+        background: var(--accent-tint);
+        border-color: var(--line-strong);
+      }
+      .cursor {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 5;
+        width: 24px;
+        height: 24px;
+        opacity: 0;
+        transition:
+          transform 0.75s cubic-bezier(0.3, 0.7, 0.2, 1),
+          opacity 0.3s ease;
+        will-change: transform;
+      }
+      .cursor.on {
+        opacity: 1;
+      }
+      .cursor svg {
+        display: block;
+        width: 24px;
+        height: 24px;
+        filter: drop-shadow(0 3px 5px rgb(0 0 0 / 0.35));
+      }
+      .cursor .tap {
+        position: absolute;
+        left: -16px;
+        top: -16px;
+        width: 32px;
+        height: 32px;
+        border: 2.5px solid var(--honey);
+        border-radius: 50%;
+        opacity: 0;
+      }
+      .cursor.tapping .tap {
+        animation: tap 0.55s ease-out;
+      }
+      @keyframes tap {
+        from {
+          opacity: 1;
+          transform: scale(0.3);
+        }
+        to {
+          opacity: 0;
+          transform: scale(1.7);
+        }
+      }
+      .fly {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 6;
+        padding: 9px 15px;
+        border-radius: 999px;
+        background: var(--honey);
+        color: var(--on-accent);
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+        box-shadow: 0 12px 30px rgb(38 23 12 / 0.35);
+        opacity: 0;
+      }
+      .fly.go {
+        animation: fly 1.3s cubic-bezier(0.3, 0.6, 0.2, 1) both;
+      }
+      @keyframes fly {
+        0% {
+          opacity: 0;
+          transform: translate(var(--fx), var(--fy)) scale(0.6);
+        }
+        18% {
+          opacity: 1;
+          transform: translate(var(--fx), calc(var(--fy) - 24px)) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(calc(var(--fx) + 220px), calc(var(--fy) - 300px)) rotate(-10deg) scale(0.9);
+        }
+      }
+
+      /* narrow mock: video on top, panel slides up as a sheet */
+      .stage.narrow .bw-tabs {
+        height: 34px;
+        padding: 0 10px;
+      }
+      .stage.narrow .bw-dots,
+      .stage.narrow .bw-navs,
+      .stage.narrow .puzzle,
+      .stage.narrow .site-next,
+      .stage.narrow .composer {
+        display: none;
+      }
+      .stage.narrow .bw-tab {
+        width: 170px;
+        height: 28px;
+        font-size: 12px;
+      }
+      .stage.narrow .bw-bar {
+        height: 40px;
+        gap: 8px;
+        padding: 0 10px;
+      }
+      .stage.narrow .bw-url {
+        height: 28px;
+        padding: 0 10px;
+        font-size: 12px;
+      }
+      .stage.narrow .bw-body {
+        top: 74px;
+      }
+      .stage.narrow .site {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 12px;
+      }
+      .stage.narrow .title-card {
+        padding-top: 4%;
+      }
+      .stage.narrow .title-card b {
+        font-size: 28px;
+      }
+      .stage.narrow .title-card small {
+        display: none;
+      }
+      .stage.narrow .bigplay {
+        width: 54px;
+        height: 54px;
+      }
+      .stage.narrow .bigplay .tri {
+        border-left-width: 16px;
+        border-top-width: 10px;
+        border-bottom-width: 10px;
+        margin-left: 4px;
+      }
+      .stage.narrow .live-tag {
+        top: 10px;
+        left: 10px;
+        padding: 4px 9px;
+        font-size: 11px;
+      }
+      .stage.narrow .vid-bar {
+        padding: 18px 10px 8px;
+        font-size: 11px;
+      }
+      .stage.narrow .floaters {
+        right: 14px;
+        bottom: 34px;
+        height: 150px;
+      }
+      .stage.narrow .floaters span {
+        font-size: 22px;
+      }
+      .stage.narrow .sp {
+        top: auto;
+        left: 0;
+        width: auto;
+        height: 400px;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -24px 50px -24px rgb(38 23 12 / 0.3);
+        transform: translateY(104%);
+      }
+      .stage.narrow.f-panel .sp {
+        transform: none;
+      }
+      .stage.narrow .reactions {
+        padding-bottom: 12px;
+      }
+
+      /* the short film every player shows; --t is story time, --walk the bear's stroll */
+      .film {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .film .f-dusk {
+        opacity: var(--t, 0);
+      }
+      .film .f-stars {
+        opacity: calc((var(--t, 0) - 0.42) * 2.4);
+      }
+      .film .f-sun {
+        transform: translateY(calc(var(--t, 0) * 200px));
+      }
+      .film .f-clouds {
+        transform: translateX(calc(var(--t, 0) * -140px));
+      }
+      .film .f-far {
+        transform: translateX(calc(var(--t, 0) * -60px));
+      }
+      .film .f-near {
+        transform: translateX(calc(var(--t, 0) * -110px));
+      }
+      .film .f-walker {
+        transform: translateX(calc(var(--walk, 0) * 720px - 40px));
+      }
+      .film .f-shade {
+        opacity: calc(var(--t, 0) * 0.42);
+      }
+      .playing .f-bob {
+        animation: walkBob 0.42s ease-in-out infinite;
+      }
+      @keyframes walkBob {
+        50% {
+          transform: translateY(-2.5px);
+        }
+      }
+
+      /* sync: three screens lock onto one frame */
+      .sync-sec {
+        position: relative;
+        height: 340vh;
+      }
+      .sync-pin {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        height: 100svh;
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        align-items: center;
+        gap: 56px;
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: calc(var(--nav-h) + 20px) 40px 28px;
+      }
+      .sync-copy h2 {
+        font-size: clamp(36px, 4.6vw, 64px);
+      }
+      .sync-copy p {
+        margin: 18px 0 0;
+        max-width: 26em;
+        font-size: 18px;
+        line-height: 1.55;
+        color: var(--room-muted);
+        text-wrap: pretty;
+      }
+      .timecode {
+        margin-top: 30px;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-stretch: 75%;
+        font-size: clamp(84px, 11vw, 176px);
+        font-variant-numeric: tabular-nums;
+        line-height: 0.82;
+        letter-spacing: -0.03em;
+        color: var(--honey);
+      }
+      .sync-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 22px;
+        padding: 8px 16px 8px 12px;
+        border: 1px solid rgb(246 231 207 / 0.12);
+        border-radius: 999px;
+        background: rgb(246 231 207 / 0.07);
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--cream);
+      }
+      .sync-status i {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--blush);
+        transition:
+          background 0.3s,
+          box-shadow 0.3s;
+      }
+      .sync-sec[data-phase="1"] .sync-status i,
+      .sync-sec[data-phase="3"] .sync-status i {
+        background: #6ac987;
+        box-shadow: 0 0 0 4px rgb(106 201 135 / 0.2);
+      }
+      .sync-sec[data-phase="2"] .sync-status i {
+        background: var(--honey);
+        box-shadow: 0 0 0 4px rgb(240 168 48 / 0.2);
+      }
+      .screens {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .scr {
+        will-change: transform;
+      }
+      .scr.you {
+        grid-column: 1 / -1;
+      }
+      .scr-vid {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #2a1a0e;
+        box-shadow:
+          0 0 0 1px rgb(246 231 207 / 0.08),
+          0 30px 60px -20px rgb(0 0 0 / 0.6);
+      }
+      .scr-who {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 4px 10px 4px 4px;
+        border-radius: 999px;
+        background: rgb(38 23 12 / 0.6);
+        backdrop-filter: blur(6px);
+        color: #fff8ea;
+        font-size: 12.5px;
+        font-weight: 700;
+      }
+      .scr-who .av {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+      .scr-drift {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgb(255 158 122 / 0.94);
+        color: #3a1608;
+        font-size: 12px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        transition: background 0.3s;
+      }
+      .scr-drift.ok {
+        background: rgb(106 201 135 / 0.95);
+        color: #0d2a17;
+      }
+      .scr-paused {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: rgb(38 23 12 / 0.42);
+        color: #fff8ea;
+        font-size: 13px;
+        font-weight: 700;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .scr-paused i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--honey);
+      }
+      .scr-paused i::before,
+      .scr-paused i::after {
+        content: "";
+        width: 4.5px;
+        height: 16px;
+        border-radius: 1px;
+        background: var(--on-accent);
+      }
+      .sync-sec[data-phase="2"] .scr-paused {
+        opacity: 1;
+      }
+      .scr-bar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 20px 12px 9px;
+        background: linear-gradient(rgb(20 12 5 / 0), rgb(20 12 5 / 0.65));
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+      .scr-pp {
+        flex: none;
+        width: 9px;
+        height: 11px;
+        border-left: 3px solid #fff;
+        border-right: 3px solid #fff;
+      }
+      .sync-sec[data-phase="2"] .scr-pp {
+        width: 0;
+        height: 0;
+        border-right: 0;
+        border-left: 9px solid #fff;
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+      }
+      .scr-track {
+        position: relative;
+        flex: 1;
+        height: 4px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgb(255 255 255 / 0.28);
+      }
+      .scr-track i {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        background: var(--honey);
+      }
+
+      /* where it works: two lines of type drift against each other */
+      .where {
+        position: relative;
+        padding: clamp(100px, 16vh, 180px) 0 clamp(90px, 14vh, 160px);
+        overflow: clip;
+      }
+      .where-head {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+        align-items: end;
+        max-width: 1080px;
+        margin: 0 auto 64px;
+        padding: 0 28px;
+      }
+      .where h2 {
+        font-size: clamp(36px, 4.6vw, 64px);
+      }
+      .where-head p {
+        margin: 0;
+        max-width: 28em;
+        font-size: 18px;
+        line-height: 1.55;
+        color: var(--room-muted);
+        text-wrap: pretty;
+      }
+      .mq {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-stretch: 75%;
+        font-size: clamp(64px, 10.5vw, 160px);
+        line-height: 1.06;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+        color: var(--room-ink);
+      }
+      .mq.two {
+        color: var(--honey);
+      }
+      .mq-track {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.32em;
+        will-change: transform;
+      }
+      .mq .tri {
+        flex: none;
+        width: 0.3em;
+        height: 0.34em;
+        background: var(--honey);
+        clip-path: polygon(0 0, 100% 50%, 0 100%);
+      }
+      .mq.two .tri {
+        background: var(--room-ink);
+      }
+
+      /* live demo */
+      .try {
+        padding: 40px 0 clamp(110px, 16vh, 170px);
       }
       .demowrap {
         max-width: 1080px;
         margin: 0 auto;
         padding: 0 28px;
       }
-      .demo-head {
+      .try-head {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 44px;
       }
-      .demo-head h2 {
-        font-size: 38px;
-        margin: 0 0 12px;
+      .try-head h2 {
+        font-size: clamp(36px, 4.6vw, 64px);
       }
-      .demo-head .accent {
-        color: var(--accent-text);
-      }
-      .demo-head p {
-        color: var(--muted);
-        font-weight: 400;
-        font-size: 17px;
-        max-width: 560px;
-        margin: 0 auto;
+      .try-head p {
+        max-width: 34em;
+        margin: 16px auto 0;
+        font-size: 18px;
+        color: var(--room-muted);
         text-wrap: pretty;
       }
       .win {
         display: grid;
         grid-template-columns: 1.55fr 1fr;
         gap: 18px;
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 16px;
         padding: 18px;
-        box-shadow: var(--shadow-md);
+        border-radius: 16px;
+        background: var(--surface);
+        color: var(--ink);
+        box-shadow:
+          0 0 0 1px rgb(246 231 207 / 0.08),
+          0 40px 100px -30px rgb(0 0 0 / 0.6),
+          0 0 140px rgb(240 168 48 / calc(var(--dark) * 0.16));
       }
       .player {
         display: flex;
@@ -326,34 +1483,19 @@
         aspect-ratio: 16 / 9;
         border-radius: 12px;
         overflow: hidden;
-        background: #17130e;
+        background: #2a1a0e;
         border: 1px solid var(--line);
       }
-      .screen .scene {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
+      .screen .title-card {
+        padding-top: 9%;
       }
-      .screen .scene .ttl {
-        font-weight: 700;
-        font-size: 19px;
-        letter-spacing: -0.01em;
-        color: #f4ede1;
-        opacity: 0.95;
-      }
-      .screen .scene .sub {
-        font-size: 13px;
-        font-weight: 500;
-        color: #b3a68f;
+      .screen .title-card b {
+        font-size: 40px;
       }
       .screen .overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(180deg, rgba(20, 16, 11, 0.1), rgba(20, 16, 11, 0.65));
+        background: linear-gradient(180deg, rgba(20, 16, 11, 0), rgba(20, 16, 11, 0.4));
         pointer-events: none;
       }
       .live-tag {
@@ -509,7 +1651,7 @@
         color: var(--online);
       }
 
-      /* side panel */
+      /* side panel; shared by the demo and the mock */
       /* the cell stays sized by the player column; the panel is absolutely
          positioned inside it so a growing chat feed can't expand the card */
       .panelcell {
@@ -954,8 +2096,8 @@
         align-items: center;
         gap: 18px;
         flex-wrap: wrap;
-        background: var(--bg-soft);
-        border: 1px solid var(--line);
+        background: rgb(246 231 207 / 0.06);
+        border: 1px solid var(--room-line);
         border-radius: 14px;
         padding: 20px 26px;
       }
@@ -964,8 +2106,8 @@
         width: 44px;
         height: 44px;
         border-radius: 10px;
-        background: var(--accent-tint);
-        color: var(--accent-text);
+        background: rgb(240 168 48 / 0.16);
+        color: var(--honey);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -982,16 +2124,19 @@
         font-weight: 700;
         font-size: 18px;
         letter-spacing: -0.01em;
-        color: var(--ink);
+        color: var(--room-ink);
         margin-bottom: 3px;
       }
       .invite-callout .ic-sub {
         font-size: 14.5px;
-        color: var(--muted);
+        color: var(--room-muted);
         text-wrap: pretty;
       }
+      .invite-callout .ic-sub b {
+        color: var(--room-ink);
+      }
       .invite-callout .ic-sub.warn {
-        color: var(--danger);
+        color: var(--blush);
       }
       .invite-callout .joinrow {
         margin-top: 10px;
@@ -1017,51 +2162,94 @@
       }
       .invite-callout input:focus {
         border-color: var(--accent);
-        box-shadow: 0 0 0 3px var(--accent-tint);
+        box-shadow: 0 0 0 3px rgb(240 168 48 / 0.3);
       }
       .invite-callout .jb {
         flex: none;
       }
 
-      /* CTA band */
-      .cta-band {
-        padding: 0 0 80px;
-      }
-      .band {
+      /* finale: lights come back up and the bear stands */
+      .finale {
         position: relative;
+        padding: clamp(90px, 14vh, 150px) 0 clamp(100px, 15vh, 160px);
         text-align: center;
-        background: var(--bg-soft);
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 56px 32px;
+        overflow: clip;
+      }
+      .finale::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(min(600px, 60%) 50% at 50% 45%, rgb(240 168 48 / 0.24), rgb(240 168 48 / 0));
+        opacity: var(--rise, 1);
+        transform: scale(calc(0.5 + var(--rise, 1) * 0.5));
+        pointer-events: none;
+      }
+      .finale .wrap {
+        position: relative;
+      }
+      .rise {
+        position: relative;
+        width: 210px;
+        height: 176px;
+        margin: 0 auto;
         overflow: hidden;
       }
-      .band h2 {
-        position: relative;
-        font-size: 38px;
-        margin: 0 0 14px;
-        color: var(--ink);
+      .rise-bear {
+        transform: translateY(calc((1 - var(--rise, 1)) * 100%));
+        will-change: transform;
       }
-      .band p {
+      .rise .wb-eye {
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: eyeBlink 5s infinite;
+      }
+      @keyframes eyeBlink {
+        0%,
+        92%,
+        100% {
+          transform: scaleY(1);
+        }
+        95% {
+          transform: scaleY(0.1);
+        }
+      }
+      /* the ledge is a finished progress bar: the movie just ended */
+      .ledge {
         position: relative;
-        font-size: 18px;
-        color: var(--muted);
-        max-width: 560px;
-        margin: 0 auto 30px;
-        font-weight: 400;
+        width: min(340px, 80%);
+        height: 6px;
+        margin: 0 auto 44px;
+        border-radius: 999px;
+        background: var(--honey);
+      }
+      .ledge i {
+        position: absolute;
+        right: -8px;
+        top: -5px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--ember);
+        box-shadow: 0 0 0 4px rgb(224 127 28 / 0.2);
+      }
+      .finale h2 {
+        font-size: clamp(40px, 6vw, 84px);
+        max-width: 12em;
+        margin: 0 auto;
+      }
+      .finale p {
+        max-width: 32em;
+        margin: 20px auto 32px;
+        font-size: 19px;
+        color: var(--room-muted);
         text-wrap: pretty;
       }
-      .band-cta {
-        position: relative;
-      }
       .band-rate {
-        position: relative;
         display: inline-block;
-        margin-top: 18px;
+        margin-top: 20px;
         font-size: 14.5px;
         font-weight: 600;
-        color: var(--muted);
-        text-decoration: none;
+        color: var(--room-muted);
         transition: color 0.15s ease;
       }
       .band-rate .stars {
@@ -1070,102 +2258,33 @@
         margin-right: 6px;
       }
       .band-rate:hover {
-        color: var(--ink);
+        color: var(--room-ink);
       }
       .coming {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        color: var(--faint);
+        color: var(--room-muted);
         font-weight: 600;
         font-size: 15px;
         padding: 15px 22px;
-        border: 1px solid var(--line);
+        border: 1px solid var(--room-line);
         border-radius: 10px;
-      }
-
-      /* features */
-      .feat {
-        padding: 0 0 84px;
-      }
-      .feat-head {
-        text-align: center;
-        margin-bottom: 44px;
-      }
-      .feat-head h2 {
-        font-size: 38px;
-        margin: 0 0 12px;
-        color: var(--ink);
-      }
-      .feat-head p {
-        color: var(--muted);
-        font-weight: 400;
-        font-size: 17px;
-        max-width: 540px;
-        margin: 0 auto;
-        text-wrap: pretty;
-      }
-      .feat-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-      }
-      .f {
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 30px 26px;
-        box-shadow: var(--shadow-sm);
-        transition:
-          border-color 0.2s,
-          box-shadow 0.2s;
-      }
-      .f:hover {
-        border-color: var(--line-strong);
-        box-shadow: var(--shadow-md);
-      }
-      .f .ficon {
-        width: 48px;
-        height: 48px;
-        border-radius: 10px;
-        background: var(--accent-tint);
-        border: 1px solid #f3e2c0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        color: var(--accent-text);
-        margin-bottom: 20px;
-      }
-      .f .ficon iconify-icon {
-        display: block;
-      }
-      .f h2 {
-        font-weight: 700;
-        font-size: 20px;
-        color: var(--ink);
-        letter-spacing: -0.01em;
-      }
-      .f p {
-        color: var(--muted);
-        font-weight: 400;
-        font-size: 15px;
-        margin: 10px 0 0;
-        line-height: 1.55;
-        text-wrap: pretty;
       }
 
       /* faq */
       .faq {
-        padding: 0 0 90px;
+        padding: 10px 0 110px;
       }
       .faq .wrap {
         max-width: 780px;
       }
       .faq > .wrap > h2 {
-        font-size: 38px;
+        font-family: var(--font-display);
+        font-stretch: 80%;
+        font-size: clamp(32px, 4.4vw, 56px);
         text-align: center;
-        color: var(--ink);
+        color: var(--room-ink);
         margin: 0 0 40px;
       }
       .faq-list {
@@ -1251,55 +2370,91 @@
         .urlbar {
           display: none;
         }
-        .demo-head h2 {
-          font-size: 30px;
+        .sync-pin {
+          grid-template-columns: 1fr;
+          align-content: center;
+          gap: 22px;
+          padding: calc(var(--nav-h) + 12px) 18px 18px;
+        }
+        .sync-copy p {
+          font-size: 16px;
+        }
+        .timecode {
+          margin-top: 14px;
+          font-size: 76px;
+        }
+        .sync-status {
+          margin-top: 12px;
+          font-size: 13.5px;
+        }
+        .screens {
+          gap: 10px;
+          width: 100%;
+          max-width: 520px;
+        }
+      }
+
+      @media (max-width: 860px) and (max-height: 760px) {
+        .sync-copy p {
+          display: none;
         }
       }
 
       @media (max-width: 760px) {
-        .hero {
-          padding: 64px 0 50px;
+        .theater {
+          height: 540vh;
         }
-        .hero h1 {
-          font-size: 40px;
+        .hero-sub {
+          font-size: 16.5px;
+          margin: 18px auto 24px;
         }
-        .feat-grid {
+        .note {
+          font-size: 13px;
+        }
+        .ch-list {
+          height: 104px;
+        }
+        .ch-list p {
+          font-size: 15px;
+        }
+        .where-head {
           grid-template-columns: 1fr;
           gap: 16px;
+          margin-bottom: 40px;
         }
       }
 
       @media (max-width: 480px) {
         .wrap,
         .demowrap {
-          padding: 0 18px;
-        }
-        .hero {
-          padding: 56px 0 44px;
-        }
-        .hero h1 {
-          font-size: 32px;
-        }
-        .hero p {
-          font-size: 17px;
+          padding: 0 16px;
         }
         .btn.lg {
-          padding: 13px 22px;
+          padding: 13px 20px;
           font-size: 15.5px;
-        }
-        .demo-head h2 {
-          font-size: 25px;
-        }
-        .band h2,
-        .feat-head h2,
-        .faq > .wrap > h2 {
-          font-size: 27px;
-        }
-        .band {
-          padding: 44px 22px;
         }
         .invite-callout {
           padding: 18px 20px;
+        }
+        .screen .title-card {
+          display: none;
+        }
+        .scr-who,
+        .scr-drift {
+          top: 6px;
+          font-size: 10.5px;
+        }
+        .scr-who {
+          left: 6px;
+        }
+        .scr-drift {
+          right: 6px;
+          padding: 3px 7px;
+        }
+        .scr-bar {
+          padding: 14px 8px 6px;
+          font-size: 10.5px;
+          gap: 6px;
         }
       }
     </style>
@@ -1309,21 +2464,229 @@
       <wb-nav></wb-nav>
 
       <main>
-        <header class="hero wrap">
-          <h1>Watch videos together, <span class="accent">perfectly in sync.</span></h1>
-          <p>Watchbear is a free Chrome extension for watch parties. Start a room, share the link, and everyone's playback stays in sync, with chat right beside the video.</p>
-          <div class="cta-row">
-            <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener" class="btn lg">Add to Chrome</a>
-            <a href="#demo" class="btn lg ghost">See the live demo</a>
-          </div>
-          <p class="note">Free. Sign in with Google. Works on YouTube, Vimeo, and more.</p>
-        </header>
+        <section class="theater" id="theater">
+          <div class="pin">
+            <header class="hero">
+              <h1 class="display" data-sync>Watch videos together, perfectly in sync.</h1>
+              <p class="hero-sub">Watchbear is a free Chrome extension for watch parties. Start a room, share the link, and everyone's video plays, pauses and skips together, with chat right beside it.</p>
+              <div class="cta-row">
+                <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener" class="btn lg">Add to Chrome</a>
+                <a href="#demo" class="btn lg ghost">Try the live demo</a>
+              </div>
+              <p class="note">Free with your Google account. Works on YouTube, Vimeo, and most sites with a video player.</p>
+            </header>
 
-        <section class="demo" id="demo">
+            <div class="chapters">
+              <h2 class="sr-only">How Watchbear works</h2>
+              <ol class="ch-list">
+                <li class="on">
+                  <h3>Open any video</h3>
+                  <p>YouTube, Vimeo, or most sites with a standard video player.</p>
+                </li>
+                <li>
+                  <h3>Click the bear</h3>
+                  <p>The Watchbear side panel opens with your room ready.</p>
+                </li>
+                <li>
+                  <h3>Send the invite link</h3>
+                  <p>Friends open it, sign in with Google, and they're in.</p>
+                </li>
+                <li>
+                  <h3>Press play for everyone</h3>
+                  <p>Play, pause or skip. Every screen in the room follows.</p>
+                </li>
+                <li>
+                  <h3>Talk over the movie</h3>
+                  <p>Chat and emoji reactions sit right next to the video.</p>
+                </li>
+              </ol>
+              <div class="scrub">
+                <button type="button" aria-label="Jump to step 1: Open any video"><i></i></button>
+                <button type="button" aria-label="Jump to step 2: Click the bear"><i></i></button>
+                <button type="button" aria-label="Jump to step 3: Send the invite link"><i></i></button>
+                <button type="button" aria-label="Jump to step 4: Press play for everyone"><i></i></button>
+                <button type="button" aria-label="Jump to step 5: Talk over the movie"><i></i></button>
+              </div>
+            </div>
+
+            <div class="stage-host" inert aria-hidden="true">
+              <div class="stage" id="stage">
+                <div class="bw">
+                  <div class="bw-tabs">
+                    <span class="bw-dots"><i></i><i></i><i></i></span>
+                    <span class="bw-tab"><span class="fav"></span>Honey Valley<span class="x">×</span></span>
+                    <span class="bw-plus">+</span>
+                  </div>
+                  <div class="bw-bar">
+                    <span class="bw-navs">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+                    </span>
+                    <span class="bw-url">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                      <span id="tUrl"></span><span class="caret"></span>
+                    </span>
+                    <span class="bw-ext">
+                      <svg class="puzzle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 14.9a2.5 2.5 0 1 0 0-5H18V7a1 1 0 0 0-1-1h-3V4.6a2.5 2.5 0 1 0-5 0V6H6a1 1 0 0 0-1 1v3h1.4a2.5 2.5 0 1 1 0 5H5v3a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-3.1z"/></svg>
+                      <span class="ext-bear" data-cursor="bear" data-bear="22"></span>
+                      <span class="ext-me" data-av="You" data-c="#b45309" data-z="26"></span>
+                    </span>
+                  </div>
+                  <div class="bw-body">
+                    <div class="site">
+                      <div class="site-main">
+                        <div class="vid">
+                          <div class="film-host" id="tFilm" data-film></div>
+                          <div class="title-card"><b>Honey Valley</b><small>A short film, 24 min</small></div>
+                          <div class="live-tag" id="tLiveTag"><i></i><span id="tLive">Paused</span></div>
+                          <span class="bigplay" data-cursor="play"><span class="tri"></span></span>
+                          <div class="vid-bar">
+                            <span class="vb-pp"></span><span id="tTime">0:00 / 24:00</span><span class="vb-track"><i id="tFill"></i></span>
+                          </div>
+                          <div class="floaters"><span>❤️</span><span>😂</span><span>👏</span><span>❤️</span><span>😮</span></div>
+                        </div>
+                        <div class="vm-title">Honey Valley</div>
+                        <div class="vm-row"><span class="chan"></span><span><b>Den Pictures</b><br />Short film, 24 min</span></div>
+                      </div>
+                      <div class="site-next">
+                        <div class="nx"><span class="nx-thumb"></span><span class="nx-lines"><i></i><i></i></span></div>
+                        <div class="nx"><span class="nx-thumb"></span><span class="nx-lines"><i></i><i></i></span></div>
+                        <div class="nx"><span class="nx-thumb"></span><span class="nx-lines"><i></i><i></i></span></div>
+                        <div class="nx"><span class="nx-thumb"></span><span class="nx-lines"><i></i><i></i></span></div>
+                      </div>
+                    </div>
+
+                    <div class="sp">
+                      <div class="p-head">
+                        <div class="l">
+                          <span class="pm" data-bear="26"></span>
+                          <div class="pt">Watch party</div>
+                        </div>
+                        <div class="avstack">
+                          <span class="avx" data-av="You" data-c="#b45309" data-z="22"></span>
+                          <span class="avx" data-at="maya" data-av="Maya" data-c="#4f6f8f" data-z="22" hidden></span>
+                          <span class="avx" data-at="daniel" data-av="Daniel" data-c="#5a7a52" data-z="22" hidden></span>
+                        </div>
+                      </div>
+                      <div class="invite-bar">
+                        <button class="invite" type="button" data-cursor="copy">
+                          <span class="ic ic-copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></span>
+                          <span class="ic ic-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                          <span class="lbl-copy">Copy invite link</span><span class="lbl-copied">Link copied!</span>
+                        </button>
+                      </div>
+                      <div class="roster">
+                        <div class="members">
+                          <div class="chip you"><span class="av" data-av="You" data-c="#b45309" data-z="20"></span>You (you)</div>
+                          <div class="chip" data-at="maya" hidden><span class="av" data-av="Maya" data-c="#4f6f8f" data-z="20"></span>Maya</div>
+                          <div class="chip" data-at="daniel" hidden><span class="av" data-av="Daniel" data-c="#5a7a52" data-z="20"></span>Daniel</div>
+                          <span class="count" id="tCount">1 in room</span>
+                        </div>
+                        <div class="sync">
+                          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+                          <span id="tSync">0:00</span>
+                        </div>
+                        <div class="sync">
+                          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg></span>
+                          <span class="np">Now playing: Honey Valley</span>
+                        </div>
+                      </div>
+                      <div class="feed">
+                        <div class="sys" data-at="room" hidden>Room created · code BEAR-K7M2QX</div>
+                        <div class="sys" data-at="maya" hidden>Maya joined the room</div>
+                        <div class="sys" data-at="daniel" hidden>Daniel joined the room</div>
+                        <div class="sys" data-at="play" hidden>Playback resumed for everyone</div>
+                        <div class="msg" data-at="m1" hidden>
+                          <span class="av" data-av="Maya" data-c="#4f6f8f" data-z="28"></span>
+                          <div class="body"><div class="who">Maya</div><div class="row"><div class="bub">The colors in this one are unreal.</div></div></div>
+                        </div>
+                        <div class="msg" data-at="m2" hidden>
+                          <span class="av" data-av="Daniel" data-c="#5a7a52" data-z="28"></span>
+                          <div class="body"><div class="who">Daniel</div><div class="row"><div class="bub">Perfectly in sync on my end.</div></div></div>
+                        </div>
+                        <div class="msg mine emoji" data-at="m3" hidden>
+                          <div class="body"><div class="row"><div class="bub">❤️</div></div></div>
+                        </div>
+                      </div>
+                      <div class="typing"><span data-at="typing" hidden>Daniel is typing<span class="d">.</span><span class="d">.</span><span class="d">.</span></span></div>
+                      <div class="reactions">
+                        <button type="button">👍</button><button type="button">😂</button><button type="button" data-cursor="react">❤️</button><button type="button">😮</button><button type="button">👏</button>
+                      </div>
+                      <div class="composer">
+                        <input placeholder="Send a message" />
+                        <button class="send" type="button" disabled>
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="cursor" id="tCursor">
+                  <span class="tap"></span>
+                  <svg viewBox="0 0 24 24"><path d="M4 2.5v17.2l4.6-4.4 3.1 6.9 3-1.4-3-6.7h6.4z" fill="#fff" stroke="#1a140d" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="fly" id="tFly">watchbear.deepfeld.com/j#wb=BEAR-K7M2QX</div>
+              </div>
+            </div>
+
+            <div class="hint" aria-hidden="true"><span class="hint-pill"><span class="bulb"></span>Scroll to dim the lights</span></div>
+          </div>
+        </section>
+
+        <section class="sync-sec" id="sync" data-phase="0">
+          <div class="sync-pin">
+            <div class="sync-copy">
+              <h2 class="display" data-sync>Same frame on every screen</h2>
+              <p>Play, pause or skip from any seat. Watchbear moves everyone's video with you, so nobody ends up a scene ahead.</p>
+              <div class="timecode" id="timecode" aria-hidden="true">7:12</div>
+              <div class="sync-status"><i></i><span id="syncStatus">Three screens, three different moments</span></div>
+            </div>
+            <div class="screens" aria-hidden="true">
+              <div class="scr you">
+                <div class="scr-vid">
+                  <div class="film-host" data-film></div>
+                  <div class="scr-paused"><i></i>Maya paused</div>
+                  <span class="scr-who"><span class="av" data-av="You" data-c="#b45309" data-z="20"></span>You</span>
+                  <div class="scr-bar"><span class="scr-pp"></span><span class="scr-time">7:12</span><span class="scr-track"><i></i></span></div>
+                </div>
+              </div>
+              <div class="scr">
+                <div class="scr-vid">
+                  <div class="film-host" data-film></div>
+                  <div class="scr-paused"><i></i>Maya paused</div>
+                  <span class="scr-who"><span class="av" data-av="Maya" data-c="#4f6f8f" data-z="20"></span>Maya</span>
+                  <span class="scr-drift">36s ahead</span>
+                  <div class="scr-bar"><span class="scr-pp"></span><span class="scr-time">7:48</span><span class="scr-track"><i></i></span></div>
+                </div>
+              </div>
+              <div class="scr">
+                <div class="scr-vid">
+                  <div class="film-host" data-film></div>
+                  <div class="scr-paused"><i></i>Maya paused</div>
+                  <span class="scr-who"><span class="av" data-av="Daniel" data-c="#5a7a52" data-z="20"></span>Daniel</span>
+                  <span class="scr-drift">50s behind</span>
+                  <div class="scr-bar"><span class="scr-pp"></span><span class="scr-time">6:22</span><span class="scr-track"><i></i></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="where" id="where">
+          <div class="where-head">
+            <h2 class="display" data-sync>Works where your videos are</h2>
+            <p>YouTube, Vimeo, and most sites with a standard video player. Watchbear finds the main video on the page and keeps it in sync.</p>
+          </div>
+          <div class="mq" aria-hidden="true"><div class="mq-track" data-words="YouTube|Vimeo|Lectures|Trailers|Short films"></div></div>
+          <div class="mq two" aria-hidden="true"><div class="mq-track" data-words="Music videos|Vlogs|Documentaries|Match highlights|Cooking shows"></div></div>
+        </section>
+
+        <section class="try" id="demo">
           <div class="demowrap">
-            <div class="demo-head">
-              <h2>See it in action</h2>
-              <p>Press play, send a message, and watch the room stay in sync. A live simulation of the real extension.</p>
+            <div class="try-head">
+              <h2 class="display" data-sync>Try it right here</h2>
+              <p>A live simulation of the side panel. Press play, send a message, or paste an invite link to see a friend join.</p>
             </div>
 
             <div class="win">
@@ -1334,10 +2697,8 @@
                   <span class="ext-pin" id="pinBear"></span>
                 </div>
                 <div class="screen">
-                  <div class="scene">
-                    <div class="ttl">Movie Night</div>
-                    <div class="sub">Demo video · 24 min</div>
-                  </div>
+                  <div class="film-host" id="demoFilm"></div>
+                  <div class="title-card" id="demoTitle"><b>Honey Valley</b><small>A short film, 24 min</small></div>
                   <div class="overlay"></div>
                   <div class="live-tag" id="liveTag"><i></i><span id="liveTxt">Paused</span></div>
                   <button class="bigplay" id="bigPlay" aria-label="play/pause"><span class="tri"></span></button>
@@ -1383,7 +2744,7 @@
                     <span class="ic">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
                     </span>
-                    <span class="np">Now playing: Movie Night</span>
+                    <span class="np">Now playing: Honey Valley</span>
                   </div>
                 </div>
 
@@ -1419,43 +2780,17 @@
           </div>
         </section>
 
-        <section class="cta-band" id="get">
+        <section class="finale" id="get">
           <div class="wrap">
-            <div class="band">
-              <h2>Start your first watch party</h2>
-              <p>Add the free extension, open any video, and invite friends in seconds. Free with your Google account.</p>
-              <div class="band-cta cta-row">
-                <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener" class="btn lg">Add to Chrome</a>
-                <span class="coming">Desktop app <span class="badge">Coming soon</span></span>
-              </div>
-              <a class="band-rate" href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn/reviews" target="_blank" rel="noopener"><span class="stars">★★★★★</span>Loving Watchbear? Rate us on the Chrome Web Store</a>
+            <div class="rise" aria-hidden="true"><div class="rise-bear" id="riseBear"></div></div>
+            <div class="ledge" aria-hidden="true"><i></i></div>
+            <h2 class="display" data-sync>Start your first watch party</h2>
+            <p>Add the free extension, open any video, and invite friends in seconds. Free with your Google account.</p>
+            <div class="cta-row">
+              <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener" class="btn lg">Add to Chrome</a>
+              <span class="coming">Desktop app <span class="badge">Coming soon</span></span>
             </div>
-          </div>
-        </section>
-
-        <section class="feat">
-          <div class="wrap">
-            <div class="feat-head">
-              <h2>Everything you need for a watch party</h2>
-              <p>Watchbear keeps the video, the people, and the conversation in one synced room.</p>
-            </div>
-            <div class="feat-grid">
-              <div class="f">
-                <div class="ficon"><iconify-icon icon="lucide:circle-play" aria-hidden="true"></iconify-icon></div>
-                <h2>Synced video playback</h2>
-                <p>Play, pause or skip. Everyone's screen stays on the exact same frame, automatically.</p>
-              </div>
-              <div class="f">
-                <div class="ficon"><iconify-icon icon="lucide:key-round" aria-hidden="true"></iconify-icon></div>
-                <h2>Invite with a code</h2>
-                <p>Send your room code to friends. They sign in with Google and join the watch party in seconds.</p>
-              </div>
-              <div class="f">
-                <div class="ficon"><iconify-icon icon="lucide:message-circle" aria-hidden="true"></iconify-icon></div>
-                <h2>Live chat &amp; reactions</h2>
-                <p>A side panel keeps live messages and emoji reactions right next to the video.</p>
-              </div>
-            </div>
+            <a class="band-rate" href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn/reviews" target="_blank" rel="noopener"><span class="stars">★★★★★</span>Loving Watchbear? Rate us on the Chrome Web Store</a>
           </div>
         </section>
 
@@ -1612,12 +2947,12 @@
             '<ellipse cx="60" cy="54" rx="13" ry="10" fill="url(#' +
             u +
             'y)"/>' +
-            '<circle cx="50" cy="43" r="3.6" fill="' +
+            '<g class="wb-eye"><circle cx="50" cy="43" r="3.6" fill="' +
             ink +
-            '"/><circle cx="70" cy="43" r="3.6" fill="' +
+            '"/><circle cx="51.3" cy="41.6" r="1.2" fill="#fff"/></g>' +
+            '<g class="wb-eye"><circle cx="70" cy="43" r="3.6" fill="' +
             ink +
-            '"/>' +
-            '<circle cx="51.3" cy="41.6" r="1.2" fill="#fff"/><circle cx="71.3" cy="41.6" r="1.2" fill="#fff"/>' +
+            '"/><circle cx="71.3" cy="41.6" r="1.2" fill="#fff"/></g>' +
             '<ellipse cx="60" cy="50" rx="3.8" ry="3" fill="' +
             ink +
             '"/>' +
@@ -1643,12 +2978,76 @@
             "</text></svg>"
           );
         };
+
+        // "Honey Valley", the short film every player on the page shows
+        var STARS = [
+          [60, 40],
+          [130, 22],
+          [210, 60],
+          [290, 30],
+          [350, 74],
+          [400, 18],
+          [520, 44],
+          [600, 26],
+          [90, 96],
+          [250, 100],
+          [470, 90],
+          [575, 112],
+        ];
+        window.filmSVG = function filmSVG() {
+          var u = "fm" + ++_n;
+          var stars = STARS.map(function (s, i) {
+            return '<circle cx="' + s[0] + '" cy="' + s[1] + '" r="' + (i % 3 ? 1.3 : 1.9) + '"/>';
+          }).join("");
+          return (
+            '<svg class="film" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
+            "<defs>" +
+            '<linearGradient id="' + u + 's" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE6AE"/><stop offset="1" stop-color="#FFB25E"/></linearGradient>' +
+            '<linearGradient id="' + u + 'd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B2347"/><stop offset="0.6" stop-color="#A9506A"/><stop offset="1" stop-color="#EE8A5E"/></linearGradient>' +
+            "</defs>" +
+            '<rect width="640" height="360" fill="url(#' + u + 's)"/>' +
+            '<rect class="f-dusk" width="640" height="360" fill="url(#' + u + 'd)"/>' +
+            '<g class="f-stars" fill="#FFF4D6">' + stars + "</g>" +
+            '<circle class="f-sun" cx="450" cy="118" r="40" fill="#FFF4D8"/>' +
+            '<g class="f-clouds" fill="#FFF8EA" opacity="0.85">' +
+            '<ellipse cx="130" cy="84" rx="42" ry="13"/><ellipse cx="158" cy="74" rx="26" ry="13"/>' +
+            '<ellipse cx="330" cy="56" rx="34" ry="10"/><ellipse cx="350" cy="50" rx="18" ry="9"/>' +
+            '<ellipse cx="610" cy="96" rx="40" ry="12"/><ellipse cx="632" cy="88" rx="22" ry="10"/>' +
+            "</g>" +
+            '<path class="f-far" fill="#D99A57" d="M0 232 C 80 196 150 204 222 218 S 362 184 442 206 S 602 188 760 214 L760 360 L0 360 Z"/>' +
+            '<path class="f-near" fill="#A9692F" d="M0 282 C 92 252 172 262 252 276 S 422 246 522 268 S 682 254 760 270 L760 360 L0 360 Z"/>' +
+            '<path class="f-ground" fill="#6E4320" d="M0 320 C 140 310 300 324 460 314 S 600 318 640 316 L640 360 L0 360 Z"/>' +
+            '<g class="f-walker"><g transform="translate(0 318)"><g class="f-bob" fill="#3A2412">' +
+            '<rect x="-8" y="-5" width="5" height="6" rx="2"/><rect x="4" y="-5" width="5" height="6" rx="2"/>' +
+            '<ellipse cx="0" cy="-12" rx="11.5" ry="9"/>' +
+            '<circle cx="11" cy="-22" r="7.5"/><circle cx="7" cy="-29" r="2.8"/><circle cx="15" cy="-28.5" r="2.8"/>' +
+            "</g></g></g>" +
+            '<rect class="f-shade" width="640" height="360" fill="#26170C"/>' +
+            "</svg>"
+          );
+        };
+
+        window.setFilm = function setFilm(host, t, walk, playing) {
+          host.style.setProperty("--t", t.toFixed(4));
+          host.style.setProperty("--walk", walk.toFixed(4));
+          host.classList.toggle("playing", !!playing);
+        };
       })();
     </script>
     <script>
       document.getElementById("pinBear").innerHTML = bearSVG({ size: 22 });
       document.getElementById("panelBear").innerHTML = bearSVG({ size: 26 });
       document.getElementById("footBear").innerHTML = bearSVG({ size: 28 });
+      document.getElementById("riseBear").innerHTML = bearSVG({ size: 210 });
+      document.querySelectorAll("[data-bear]").forEach(function (el) {
+        el.innerHTML = bearSVG({ size: +el.getAttribute("data-bear") });
+      });
+      document.querySelectorAll("[data-av]").forEach(function (el) {
+        el.innerHTML = initialAvatar(el.getAttribute("data-av"), el.getAttribute("data-c"), +el.getAttribute("data-z"));
+      });
+      document.querySelectorAll("[data-film]").forEach(function (el) {
+        el.innerHTML = filmSVG();
+      });
 
       var DURATION = 24 * 60; // 24:00 in seconds
       var state = { time: 0, playing: false };
@@ -1849,6 +3248,20 @@
       var liveTxt = document.getElementById("liveTxt");
       var statusLbl = document.getElementById("statusLbl");
       var syncTimeEl = document.getElementById("syncTime");
+      var demoFilm = document.getElementById("demoFilm");
+      var demoTitle = document.getElementById("demoTitle");
+      demoFilm.innerHTML = filmSVG();
+
+      // the clock ticks once a second; the film interpolates between ticks so the bear walks smoothly
+      var tickAt = 0;
+      function paintFilm(sec) {
+        setFilm(demoFilm, Math.min(sec / 900, 0.85), (sec % 75) / 75, state.playing);
+      }
+      function filmLoop() {
+        if (!state.playing) return;
+        paintFilm(state.time + Math.min(1, (performance.now() - tickAt) / 1000));
+        requestAnimationFrame(filmLoop);
+      }
 
       function renderVideo() {
         var pct = (state.time / DURATION) * 100;
@@ -1856,6 +3269,8 @@
         timeEl.textContent = fmt(state.time) + " / " + fmt(DURATION);
         // the panel's sync clock tracks the player one-to-one
         syncTimeEl.textContent = fmt(state.time);
+        paintFilm(state.time);
+        demoTitle.classList.toggle("hide", state.playing || state.time > 0);
         if (state.playing) {
           ppIcon.className = "i-pause";
           ppIcon.innerHTML = "<span></span><span></span>";
@@ -1880,8 +3295,11 @@
         state.playing = on;
         renderVideo();
         if (on && !ticker) {
+          tickAt = performance.now();
+          requestAnimationFrame(filmLoop);
           ticker = setInterval(function () {
             state.time += 1;
+            tickAt = performance.now();
             if (state.time >= DURATION) {
               state.time = DURATION;
               setPlaying(false);
@@ -1906,6 +3324,7 @@
         var rect = track.getBoundingClientRect();
         var ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
         state.time = Math.round(ratio * DURATION);
+        tickAt = performance.now();
         renderVideo();
         addSys("Jumped to " + fmt(state.time) + " · everyone follows");
       });
@@ -2056,6 +3475,387 @@
       addSys("Room created · code BEAR-K7M2QX");
       addChat("Maya", "Hey! Ready when you are.");
       addChat("Daniel", "Press play whenever. We're synced.");
+    </script>
+    <script>
+      // ---- scroll scenes ----
+      (function () {
+        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var narrowMq = matchMedia("(max-width: 760px)");
+        var root = document.documentElement;
+        var themeMeta = document.querySelector('meta[name="theme-color"]');
+
+        function clamp(v, a, b) {
+          return v < a ? a : v > b ? b : v;
+        }
+        function seg(p, a, b) {
+          return clamp((p - a) / (b - a), 0, 1);
+        }
+        function ease(x) {
+          return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+        }
+        function lerp(a, b, t) {
+          return a + (b - a) * t;
+        }
+        /** 0 when the section reaches the top of the viewport, 1 when its pinned stretch runs out */
+        function pinned(rect, sec, pin) {
+          var span = sec.offsetHeight - pin.offsetHeight;
+          return span > 0 ? clamp(-rect.top / span, 0, 1) : 0;
+        }
+        function restart(el, cls) {
+          el.classList.remove(cls);
+          void el.offsetWidth;
+          el.classList.add(cls);
+        }
+
+        // ---- headline words ----
+        var OFFS = ["-0.42em", "0.3em", "-0.16em", "0.48em", "-0.3em", "0.14em", "-0.5em", "0.34em"];
+        var syncHeads = document.querySelectorAll("[data-sync]");
+        syncHeads.forEach(function (el) {
+          var words = el.textContent.trim().split(/\s+/);
+          el.textContent = "";
+          words.forEach(function (w, i) {
+            var s = document.createElement("span");
+            s.className = "w";
+            s.style.setProperty("--o", OFFS[i % OFFS.length]);
+            s.textContent = w;
+            el.appendChild(s);
+            if (i < words.length - 1) el.appendChild(document.createTextNode(" "));
+          });
+        });
+        if (reduce || !("IntersectionObserver" in window)) {
+          syncHeads.forEach(function (el) {
+            el.classList.add("synced");
+          });
+        } else {
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (en) {
+                if (!en.isIntersecting) return;
+                en.target.classList.add("synced");
+                io.unobserve(en.target);
+              });
+            },
+            { threshold: 0.6 }
+          );
+          syncHeads.forEach(function (el) {
+            io.observe(el);
+          });
+        }
+
+        // ---- marquee words ----
+        document.querySelectorAll(".mq-track").forEach(function (el) {
+          var words = el.getAttribute("data-words").split("|");
+          for (var r = 0; r < 3; r++) {
+            words.forEach(function (w) {
+              var s = document.createElement("span");
+              s.textContent = w;
+              var tri = document.createElement("i");
+              tri.className = "tri";
+              el.appendChild(s);
+              el.appendChild(tri);
+            });
+          }
+        });
+
+        // ---- theater ----
+        var theater = document.getElementById("theater");
+        var tPin = theater.querySelector(".pin");
+        var hero = theater.querySelector(".hero");
+        var chapters = theater.querySelector(".chapters");
+        var chItems = chapters.querySelectorAll(".ch-list li");
+        var scrubBtns = chapters.querySelectorAll(".scrub button");
+        var hint = theater.querySelector(".hint");
+        var stage = document.getElementById("stage");
+        var cursor = document.getElementById("tCursor");
+        var fly = document.getElementById("tFly");
+        var urlEl = document.getElementById("tUrl");
+        var tFilm = document.getElementById("tFilm");
+        var tTime = document.getElementById("tTime");
+        var tFill = document.getElementById("tFill");
+        var tSync = document.getElementById("tSync");
+        var tCount = document.getElementById("tCount");
+        var tLive = document.getElementById("tLive");
+        var tLiveTag = document.getElementById("tLiveTag");
+        var atEls = stage.querySelectorAll("[data-at]");
+
+        var URL_TEXT = "watchparty.example/movie-night";
+        var CH = [0.12, 0.25, 0.42, 0.6, 0.8, 1];
+        // scroll positions where each beat of the walkthrough switches on
+        var TL = [
+          [0.27, "cur-bear"],
+          [0.31, "panel"],
+          [0.33, "room"],
+          [0.44, "cur-copy"],
+          [0.47, "copied"],
+          [0.49, "sent"],
+          [0.53, "maya"],
+          [0.57, "daniel"],
+          [0.62, "cur-play"],
+          [0.655, "play"],
+          [0.7, "cur-rest"],
+          [0.82, "m1"],
+          [0.845, "typing"],
+          [0.87, "m2"],
+          [0.88, "cur-react"],
+          [0.915, "m3"],
+          [0.96, "cur-off"],
+        ];
+        var TAPS = { panel: 1, copied: 1, play: 1, m3: 1 };
+        var PLAY_AT = 0.655;
+
+        var box = { s: 1, top0: 0, top1: 0 };
+        var flags = {};
+        var curName = "";
+        var chOn = -1;
+        var secShown = -1;
+
+        function layoutStage() {
+          var narrow = narrowMq.matches;
+          stage.classList.toggle("narrow", narrow);
+          var W = narrow ? 380 : 1120;
+          var H = narrow ? 700 : 680;
+          var fitTop = chapters.offsetTop + chapters.offsetHeight + (narrow ? 12 : 20);
+          var fitH = tPin.offsetHeight - fitTop - (narrow ? 12 : 28);
+          var fitW = tPin.offsetWidth - (narrow ? 20 : 64);
+          box.s = Math.max(0.2, Math.min(fitW / W, fitH / H, 1.1));
+          box.top1 = fitTop + Math.max(0, (fitH - H * box.s) / 2);
+          box.top0 = Math.max(hero.offsetTop + hero.offsetHeight + (narrow ? 26 : 40), box.top1 + 60);
+          if (curName) moveCursor(curName);
+        }
+
+        /** a point inside el in unscaled stage pixels; offsets ignore transforms, so the closed panel still reports where it will open */
+        function localPoint(el) {
+          var x = el.offsetWidth * 0.55;
+          var y = el.offsetHeight * 0.6;
+          for (var n = el; n && n !== stage; n = n.offsetParent) {
+            x += n.offsetLeft;
+            y += n.offsetTop;
+          }
+          return { x: x, y: y };
+        }
+
+        function moveCursor(name) {
+          var target = name && stage.querySelector('[data-cursor="' + name.slice(4) + '"]');
+          cursor.classList.toggle("on", !!target);
+          if (!target) return;
+          var pt = localPoint(target);
+          cursor.style.transform = "translate(" + pt.x.toFixed(1) + "px," + pt.y.toFixed(1) + "px)";
+        }
+
+        function typeUrl() {
+          var n = 0;
+          (function next() {
+            urlEl.textContent = URL_TEXT.slice(0, n);
+            if (n++ < URL_TEXT.length) return setTimeout(next, 32);
+            setTimeout(function () {
+              stage.classList.add("f-url");
+            }, 220);
+          })();
+        }
+
+        function launchLink() {
+          var pt = localPoint(stage.querySelector('[data-cursor="copy"]'));
+          fly.style.setProperty("--fx", (pt.x - fly.offsetWidth / 2).toFixed(0) + "px");
+          fly.style.setProperty("--fy", (pt.y - 20).toFixed(0) + "px");
+          restart(fly, "go");
+        }
+
+        function setFlags(p) {
+          var next = {};
+          var cur = "";
+          for (var i = 0; i < TL.length && p >= TL[i][0]; i++) {
+            next[TL[i][1]] = true;
+            if (TL[i][1].indexOf("cur-") === 0) cur = TL[i][1];
+          }
+          var changed = false;
+          TL.forEach(function (beat) {
+            var f = beat[1];
+            if (!!flags[f] === !!next[f]) return;
+            changed = true;
+            stage.classList.toggle("f-" + f, !!next[f]);
+            // taps and the flying link only play going forward
+            if (next[f] && TAPS[f]) restart(cursor, "tapping");
+            if (next[f] && f === "sent") launchLink();
+          });
+          flags = next;
+          if (cur !== curName) {
+            curName = cur;
+            moveCursor(cur);
+          }
+          if (!changed) return;
+          atEls.forEach(function (el) {
+            el.hidden = !flags[el.getAttribute("data-at")];
+          });
+          var n = 1 + (flags.maya ? 1 : 0) + (flags.daniel ? 1 : 0);
+          tCount.textContent = n + " in room";
+          tLiveTag.classList.toggle("on", !!flags.play);
+          tLive.textContent = flags.play ? "LIVE · " + n + " watching" : "Paused";
+        }
+
+        function theaterUpdate(p) {
+          var e = ease(seg(p, 0, 0.12));
+          var out = seg(p, 0, 0.07);
+          hero.style.opacity = (1 - out).toFixed(3);
+          hero.style.transform = "translateY(" + (-out * 70).toFixed(1) + "px)";
+          hero.style.visibility = out >= 1 ? "hidden" : "";
+          var inn = seg(p, 0.07, 0.12);
+          chapters.style.opacity = inn.toFixed(3);
+          chapters.style.transform = "translateY(" + ((1 - inn) * 18).toFixed(1) + "px)";
+          chapters.style.visibility = inn > 0 ? "visible" : "hidden";
+          hint.style.opacity = (1 - seg(p, 0, 0.02)).toFixed(3);
+
+          var top = lerp(box.top0, box.top1, e);
+          var rot = reduce ? 0 : (1 - e) * 26;
+          var sc = box.s * (reduce ? 1 : lerp(0.9, 1, e));
+          stage.style.transform = "translate3d(-50%," + top.toFixed(1) + "px,0) rotateX(" + rot.toFixed(2) + "deg) scale(" + sc.toFixed(4) + ")";
+
+          var ch = 0;
+          for (var i = 0; i < 5; i++) {
+            if (p >= CH[i]) ch = i;
+            scrubBtns[i].style.setProperty("--f", seg(p, CH[i], CH[i + 1]).toFixed(3));
+          }
+          if (ch !== chOn) {
+            chOn = ch;
+            chItems.forEach(function (li, k) {
+              li.classList.toggle("on", k === ch);
+            });
+          }
+
+          setFlags(p);
+          var run = seg(p, PLAY_AT, 1);
+          setFilm(tFilm, run * 0.6, (run * 1.6) % 1, !!flags.play);
+          var sec = Math.floor(run * 0.6 * DURATION);
+          if (sec !== secShown) {
+            secShown = sec;
+            tTime.textContent = fmt(sec) + " / " + fmt(DURATION);
+            tSync.textContent = fmt(sec);
+            tFill.style.width = ((sec / DURATION) * 100).toFixed(2) + "%";
+          }
+        }
+
+        scrubBtns.forEach(function (b, i) {
+          b.addEventListener("click", function () {
+            var span = theater.offsetHeight - tPin.offsetHeight;
+            var y = theater.getBoundingClientRect().top + scrollY + span * (CH[i] + 0.012);
+            scrollTo({ top: y, behavior: reduce ? "auto" : "smooth" });
+          });
+        });
+
+        // ---- sync screens ----
+        var syncSec = document.getElementById("sync");
+        var sPin = syncSec.querySelector(".sync-pin");
+        var timecode = document.getElementById("timecode");
+        var syncStatus = document.getElementById("syncStatus");
+        var STATUS = ["Three screens, three different moments", "Synced. Playing for 3 people", "Maya paused for everyone", "Maya pressed play. Everyone's back"];
+        // where each screen starts before it locks in; dt is how far its video is off, as a share of the film
+        var SCATTER = [
+          { x: -36, y: 34, r: -4, dt: 0 },
+          { x: -70, y: 50, r: 7, dt: 0.025 },
+          { x: 60, y: 60, r: -8, dt: -0.035 },
+        ];
+        var screens = [].map.call(syncSec.querySelectorAll(".scr"), function (el, i) {
+          return {
+            el: el,
+            film: el.querySelector(".film-host"),
+            time: el.querySelector(".scr-time"),
+            fill: el.querySelector(".scr-track i"),
+            drift: el.querySelector(".scr-drift"),
+            k: SCATTER[i],
+          };
+        });
+        var phaseOn = -1;
+
+        function syncUpdate(q) {
+          var off = 1 - ease(seg(q, 0.04, 0.26));
+          // shared playhead: runs, holds while Maya has it paused, then runs again
+          var T = 0.3 + 0.1 * seg(q, 0.26, 0.45) + 0.12 * seg(q, 0.65, 1);
+          var phase = q < 0.26 ? 0 : q < 0.45 ? 1 : q < 0.65 ? 2 : 3;
+          screens.forEach(function (s) {
+            var k = s.k;
+            if (!reduce) s.el.style.transform = "translate(" + (k.x * off).toFixed(1) + "px," + (k.y * off).toFixed(1) + "px) rotate(" + (k.r * off).toFixed(2) + "deg)";
+            var t = T + k.dt * off;
+            setFilm(s.film, t, (t * 9) % 1, phase !== 2);
+            s.time.textContent = fmt(t * DURATION);
+            s.fill.style.width = (t * 100).toFixed(2) + "%";
+            if (s.drift) {
+              var d = Math.round(k.dt * off * DURATION);
+              s.drift.textContent = d === 0 ? "In sync" : Math.abs(d) + "s " + (d > 0 ? "ahead" : "behind");
+              s.drift.classList.toggle("ok", d === 0);
+            }
+          });
+          timecode.textContent = fmt(T * DURATION);
+          if (phase !== phaseOn) {
+            phaseOn = phase;
+            syncSec.setAttribute("data-phase", phase);
+            syncStatus.textContent = STATUS[phase];
+          }
+        }
+
+        // ---- marquee, finale, lights ----
+        var where = document.getElementById("where");
+        var mqTracks = where.querySelectorAll(".mq-track");
+        var finale = document.getElementById("get");
+        var darkNow = -1;
+
+        function setDark(d) {
+          d = Math.round(d * 500) / 500;
+          if (d === darkNow) return;
+          var flip = d > 0.5 !== darkNow > 0.5;
+          darkNow = d;
+          root.style.setProperty("--dark", d);
+          if (flip && themeMeta) themeMeta.setAttribute("content", d > 0.5 ? "#26170c" : "#fffbf4");
+        }
+
+        var queued = false;
+        function frame() {
+          queued = false;
+          var vh = innerHeight;
+          // read every rect before writing anything, so the frame lays out once
+          var tr = theater.getBoundingClientRect();
+          var sr = syncSec.getBoundingClientRect();
+          var wr = where.getBoundingClientRect();
+          var fr = finale.getBoundingClientRect();
+          var p = pinned(tr, theater, tPin);
+
+          if (tr.bottom > 0) theaterUpdate(p);
+          if (sr.bottom > 0 && sr.top < vh) syncUpdate(pinned(sr, syncSec, sPin));
+          if (wr.bottom > 0 && wr.top < vh) {
+            var k = reduce ? 0.5 : clamp((vh - wr.top) / (vh + wr.height), 0, 1);
+            mqTracks[0].style.transform = "translate3d(" + (-8 - k * 26).toFixed(2) + "%,0,0)";
+            mqTracks[1].style.transform = "translate3d(" + (-34 + k * 26).toFixed(2) + "%,0,0)";
+          }
+          var rise = reduce ? 1 : ease(clamp((vh * 0.92 - fr.top) / (vh * 0.5), 0, 1));
+          finale.style.setProperty("--rise", rise.toFixed(3));
+          var lights = clamp((vh * 0.95 - fr.top) / (vh * 0.55), 0, 1);
+          setDark(Math.min(seg(p, 0.01, 0.11), 1 - lights));
+        }
+        function queue() {
+          if (queued) return;
+          queued = true;
+          requestAnimationFrame(frame);
+        }
+
+        addEventListener("scroll", queue, { passive: true });
+        addEventListener("resize", function () {
+          layoutStage();
+          queue();
+        });
+        layoutStage();
+        syncUpdate(0);
+        frame();
+        if (reduce) {
+          urlEl.textContent = URL_TEXT;
+          stage.classList.add("f-url");
+        } else {
+          setTimeout(typeUrl, 1100);
+        }
+        if (document.fonts) {
+          document.fonts.ready.then(function () {
+            layoutStage();
+            queue();
+          });
+        }
+      })();
     </script>
   </body>
 </html>

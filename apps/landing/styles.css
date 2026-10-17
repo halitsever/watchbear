@@ -3,69 +3,47 @@
 :root {
   color-scheme: dark;
 
-  /* surfaces */
-  --bg: #22160c;
-  --bg-soft: #281a0e;
-  --surface: #2e1e11;
-  --surface-2: #392615;
-  --track: #4a3622;
+  /* surfaces, matching the extension's black panels */
+  --bg: #000000;
+  --bg-soft: #050505;
+  --surface: #0a0a0a;
+  --surface-2: #101010;
+  --surface-3: #161616;
+  --track: #1f1f1f;
 
   /* lines and shadows */
-  --line: #3f2d1c;
-  --line-soft: #352619;
-  --line-strong: #58432d;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px 6px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25), 0 16px 40px rgba(0, 0, 0, 0.35);
+  --line: rgba(255, 255, 255, 0.09);
+  --line-soft: rgba(255, 255, 255, 0.06);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 6px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5), 0 16px 40px rgba(0, 0, 0, 0.6);
 
   /* ink */
-  --ink: #f6e7cf;
-  --text: #f6e7cf;
-  --muted: #cbb89b;
-  --faint: #a08c72;
+  --ink: #ececec;
+  --text: #ececec;
+  --muted: #989890;
+  --faint: #82827c;
 
   /* brand accent */
-  --accent: #f0a830;
-  --accent-hover: #f7ba4c;
-  --on-accent: #241704;
-  --accent-text: #f2b54d;
-  --accent-tint: rgba(240, 168, 48, 0.14);
+  --accent: #d8b46a;
+  --accent-hover: #e4c482;
+  --on-accent: #1a1204;
+  --accent-text: #d8b46a;
+  --accent-tint: rgba(216, 180, 106, 0.12);
 
   /* status */
-  --online: #5cc785;
-  --danger: #ff8f73;
+  --online: #6bbf8a;
+  --danger: #e58a6f;
 
   /* shared nav */
-  --nav-bg: rgba(34, 22, 12, 0.85);
-  --nav-menu-bg: #2e1e11;
-  --nav-hover: rgba(246, 231, 207, 0.08);
+  --nav-bg: rgba(0, 0, 0, 0.8);
+  --nav-menu-bg: #0a0a0a;
+  --nav-hover: rgba(255, 255, 255, 0.06);
 
   --font-body: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
   --r-btn: 9px;
   --r-input: 8px;
   --r-card: 14px;
-}
-
-/* product mockups keep the extension's own light look */
-.ui-light {
-  color-scheme: light;
-  --bg: #ffffff;
-  --bg-soft: #faf7f1;
-  --surface: #ffffff;
-  --surface-2: #f5f1e8;
-  --track: #e9e2d4;
-  --line: #e8e1d3;
-  --line-soft: #efe9dd;
-  --line-strong: #d8cfbc;
-  --ink: #1a140d;
-  --text: #1a140d;
-  --muted: #5c5142;
-  --faint: #7c7060;
-  --accent-hover: #e2991f;
-  --accent-text: #9a6200;
-  --accent-tint: #fdf3e0;
-  --online: #1e8e4e;
-  --danger: #c2513a;
-  color: var(--ink);
 }
 
 * {

@@ -146,18 +146,22 @@ body {
   padding: 56px 28px 0;
 }
 
-.back {
-  display: inline-flex;
+.crumbs {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  color: var(--muted);
+  gap: 8px;
+  color: var(--faint);
   font-size: 15px;
   font-weight: 500;
   margin-bottom: 26px;
+}
+
+.crumbs a {
+  color: var(--muted);
   transition: color 0.15s ease;
 }
 
-.back:hover {
+.crumbs a:hover {
   color: var(--ink);
 }
 
@@ -260,7 +264,8 @@ body {
   color: var(--accent-hover);
 }
 
-.tip {
+/* a Markdown blockquote renders as a highlighted tip box */
+.prose blockquote {
   background: var(--accent-tint);
   border: 1px solid rgba(216, 180, 106, 0.25);
   border-radius: 12px;
@@ -270,7 +275,15 @@ body {
   line-height: 1.65;
 }
 
-.tip strong {
+.prose blockquote p {
+  margin: 0;
+}
+
+.prose blockquote p + p {
+  margin-top: 12px;
+}
+
+.prose blockquote strong {
   color: var(--accent-text);
 }
 

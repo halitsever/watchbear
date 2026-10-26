@@ -51,8 +51,16 @@
   var CHROME_STORE_URL =
     "https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn";
 
+  /** Blog pages load this as ../nav.js, so links resolve against the script's folder, not the page's. */
+  var BASE = document.currentScript ? document.currentScript.src : location.href;
+
+  function resolve(href) {
+    return new URL(href, BASE).href;
+  }
+
   var LINKS = [
     { href: "index.html", label: "Home" },
+    { href: "blog/index.html", label: "Blog", section: true },
     { href: "privacy.html", label: "Privacy" },
     { href: "support.html", label: "Support" },
   ];
@@ -89,27 +97,30 @@
     ".nav-right .btn{justify-content:center;margin-top:4px}" +
     "}";
 
-  function currentPage() {
-    var path = location.pathname;
-    var file = path.substring(path.lastIndexOf("/") + 1);
-    if (!file) return "index.html";
-    return file;
+  function pathOf(href) {
+    return new URL(href, BASE).pathname.replace(/index\.html$/, "");
+  }
+
+  /** A section link like Blog stays highlighted on every page inside its folder. */
+  function isCurrent(link) {
+    var here = location.pathname.replace(/index\.html$/, "");
+    var target = pathOf(link.href);
+    return link.section ? here.indexOf(target) === 0 : here === target;
   }
 
   class WbNav extends HTMLElement {
     connectedCallback() {
       var root = this.attachShadow({ mode: "open" });
-      var current = currentPage();
       var links = LINKS.map(function (l) {
-        var active = l.href === current ? ' aria-current="page"' : "";
-        return '<a href="' + l.href + '" class="nav-link"' + active + ">" + l.label + "</a>";
+        var active = isCurrent(l) ? ' aria-current="page"' : "";
+        return '<a href="' + resolve(l.href) + '" class="nav-link"' + active + ">" + l.label + "</a>";
       }).join("");
 
       root.innerHTML =
         "<style>" + STYLE + "</style>" +
         '<nav class="nav">' +
         '<div class="wrap nav-in">' +
-        '<a href="index.html" class="brand" aria-label="Watchbear home">' +
+        '<a href="' + resolve("index.html") + '" class="brand" aria-label="Watchbear home">' +
         '<span class="mk">' + bearSVG({ size: 36 }) + "</span>" +
         '<span class="wordmark"><span class="w1">Watch</span><span class="w2">bear</span></span>' +
         "</a>" +

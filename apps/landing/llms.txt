@@ -1,0 +1,34 @@
+# Watchbear
+
+> Watchbear is a free Chrome extension for watch parties. It keeps video playback in sync for everyone in a room on YouTube, Vimeo and most sites with a standard video player, with live chat and reactions in a side panel.
+
+Install it from the Chrome Web Store: https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn. Start a room on a video, share the room code, and friends join after signing in with a free Google account.
+
+## Docs
+
+- [Watchbear](https://watchbear.deepfeld.com/): what the extension does, supported sites and FAQ
+- [Watchbear vs Teleparty](https://watchbear.deepfeld.com/teleparty-alternative.html): how Watchbear compares with Teleparty
+- [Support](https://watchbear.deepfeld.com/support.html): help and contact
+- [Privacy policy](https://watchbear.deepfeld.com/privacy.html): what data the extension and site handle
+
+## Blog
+
+- [Blog](https://watchbear.deepfeld.com/blog/): guides for watching together online
+- [Why your watch party keeps going out of sync, and how to fix it](https://watchbear.deepfeld.com/blog/why-watch-party-out-of-sync.html): Buffering, ads, stray pauses and manual countdowns all push friends apart. What causes the drift, and how to stop it for good.
+- [How to watch YouTube together with friends online](https://watchbear.deepfeld.com/blog/watch-youtube-together.html): Screen sharing, calls and sync extensions compared, plus a step-by-step setup and a few ideas for what to put on.
+- [Watch party with video chat: see your friends while you watch](https://watchbear.deepfeld.com/blog/watch-party-with-video-chat.html): How to see and hear your friends during a synced watch party, and how to keep cameras from getting in the way of the film.
+- [Watch party games: 9 games to play during an online movie night](https://watchbear.deepfeld.com/blog/watch-party-games.html): Bingo, predictions, emoji-only rounds and other games that fit in a chat beside the film.
+- [Watch party etiquette: 10 rules for watching together online](https://watchbear.deepfeld.com/blog/watch-party-etiquette.html): Pausing, spoilers, mics, cameras and chat. Ten simple rules that make an online watch party nicer for everyone in the room.
+- [How to watch movies together online with family far away](https://watchbear.deepfeld.com/blog/watch-movies-online-with-family.html): A setup simple enough for grandparents, films that work across ages, and small rituals that turn a call into a family movie night.
+- [How to watch lectures together with an online study group](https://watchbear.deepfeld.com/blog/watch-lectures-together-online.html): Synced lectures, a pause-to-ask rule, note-taking roles and a session plan for studying with friends online.
+- [How to run a virtual movie night for a remote team](https://watchbear.deepfeld.com/blog/virtual-movie-night-for-remote-teams.html): Picking a film, dealing with time zones and licensing, and setting up a synced room so the whole team watches the same frame.
+- [Why screen sharing a movie on Discord or Zoom looks bad, and what to use instead](https://watchbear.deepfeld.com/blog/screen-share-movie-discord-zoom.html): Blurry picture, choppy motion, sound out of step, or a black screen. Why screen sharing a film goes wrong, and what works better.
+- [Long-distance movie night: 10 ideas that feel like hanging out](https://watchbear.deepfeld.com/blog/long-distance-movie-night-ideas.html): Themes, rituals and small games that make a movie night over the internet feel less like a call and more like a night in.
+- [How to watch Netflix together online with friends](https://watchbear.deepfeld.com/blog/how-to-watch-netflix-together-online.html): What everyone needs, why screen sharing Netflix rarely works, and how to keep a whole group on the same scene from the opening credits on.
+- [How to host an online watch party that actually stays in sync](https://watchbear.deepfeld.com/blog/how-to-host-a-watch-party-online.html): Skip the "3, 2, 1, play" countdown. What you need, how to set up the room, and how to fix the usual problems before anyone notices them.
+- [How to host a Halloween horror movie watch party online](https://watchbear.deepfeld.com/blog/halloween-horror-movie-watch-party.html): A lineup sorted by scare level, a synced room so every jump scare lands at once, and a few traditions that work over the internet.
+
+## Optional
+
+- [Chrome Web Store](https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn): extension listing
+- [Blog feed](https://watchbear.deepfeld.com/blog/feed.xml): RSS feed of new posts

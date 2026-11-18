@@ -4,7 +4,7 @@
 <img src="https://halitsever-api.vercel.app/api/repo-title?title=Watchbear">
 
 <p align="center">
-🐻 Watchbear: The sweet way to watch together. A free watch party Chrome extension that keeps everyone's video in sync, with live chat and reactions in a side panel.<br>
+🐻 Watchbear: The sweet way to watch together. A free watch party Chrome extension for watching YouTube and other videos together in sync, with live chat and reactions in a side panel.<br>
 <br/>
 <br/>
 <img src="https://img.shields.io/github/sponsors/halitsever" alt="GitHub Sponsors"/>
@@ -35,7 +35,7 @@ in a side panel right next to the video.
 - [**Chat and reactions**](https://watchbear.deepfeld.com/#demo) - live chat and reactions in a side panel next to the video.
 - [**Works on most sites**](https://watchbear.deepfeld.com/#where) - YouTube, Vimeo and most sites with a standard video player. Watchbear finds the main video on the page and keeps it in sync.
 - [**Free**](https://watchbear.deepfeld.com/#get) - hosting a watch party costs nothing. Everyone signs in with a free Google account.
-- [**Teleparty alternative**](https://watchbear.deepfeld.com/teleparty-alternative.html) - not limited to a fixed list of streaming services.
+- [**Teleparty alternative**](https://watchbear.deepfeld.com/teleparty-alternative.html) - not limited to a fixed list of streaming services, with video chat included for free.
 
 <p align="center" >
 <img src="https://halitsever-api.vercel.app/api/installation"/>

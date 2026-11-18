@@ -7,7 +7,7 @@ Install it from the Chrome Web Store: https://chromewebstore.google.com/detail/w
 ## Docs
 
 - [Watchbear](https://watchbear.deepfeld.com/): what the extension does, supported sites and FAQ
-- [Watchbear vs Teleparty](https://watchbear.deepfeld.com/teleparty-alternative.html): how Watchbear compares with Teleparty
+- [Teleparty alternative](https://watchbear.deepfeld.com/teleparty-alternative.html): Watchbear vs Teleparty on supported sites, video chat, price and phones, including where Teleparty is stronger
 - [Support](https://watchbear.deepfeld.com/support.html): help and contact
 - [Privacy policy](https://watchbear.deepfeld.com/privacy.html): what data the extension and site handle
 

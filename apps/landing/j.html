@@ -117,7 +117,8 @@
         color: var(--muted);
       }
       /* anti-phishing: show the attacker-controlled destination before the click */
-      .caution {
+      .caution,
+      .info {
         display: flex;
         gap: 8px;
         margin: 0 0 18px;
@@ -129,12 +130,24 @@
         font-weight: 600;
         line-height: 1.45;
         color: var(--accent-text);
-        text-align: left;
+        text-align: start;
       }
       .caution.danger {
         border-color: rgba(229, 138, 111, 0.35);
         background: rgba(229, 138, 111, 0.1);
         color: var(--danger);
+      }
+      .info {
+        border-color: var(--line);
+        background: var(--surface-2);
+        color: var(--ink);
+        font-size: 13.5px;
+        font-weight: 500;
+      }
+      .caution svg,
+      .info svg {
+        flex-shrink: 0;
+        margin-top: 1px;
       }
       .btn {
         width: 100%;
@@ -143,6 +156,7 @@
         padding: 15px 22px;
         font-size: 16px;
         text-decoration: none;
+        cursor: pointer;
       }
       .btn.ghost {
         margin-top: 12px;
@@ -154,6 +168,10 @@
       .link {
         display: inline-block;
         margin-top: 14px;
+        padding: 0;
+        border: 0;
+        background: none;
+        font-family: var(--font-body);
         font-size: 13px;
         font-weight: 600;
         color: var(--faint);
@@ -172,6 +190,9 @@
         color: var(--faint);
         margin-top: 16px;
       }
+      .note:empty {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -180,62 +201,264 @@
 
       <!-- invalid / missing invite -->
       <div id="bad" class="hidden">
-        <h1>Invalid invite</h1>
-        <p class="sub">This invite link looks broken. Ask your friend to send it again.</p>
-        <a class="btn ghost" href="https://watchbear.deepfeld.com/">Go to Watchbear</a>
+        <h1 data-i18n="badTitle">Invalid invite</h1>
+        <p class="sub" data-i18n="badSub">This invite link looks broken. Ask your friend to send it again.</p>
+        <a class="btn ghost" href="https://watchbear.deepfeld.com/" data-i18n="badHome">Go to Watchbear</a>
       </div>
 
-      <!-- valid invite: extension present -> join, else install -->
+      <!-- valid invite: join, install, or open it somewhere that can install -->
       <div id="ok" class="hidden">
-        <h1>You're invited to a <span class="w2">watch party</span></h1>
-        <p class="sub">A friend invited you to watch together on Watchbear.</p>
+        <h1><span id="t1">You're invited to a </span><span id="t2" class="w2">watch party</span><span id="t3"></span></h1>
+        <p class="sub" data-i18n="sub">A friend invited you to watch together on Watchbear.</p>
 
         <span class="dest">
-          <span class="lbl">You'll be taken to</span>
-          <span id="dest-host" class="host"></span>
-          <span id="dest-url" class="url"></span>
+          <span class="lbl" data-i18n="destLabel">You'll be taken to</span>
+          <span id="dest-host" class="host" dir="ltr"></span>
+          <span id="dest-url" class="url" dir="ltr"></span>
         </span>
-
-        <p id="caution" class="caution">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-          <span id="caution-text">Only continue if you trust whoever sent you this link. It will take you to the site above.</span>
-        </p>
 
         <!-- extension installed -->
         <div id="install-yes" class="hidden">
-          <a id="join-link" class="btn" href="#">Join watch party</a>
-          <div class="note">This takes you to the video and joins the watch party. You'll sign in with Google to join.</div>
+          <p id="caution" class="caution">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+            <span id="caution-text" data-i18n="caution">Only continue if you trust whoever sent you this link. It will take you to the site above.</span>
+          </p>
+          <a id="join-link" class="btn" href="#" data-i18n="join">Join watch party</a>
+          <div class="note" data-i18n="joinNote">This takes you to the video and joins the watch party. You'll sign in with Google to join.</div>
         </div>
 
-        <!-- extension missing -->
+        <!-- extension missing, browser can install from the Chrome Web Store -->
         <div id="install-no" class="hidden">
-          <a class="btn" href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener">
+          <a id="install-link" class="btn" href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn?utm_source=invite&amp;utm_medium=landing" target="_blank" rel="noopener" data-i18n="install">
             Install Watchbear
           </a>
-          <a class="link" id="retry">I've installed it, try again</a>
-          <div class="note">Watchbear is required to join. After installing, come back to this link.</div>
+          <button type="button" class="link" id="retry" data-i18n="retry">I've installed it, try again</button>
+          <div class="note" data-i18n="installNote">Watchbear is a free browser extension you need to join. After installing, come back to this page.</div>
+        </div>
+
+        <!-- phone, tablet, or a desktop browser that can't install it: move the link to Chrome -->
+        <div id="elsewhere" class="hidden">
+          <p class="info">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span id="info-text"></span>
+          </p>
+          <button type="button" id="copy-btn" class="btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span id="copy-label" data-i18n="copy">Copy link</span>
+          </button>
+          <button type="button" id="share-btn" class="btn ghost hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.54 21.69a.5.5 0 0 0 .93-.02l6.5-19a.5.5 0 0 0-.63-.63l-19 6.5a.5.5 0 0 0-.02.93l7.93 3.18a2 2 0 0 1 1.11 1.11z"/><path d="m21.85 2.15-10.94 10.94"/></svg>
+            <span data-i18n="share">Send to myself</span>
+          </button>
+          <div id="copy-status" class="note" role="status" aria-live="polite"></div>
         </div>
       </div>
     </main>
 
     <script>
       (function () {
+        var INGEST_URL = "https://watchbear-server.deepfeld.com/analytics/events";
+        var ROOM_CODE_RE = /^[A-Z]{2,8}-[A-Z0-9]{4,12}$/;
+        var INVITE_ID_RE = /^[A-Za-z0-9_-]{6,32}$/;
+
+        var STRINGS = {
+          en: {
+            docTitle: "Join the party",
+            badTitle: "Invalid invite",
+            badSub: "This invite link looks broken. Ask your friend to send it again.",
+            badHome: "Go to Watchbear",
+            title: ["You're invited to a ", "watch party", ""],
+            sub: "A friend invited you to watch together on Watchbear.",
+            destLabel: "You'll be taken to",
+            caution: "Only continue if you trust whoever sent you this link. It will take you to the site above.",
+            danger: "This link is NOT secure (http) and points to {host}. Only continue if you fully trust the sender.",
+            join: "Join watch party",
+            joinNote: "This takes you to the video and joins the watch party. You'll sign in with Google to join.",
+            install: "Install Watchbear",
+            retry: "I've installed it, try again",
+            installNote: "Watchbear is a free browser extension you need to join. After installing, come back to this page.",
+            mobileInfo: "Watchbear runs in Chrome on a computer, so you can't join from a phone or tablet. Send this link to yourself and open it on your computer.",
+            browserInfo: "Watchbear works in Google Chrome, and in Microsoft Edge through the Chrome Web Store. Copy this link and open it in Chrome to join.",
+            copy: "Copy link",
+            copied: "Link copied",
+            copyFail: "Couldn't copy. Copy the address from the address bar instead.",
+            share: "Send to myself",
+            shareText: "Watchbear watch party invite. Open it on your computer in Chrome."
+          },
+          tr: {
+            docTitle: "İzleme partisine katıl",
+            badTitle: "Geçersiz davet",
+            badSub: "Bu davet bağlantısı bozuk görünüyor. Arkadaşından tekrar göndermesini iste.",
+            badHome: "Watchbear'a git",
+            title: ["Bir ", "izleme partisine", " davet edildin"],
+            sub: "Bir arkadaşın seni Watchbear'da birlikte izlemeye davet etti.",
+            destLabel: "Gideceğin adres",
+            caution: "Sadece bu bağlantıyı gönderen kişiye güveniyorsan devam et. Seni yukarıdaki siteye götürecek.",
+            danger: "Bu bağlantı güvenli DEĞİL (http) ve {host} adresine gidiyor. Sadece gönderene tamamen güveniyorsan devam et.",
+            join: "İzleme partisine katıl",
+            joinNote: "Seni videoya götürür ve izleme partisine katar. Katılmak için Google ile giriş yaparsın.",
+            install: "Watchbear'ı yükle",
+            retry: "Yükledim, tekrar dene",
+            installNote: "Katılmak için ücretsiz Watchbear tarayıcı eklentisi gerekiyor. Yükledikten sonra bu sayfaya geri dön.",
+            mobileInfo: "Watchbear bilgisayarda Chrome'da çalışır, bu yüzden telefondan veya tabletten katılamazsın. Bağlantıyı kendine gönder ve bilgisayarında aç.",
+            browserInfo: "Watchbear Google Chrome'da, Chrome Web Mağazası üzerinden de Microsoft Edge'de çalışır. Katılmak için bağlantıyı kopyala ve Chrome'da aç.",
+            copy: "Bağlantıyı kopyala",
+            copied: "Bağlantı kopyalandı",
+            copyFail: "Kopyalanamadı. Adresi tarayıcının adres çubuğundan kopyala.",
+            share: "Kendime gönder",
+            shareText: "Watchbear izleme partisi daveti. Bilgisayarında Chrome'da aç."
+          },
+          pt: {
+            docTitle: "Assistir junto",
+            badTitle: "Convite inválido",
+            badSub: "Este link de convite parece quebrado. Peça para seu amigo enviar de novo.",
+            badHome: "Ir para o Watchbear",
+            title: ["Você foi convidado para ", "assistir junto", ""],
+            sub: "Um amigo convidou você para assistir junto no Watchbear.",
+            destLabel: "Você será levado para",
+            caution: "Só continue se você confia em quem enviou este link. Ele vai levar você para o site acima.",
+            danger: "Este link NÃO é seguro (http) e leva para {host}. Só continue se você confia totalmente em quem enviou.",
+            join: "Entrar na sala",
+            joinNote: "Isso leva você ao vídeo e coloca você na sala. Para entrar, você faz login com o Google.",
+            install: "Instalar o Watchbear",
+            retry: "Já instalei, tentar de novo",
+            installNote: "Para entrar, você precisa do Watchbear, uma extensão gratuita para o navegador. Depois de instalar, volte para esta página.",
+            mobileInfo: "O Watchbear funciona no Chrome em um computador, então não dá para entrar pelo celular ou tablet. Envie este link para você mesmo e abra no computador.",
+            browserInfo: "O Watchbear funciona no Google Chrome e no Microsoft Edge pela Chrome Web Store. Copie este link e abra no Chrome para entrar.",
+            copy: "Copiar link",
+            copied: "Link copiado",
+            copyFail: "Não foi possível copiar. Copie o endereço na barra de endereços.",
+            share: "Enviar para mim",
+            shareText: "Convite para assistir junto no Watchbear. Abra no computador, no Chrome."
+          },
+          es: {
+            docTitle: "Ver juntos",
+            badTitle: "Invitación no válida",
+            badSub: "Este enlace de invitación parece roto. Pide a tu amigo que lo envíe de nuevo.",
+            badHome: "Ir a Watchbear",
+            title: ["Te invitaron a ", "ver juntos", ""],
+            sub: "Un amigo te invitó a ver algo juntos en Watchbear.",
+            destLabel: "Te llevará a",
+            caution: "Continúa solo si confías en quien te envió este enlace. Te llevará al sitio de arriba.",
+            danger: "Este enlace NO es seguro (http) y lleva a {host}. Continúa solo si confías plenamente en quien lo envió.",
+            join: "Unirme a la sala",
+            joinNote: "Esto te lleva al video y te une a la sala. Para unirte, inicias sesión con Google.",
+            install: "Instalar Watchbear",
+            retry: "Ya lo instalé, intentar de nuevo",
+            installNote: "Para unirte necesitas Watchbear, una extensión gratuita para el navegador. Después de instalarla, vuelve a esta página.",
+            mobileInfo: "Watchbear funciona en Chrome en una computadora, así que no puedes unirte desde un teléfono o tablet. Envíate este enlace y ábrelo en tu computadora.",
+            browserInfo: "Watchbear funciona en Google Chrome y en Microsoft Edge a través de Chrome Web Store. Copia este enlace y ábrelo en Chrome para unirte.",
+            copy: "Copiar enlace",
+            copied: "Enlace copiado",
+            copyFail: "No se pudo copiar. Copia la dirección desde la barra de direcciones.",
+            share: "Enviármelo",
+            shareText: "Invitación para ver juntos en Watchbear. Ábrela en tu computadora con Chrome."
+          },
+          de: {
+            docTitle: "Gemeinsam schauen",
+            badTitle: "Ungültige Einladung",
+            badSub: "Dieser Einladungslink funktioniert nicht. Lass ihn dir noch einmal schicken.",
+            badHome: "Zu Watchbear",
+            title: ["Du bist zu einer ", "Watchparty", " eingeladen"],
+            sub: "Ein Freund hat dich eingeladen, gemeinsam auf Watchbear zu schauen.",
+            destLabel: "Weiter zu",
+            caution: "Mach nur weiter, wenn du der Person vertraust, die dir diesen Link geschickt hat. Er führt dich zur Seite oben.",
+            danger: "Dieser Link ist NICHT sicher (http) und führt zu {host}. Mach nur weiter, wenn du dem Absender voll vertraust.",
+            join: "Watchparty beitreten",
+            joinNote: "Damit gehst du zum Video und trittst der Watchparty bei. Zum Beitreten meldest du dich mit Google an.",
+            install: "Watchbear installieren",
+            retry: "Ich habe es installiert, erneut versuchen",
+            installNote: "Zum Beitreten brauchst du Watchbear, eine kostenlose Browsererweiterung. Komm nach der Installation auf diese Seite zurück.",
+            mobileInfo: "Watchbear läuft in Chrome auf einem Computer, deshalb kannst du nicht vom Handy oder Tablet beitreten. Schick dir diesen Link selbst und öffne ihn am Computer.",
+            browserInfo: "Watchbear funktioniert in Google Chrome und über den Chrome Web Store auch in Microsoft Edge. Kopiere diesen Link und öffne ihn in Chrome, um beizutreten.",
+            copy: "Link kopieren",
+            copied: "Link kopiert",
+            copyFail: "Kopieren hat nicht geklappt. Kopiere die Adresse aus der Adressleiste.",
+            share: "An mich senden",
+            shareText: "Einladung zur Watchparty auf Watchbear. Am Computer in Chrome öffnen."
+          },
+          fr: {
+            docTitle: "Regarder ensemble",
+            badTitle: "Invitation invalide",
+            badSub: "Ce lien d'invitation semble cassé. Demande qu'on te le renvoie.",
+            badHome: "Aller sur Watchbear",
+            title: ["On t'invite à ", "regarder ensemble", ""],
+            sub: "Un ami t'invite à regarder ensemble sur Watchbear.",
+            destLabel: "Destination",
+            caution: "Continue seulement si tu fais confiance à la personne qui t'a envoyé ce lien. Il t'emmène sur le site ci-dessus.",
+            danger: "Ce lien n'est PAS sécurisé (http) et mène à {host}. Continue seulement si tu as entièrement confiance en l'expéditeur.",
+            join: "Rejoindre la séance",
+            joinNote: "Tu iras sur la vidéo et rejoindras la séance. Pour rejoindre, tu te connectes avec Google.",
+            install: "Installer Watchbear",
+            retry: "Je l'ai installé, réessayer",
+            installNote: "Pour rejoindre, il te faut Watchbear, une extension de navigateur gratuite. Une fois installée, reviens sur cette page.",
+            mobileInfo: "Watchbear fonctionne dans Chrome sur ordinateur, tu ne peux donc pas rejoindre depuis un téléphone ou une tablette. Envoie-toi ce lien et ouvre-le sur ton ordinateur.",
+            browserInfo: "Watchbear fonctionne dans Google Chrome, et dans Microsoft Edge via le Chrome Web Store. Copie ce lien et ouvre-le dans Chrome pour rejoindre.",
+            copy: "Copier le lien",
+            copied: "Lien copié",
+            copyFail: "Impossible de copier. Copie l'adresse depuis la barre d'adresse.",
+            share: "Me l'envoyer",
+            shareText: "Invitation à regarder ensemble sur Watchbear. À ouvrir sur ordinateur, dans Chrome."
+          },
+          ar: {
+            docTitle: "انضم إلى المشاهدة",
+            badTitle: "دعوة غير صالحة",
+            badSub: "يبدو أن رابط الدعوة هذا لا يعمل. اطلب من صديقك إرساله مرة أخرى.",
+            badHome: "الانتقال إلى Watchbear",
+            title: ["أنت مدعو إلى ", "مشاهدة جماعية", ""],
+            sub: "دعاك صديق للمشاهدة معًا على Watchbear.",
+            destLabel: "ستنتقل إلى",
+            caution: "تابع فقط إذا كنت تثق بمن أرسل لك هذا الرابط. سينقلك إلى الموقع أعلاه.",
+            danger: "هذا الرابط غير آمن (http) ويؤدي إلى {host}. تابع فقط إذا كنت تثق بالمرسل تمامًا.",
+            join: "انضم إلى المشاهدة الجماعية",
+            joinNote: "سينقلك هذا إلى الفيديو ويضمّك إلى المشاهدة الجماعية. ستسجّل الدخول باستخدام Google للانضمام.",
+            install: "ثبّت Watchbear",
+            retry: "لقد ثبّتُّه، أعد المحاولة",
+            installNote: "تحتاج إلى Watchbear، وهو إضافة مجانية للمتصفح، حتى تنضم. بعد التثبيت، ارجع إلى هذه الصفحة.",
+            mobileInfo: "يعمل Watchbear في متصفح Chrome على الكمبيوتر، لذلك لا يمكنك الانضمام من الهاتف أو الجهاز اللوحي. أرسل هذا الرابط إلى نفسك وافتحه على الكمبيوتر.",
+            browserInfo: "يعمل Watchbear في Google Chrome، وفي Microsoft Edge عبر Chrome Web Store. انسخ هذا الرابط وافتحه في Chrome للانضمام.",
+            copy: "نسخ الرابط",
+            copied: "تم نسخ الرابط",
+            copyFail: "تعذّر النسخ. انسخ العنوان من شريط العناوين.",
+            share: "أرسله إلى نفسي",
+            shareText: "دعوة إلى مشاهدة جماعية على Watchbear. افتحها على الكمبيوتر في Chrome."
+          }
+        };
+
+        var base = (navigator.language || "en").toLowerCase().split("-")[0];
+        var lang = STRINGS[base] ? base : "en";
+        var T = STRINGS[lang];
+        var langTag = lang === "pt" ? "pt-BR" : lang;
+        document.documentElement.lang = langTag;
+        if (lang === "ar") document.documentElement.dir = "rtl";
+        document.title = "Watchbear · " + T.docTitle;
+        Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (el) {
+          el.textContent = T[el.getAttribute("data-i18n")];
+        });
+        document.getElementById("t1").textContent = T.title[0];
+        document.getElementById("t2").textContent = T.title[1];
+        document.getElementById("t3").textContent = T.title[2];
+
         // read the room code + destination from the hash, never sent to the server
         function parseHash() {
           var h = location.hash.charAt(0) === "#" ? location.hash.slice(1) : location.hash;
-          var out = { code: null, url: null };
+          var out = { code: null, url: null, invite: null };
           h.split("&").forEach(function (part) {
             var i = part.indexOf("=");
             if (i < 0) return;
             var k = part.slice(0, i);
-            var v = decodeURIComponent(part.slice(i + 1));
+            var v;
+            try {
+              v = decodeURIComponent(part.slice(i + 1));
+            } catch (e) {
+              return;
+            }
             if (k === "wb") out.code = v.toUpperCase();
             else if (k === "u") out.url = v;
+            else if (k === "i") out.invite = v;
           });
           return out;
         }
-
-        var ROOM_CODE_RE = /^[A-Z]{2,8}-[A-Z0-9]{4,12}$/;
 
         // only allow http(s) destinations, so a crafted u= can't run javascript: urls
         function safeUrl(raw) {
@@ -248,12 +471,60 @@
           }
         }
 
+        var ua = navigator.userAgent || "";
+        var uad = navigator.userAgentData;
+        // iPadOS asks for desktop pages with a Mac user agent; touch support gives it away
+        var iPadDesktop = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+        // Android tablets report mobile=false, yet still can't install extensions
+        var isMobile =
+          !!(uad && uad.mobile) ||
+          iPadDesktop ||
+          /Android|iPhone|iPad|iPod|Mobile|Silk|Kindle|BlackBerry|Opera Mini|IEMobile/i.test(ua);
+        // every Chromium browser keeps a Chrome/ token, Safari and Firefox on desktop never send one
+        var isChromium = /Chrom(e|ium)\/\d/.test(ua);
+        var canInstall = !isMobile && isChromium;
+
+        /** names match the extension's own context so landing and extension rows group together */
+        function browserInfo() {
+          var rules = [
+            [/\bEdg(?:e|A|iOS)?\/(\d+)/, "Edge"],
+            [/\b(?:OPR|OPT|OPiOS)\/(\d+)/, "Opera"],
+            [/\bVivaldi\/(\d+)/, "Vivaldi"],
+            [/\bYaBrowser\/(\d+)/, "Yandex"],
+            [/\bSamsungBrowser\/(\d+)/, "Samsung"],
+            [/\bFBAV\/(\d+)/, "Facebook"],
+            [/\bInstagram (\d+)/, "Instagram"],
+            [/\b(?:Firefox|FxiOS)\/(\d+)/, "Firefox"],
+            [/\b(?:Chrome|CriOS)\/(\d+)/, "Chrome"],
+            [/\bVersion\/(\d+).*Safari/, "Safari"]
+          ];
+          for (var i = 0; i < rules.length; i++) {
+            var m = rules[i][0].exec(ua);
+            if (m) return { name: rules[i][1] === "Chrome" && navigator.brave ? "Brave" : rules[i][1], version: m[1] };
+          }
+          return { name: "Unknown", version: "" };
+        }
+
+        function osName() {
+          if (/CrOS/.test(ua)) return "ChromeOS";
+          if (/Windows/.test(ua)) return "Windows";
+          if (/Android/.test(ua)) return "Android";
+          if (/iPhone|iPad|iPod/.test(ua) || iPadDesktop) return "iOS";
+          if (/Mac OS X|Macintosh/.test(ua)) return "macOS";
+          if (/Linux|X11/.test(ua)) return "Linux";
+          return "Unknown";
+        }
+
         var data = parseHash();
         var dest = safeUrl(data.url);
         var validCode = data.code && ROOM_CODE_RE.test(data.code);
+        var inviteId = data.invite && INVITE_ID_RE.test(data.invite) ? data.invite : null;
 
         function show(id) {
           document.getElementById(id).classList.remove("hidden");
+        }
+        function hide(id) {
+          document.getElementById(id).classList.add("hidden");
         }
 
         if (!validCode || !dest) {
@@ -261,6 +532,52 @@
           return;
         }
         show("ok");
+
+        function randomId() {
+          if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+          var bytes = new Uint8Array(16);
+          crypto.getRandomValues(bytes);
+          return "lp_" + Array.prototype.map.call(bytes, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+        }
+        /** the extension adopts wb_anonymous_id at install, which joins this visit to the install */
+        var anonymousId = (function () {
+          try {
+            var id = localStorage.getItem("wb_anonymous_id");
+            if (id && /^[A-Za-z0-9_-]{6,64}$/.test(id)) return id;
+            id = randomId();
+            localStorage.setItem("wb_anonymous_id", id);
+            return id;
+          } catch (e) {
+            return randomId();
+          }
+        })();
+        var browser = browserInfo();
+        var context = {
+          platform: "landing",
+          browser: browser.name,
+          browserVersion: browser.version,
+          os: osName(),
+          language: (navigator.language || "").slice(0, 32)
+        };
+
+        /** fire and forget: measurement must never slow down or break the invite */
+        function track(name, props) {
+          try {
+            fetch(INGEST_URL, {
+              method: "POST",
+              keepalive: true,
+              referrerPolicy: "no-referrer",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                anonymousId: anonymousId,
+                context: context,
+                events: [{ name: name, at: Date.now(), roomCode: data.code, props: props || {} }]
+              })
+            }).catch(function () {});
+          } catch (e) {
+            // fetch missing or blocked
+          }
+        }
 
         // video + #wb=CODE so the content script auto-joins on arrival
         var target = dest.origin + dest.pathname + dest.search + "#wb=" + data.code;
@@ -271,30 +588,117 @@
         // a non-https destination is a stronger phishing/eavesdrop signal, so escalate
         if (dest.protocol !== "https:") {
           document.getElementById("caution").classList.add("danger");
-          document.getElementById("caution-text").textContent =
-            "This link is NOT secure (http) and points to " +
-            dest.hostname +
-            ". Only continue if you fully trust the sender.";
+          document.getElementById("caution-text").textContent = T.danger.replace("{host}", dest.hostname);
         }
 
-        // the content script sets data-wb-installed at document_idle; poll briefly before giving up
-        var tries = 0;
-        function detect() {
-          if (document.documentElement.dataset.wbInstalled === "1") {
-            document.getElementById("install-no").classList.add("hidden");
-            show("install-yes");
-            return;
-          }
-          if (++tries > 12) {
+        var lateDetect = false;
+        function installed() {
+          return document.documentElement.dataset.wbInstalled === "1";
+        }
+        function showJoin() {
+          hide("install-no");
+          hide("elsewhere");
+          show("install-yes");
+        }
+        function showMissing() {
+          if (canInstall) {
             show("install-no");
             return;
           }
-          setTimeout(detect, 150);
+          document.getElementById("info-text").textContent = isMobile ? T.mobileInfo : T.browserInfo;
+          if (isMobile && navigator.share) show("share-btn");
+          show("elsewhere");
+        }
+
+        // the content script sets data-wb-installed at document_idle; poll briefly, then slowly in case it is installed meanwhile
+        var tries = 0;
+        var slowUntil = 0;
+        function detect() {
+          if (installed()) {
+            showJoin();
+            if (!slowUntil) track("invite_page_viewed", viewProps(true));
+            else lateDetect = true;
+            return;
+          }
+          if (!slowUntil && ++tries > 12) {
+            showMissing();
+            track("invite_page_viewed", viewProps(false));
+            slowUntil = Date.now() + 10 * 60 * 1000;
+          }
+          if (slowUntil && Date.now() > slowUntil) return;
+          setTimeout(detect, slowUntil ? 1500 : 150);
+        }
+        function viewProps(has) {
+          return {
+            has_extension: has,
+            device: isMobile ? "mobile" : "desktop",
+            browser_supported: canInstall,
+            invite_id: inviteId,
+            lang: langTag
+          };
         }
         detect();
 
+        document.getElementById("join-link").addEventListener("click", function () {
+          track("invite_join_clicked", { invite_id: inviteId, detected_late: lateDetect });
+        });
+        document.getElementById("install-link").addEventListener("click", function () {
+          track("invite_install_clicked", { invite_id: inviteId });
+        });
         document.getElementById("retry").addEventListener("click", function () {
+          track("invite_retry_clicked", { invite_id: inviteId });
           location.reload();
+        });
+
+        var status = document.getElementById("copy-status");
+        var copyLabel = document.getElementById("copy-label");
+        var copyTimer;
+        function copied(ok, method) {
+          status.textContent = ok ? "" : T.copyFail;
+          if (!ok) return;
+          copyLabel.textContent = T.copied;
+          clearTimeout(copyTimer);
+          copyTimer = setTimeout(function () {
+            copyLabel.textContent = T.copy;
+          }, 2500);
+          track("invite_link_copied_landing", { invite_id: inviteId, method: method, device: isMobile ? "mobile" : "desktop" });
+        }
+        // in-app browsers in chat apps often lack the async clipboard API
+        function legacyCopy(text) {
+          var ta = document.createElement("textarea");
+          ta.value = text;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = false;
+          try {
+            ok = document.execCommand("copy");
+          } catch (e) {
+            ok = false;
+          }
+          document.body.removeChild(ta);
+          return ok;
+        }
+        document.getElementById("copy-btn").addEventListener("click", function () {
+          var url = location.href;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(
+              function () { copied(true, "clipboard"); },
+              function () { copied(legacyCopy(url), "clipboard"); }
+            );
+          } else {
+            copied(legacyCopy(url), "clipboard");
+          }
+        });
+        document.getElementById("share-btn").addEventListener("click", function () {
+          navigator
+            .share({ title: "Watchbear", text: T.shareText, url: location.href })
+            .then(function () {
+              track("invite_link_copied_landing", { invite_id: inviteId, method: "share", device: "mobile" });
+            })
+            .catch(function () {});
         });
       })();
     </script>

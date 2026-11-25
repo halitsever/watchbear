@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: How to run a virtual movie night for a remote team
 seoTitle: "Virtual Movie Night for Remote Teams: How to Run One · Watchbear"
 description: "How to run a virtual movie night for a remote team: picking a film, handling time zones and licensing, setting up a synced watch party, and keeping it optional."

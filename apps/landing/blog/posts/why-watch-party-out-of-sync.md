@@ -15,7 +15,7 @@ cta:
   text: Add the free extension, open a video, and send the link. A pause or skip from anyone moves the whole room.
 related:
   - how-to-host-a-watch-party-online
-  - screen-share-movie-discord-zoom
+  - how-to-watch-netflix-together-online
 faq:
   - q: Why does my video get out of sync with my friends?
     a: Each player runs on its own, on its own computer. Buffering, ads, pauses that only one person makes and slightly different start times all add up, and nothing pulls the players back together unless you use a sync tool.

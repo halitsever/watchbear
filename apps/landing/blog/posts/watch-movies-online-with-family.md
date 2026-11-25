@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: How to watch movies together online with family far away
 seoTitle: How to Watch Movies Together Online with Family Far Away · Watchbear
 description: "How to watch movies together online with family in other cities: a setup grandparents can manage, films that work for every age, and a movie night that sticks."

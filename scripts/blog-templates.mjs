@@ -28,7 +28,9 @@ function rfc822(iso) {
   return new Date(`${iso}T00:00:00Z`).toUTCString();
 }
 
-function head({ title, description, ogTitle, ogDescription, url, image, imageAlt, imageType, imageWidth, imageHeight, type, published, modified, schema }) {
+const INDEX = "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
+
+function head({ title, description, ogTitle, ogDescription, url, image, imageAlt, imageType, imageWidth, imageHeight, type, published, modified, schema, robots = INDEX }) {
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -38,7 +40,7 @@ function head({ title, description, ogTitle, ogDescription, url, image, imageAlt
     <title>${esc(title)}</title>
     <meta name="description" content="${esc(description)}" />
     <link rel="canonical" href="${url}" />
-    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+    <meta name="robots" content="${robots}" />
     <meta name="theme-color" content="#000000" />
     <meta name="color-scheme" content="dark" />
 
@@ -224,6 +226,7 @@ export function renderPost(post, related) {
     published: post.date,
     modified: post.updated,
     schema,
+    robots: post.noindex ? "noindex,follow" : undefined,
   })}
   <body>
     <wb-nav></wb-nav>

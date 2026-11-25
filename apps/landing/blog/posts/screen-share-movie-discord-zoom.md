@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: Why screen sharing a movie on Discord or Zoom looks bad, and what to use instead
 seoTitle: Why Screen Sharing a Movie on Discord or Zoom Looks Bad · Watchbear
 description: "Screen sharing a movie on Discord or Zoom often looks blurry, stutters or shows a black screen. Here's why it happens and a better way to watch together."

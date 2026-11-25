@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "Watch party with video chat: see your friends while you watch"
 seoTitle: "Watch Party with Video Chat: See Friends While You Watch · Watchbear"
 description: How to host a watch party with video chat, so you can see and hear your friends while the film plays in sync. Setup, camera etiquette and tips for groups.

@@ -15,7 +15,7 @@ cta:
   text: Add the free extension, open a title on Netflix, and send the link. Everyone stays on the same scene.
 related:
   - how-to-host-a-watch-party-online
-  - watch-party-with-video-chat
+  - why-watch-party-out-of-sync
 faq:
   - q: Can you watch Netflix together online for free?
     a: The sync part is free. Watchbear costs nothing, and everyone signs in with their own Google account. Each person still needs their own Netflix subscription, because everyone streams the film from their own account.

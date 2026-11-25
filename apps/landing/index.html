@@ -4,10 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Watch YouTube Together · Free Watch Party Extension · Watchbear</title>
+    <title>Watch YouTube &amp; Netflix Together · Free Watch Party · Watchbear</title>
     <meta
       name="description"
-      content="Watch YouTube together with friends, in sync. Watchbear is a free watch party Chrome extension with chat and video calls in a panel beside the video."
+      content="Watch YouTube or Netflix together with friends, in sync. Watchbear is a free watch party extension for Chrome with chat, voice and video calls beside the video."
     />
     <link rel="canonical" href="https://watchbear.deepfeld.com/" />
     <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
@@ -15,16 +15,16 @@
     <meta name="color-scheme" content="dark" />
     <meta
       name="keywords"
-      content="watch youtube together, watch party extension, watch party chrome extension, watch together, watch together chrome extension, watch party, teleparty alternative, netflix party alternative, watch movies together online, sync video, synced playback, watch videos with friends"
+      content="watch youtube together, watch netflix together, watch party extension, watch party chrome extension, watch together, watch together chrome extension, watch party, teleparty alternative, netflix party alternative, watch movies together online, sync video, synced playback, watch videos with friends"
     />
     <meta name="author" content="Watchbear" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Watchbear" />
-    <meta property="og:title" content="Watch YouTube Together · Free Watch Party Extension · Watchbear" />
+    <meta property="og:title" content="Watch YouTube &amp; Netflix Together · Free Watch Party · Watchbear" />
     <meta
       property="og:description"
-      content="Watch YouTube together, or anything with a video player. A free watch party extension for Chrome that keeps everyone's player in sync."
+      content="Watch YouTube, Netflix or anything with a video player together. A free watch party extension for Chrome that keeps everyone's player in sync."
     />
     <meta property="og:url" content="https://watchbear.deepfeld.com/" />
     <meta property="og:locale" content="en_US" />
@@ -35,10 +35,10 @@
     <meta property="og:image:alt" content="Watchbear, watch videos together in perfect sync" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Watch YouTube Together · Free Watch Party Extension · Watchbear" />
+    <meta name="twitter:title" content="Watch YouTube &amp; Netflix Together · Free Watch Party · Watchbear" />
     <meta
       name="twitter:description"
-      content="Watch YouTube together, or anything with a video player. A free watch party extension for Chrome that keeps everyone's player in sync."
+      content="Watch YouTube, Netflix or anything with a video player together. A free watch party extension for Chrome that keeps everyone's player in sync."
     />
     <meta name="twitter:image" content="https://watchbear.deepfeld.com/og.png" />
     <meta name="twitter:image:alt" content="Watchbear, watch videos together in perfect sync" />
@@ -96,14 +96,15 @@
             "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
             "publisher": { "@id": "https://watchbear.deepfeld.com/#org" },
             "author": { "@id": "https://watchbear.deepfeld.com/#org" },
-            "featureList": ["Synced video playback across everyone in the room", "Invite friends with a room code", "Live chat and reactions next to the video"]
+            "featureList": ["Synced video playback across everyone in the room", "Works on YouTube, Netflix, Vimeo and most sites with a standard video player", "Free video and voice chat, peer to peer", "Up to 50 people in a room", "Invite friends with a room code", "Live chat and reactions next to the video"],
+            "screenshot": "https://watchbear.deepfeld.com/img/watchbear-side-panel-youtube.webp"
           },
           {
             "@type": "WebPage",
             "@id": "https://watchbear.deepfeld.com/#webpage",
             "url": "https://watchbear.deepfeld.com/",
-            "name": "Watch YouTube Together · Free Watch Party Extension · Watchbear",
-            "description": "Watch YouTube together with friends, in sync. Watchbear is a free watch party Chrome extension with chat and video calls in a panel beside the video.",
+            "name": "Watch YouTube & Netflix Together · Free Watch Party · Watchbear",
+            "description": "Watch YouTube or Netflix together with friends, in sync. Watchbear is a free watch party extension for Chrome with chat, voice and video calls beside the video.",
             "inLanguage": "en",
             "isPartOf": { "@id": "https://watchbear.deepfeld.com/#website" },
             "about": { "@id": "https://watchbear.deepfeld.com/#app" },
@@ -144,7 +145,7 @@
                 "name": "Which sites does Watchbear work with?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Watchbear works on YouTube, Vimeo, and most sites that have a standard video player. It automatically finds the main video on the page and keeps it in sync."
+                  "text": "Watchbear works on YouTube, Netflix, Vimeo, and most sites that have a standard video player. Netflix gets dedicated handling for its player, and on other sites Watchbear finds the main video on the page and keeps it in sync."
                 }
               },
               {
@@ -153,6 +154,14 @@
                 "acceptedAnswer": {
                   "@type": "Answer",
                   "text": "Yes. On the public server everyone signs in with Google. It's free and takes seconds."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does Watchbear have video chat?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, for free. Cameras start off and switch on with one click, and the tiles sit in the side panel beside the film instead of over it. Voice and video go peer to peer between the people in the room. A room holds up to 50 people, and up to 8 of them can be on camera and microphone at once."
                 }
               },
               {
@@ -2282,6 +2291,102 @@
       }
 
       /* faq */
+      .real {
+        padding: clamp(40px, 8vh, 100px) 0 clamp(70px, 12vh, 140px);
+      }
+      .real-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 48px;
+        align-items: center;
+      }
+      .real-shot {
+        margin: 0;
+      }
+      .real-shot img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .real-shot figcaption {
+        margin-top: 10px;
+        font-size: 14px;
+        color: var(--faint);
+        text-align: center;
+      }
+      .real h2 {
+        font-size: clamp(32px, 3.6vw, 48px);
+        margin: 0 0 20px;
+      }
+      .real ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 14px;
+      }
+      .real li {
+        font-size: 17px;
+        line-height: 1.55;
+        color: var(--room-muted);
+      }
+      .real li strong {
+        color: var(--room-ink);
+      }
+      .guides {
+        padding: 0 0 90px;
+      }
+      .guides .wrap {
+        max-width: 780px;
+      }
+      .guides h2 {
+        font-family: var(--font-display);
+        font-stretch: 80%;
+        font-size: clamp(32px, 4.4vw, 56px);
+        text-align: center;
+        color: var(--room-ink);
+        margin: 0 0 32px;
+      }
+      .guide-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .guide-list a {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 16px 18px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface);
+        color: var(--room-ink);
+        text-decoration: none;
+        transition: border-color 0.2s;
+      }
+      .guide-list a:hover,
+      .guide-list a:focus-visible {
+        border-color: var(--line-strong);
+      }
+      .guide-list span {
+        font-size: 15px;
+        line-height: 1.45;
+        color: var(--room-muted);
+      }
+      @media (max-width: 760px) {
+        .real-grid,
+        .guide-list {
+          grid-template-columns: 1fr;
+        }
+        .real-grid {
+          gap: 28px;
+        }
+      }
       .faq {
         padding: 10px 0 110px;
       }
@@ -2477,7 +2582,7 @@
           <div class="pin">
             <header class="hero">
               <h1 class="display" data-sync>Watch videos together, perfectly in sync.</h1>
-              <p class="hero-sub">Watch YouTube together, or anything on a site with a video player. Watchbear is a free watch party extension for Chrome: start a room, share the link, and everyone's video plays, pauses and skips together, with chat right beside it.</p>
+              <p class="hero-sub">Watch YouTube or Netflix together, or anything on a site with a video player. Watchbear is a free watch party extension for Chrome: start a room, share the link, and everyone's video plays, pauses and skips together, with chat, voice and video right beside it.</p>
               <div class="cta-row">
                 <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener" class="btn lg">Add to Chrome</a>
                 <a href="#demo" class="btn lg ghost">Try the live demo</a>
@@ -2685,10 +2790,28 @@
         <section class="where" id="where">
           <div class="where-head">
             <h2 class="display" data-sync>Works where your videos are</h2>
-            <p>YouTube, Vimeo, and most sites with a standard video player. Watchbear finds the main video on the page and keeps it in sync.</p>
+            <p>YouTube, Netflix, Vimeo, and most sites with a standard video player. Netflix gets dedicated handling for its player, and on other sites Watchbear finds the main video and keeps it in sync.</p>
           </div>
-          <div class="mq" aria-hidden="true"><div class="mq-track" data-words="YouTube|Vimeo|Lectures|Trailers|Short films"></div></div>
+          <div class="mq" aria-hidden="true"><div class="mq-track" data-words="YouTube|Netflix|Vimeo|Lectures|Trailers|Short films"></div></div>
           <div class="mq two" aria-hidden="true"><div class="mq-track" data-words="Music videos|Vlogs|Documentaries|Match highlights|Cooking shows"></div></div>
+        </section>
+
+        <section class="real" id="real">
+          <div class="wrap real-grid">
+            <figure class="real-shot">
+              <img src="img/watchbear-side-panel-youtube.webp" width="1413" height="823" loading="lazy" decoding="async" alt="Watchbear side panel next to a YouTube video, showing the room code, four people in the room, chat messages and reaction buttons" />
+              <figcaption>The side panel in a real YouTube tab.</figcaption>
+            </figure>
+            <div class="real-copy">
+              <h2 class="display" data-sync>Video and voice chat, built in</h2>
+              <ul>
+                <li><strong>See each other.</strong> Cameras start off and switch on with one click. The tiles sit beside the film, never over it.</li>
+                <li><strong>Talk over the movie.</strong> Voice chat with mute and a marker for whoever is speaking.</li>
+                <li><strong>Peer to peer.</strong> Sound and picture go straight between the people in the room and never pass through our servers.</li>
+                <li><strong>Room for the group.</strong> Up to 50 people, with up to 8 on camera and microphone at once.</li>
+              </ul>
+            </div>
+          </div>
         </section>
 
         <section class="try" id="demo">
@@ -2803,6 +2926,20 @@
           </div>
         </section>
 
+        <section class="guides" id="guides">
+          <div class="wrap">
+            <h2>Guides</h2>
+            <ul class="guide-list">
+              <li><a href="blog/how-to-watch-netflix-together-online.html"><strong>How to watch Netflix together online</strong><span>What everyone needs and how to set up a synced Netflix room.</span></a></li>
+              <li><a href="blog/watch-youtube-together.html"><strong>How to watch YouTube together</strong><span>Screen sharing, calls and sync extensions compared.</span></a></li>
+              <li><a href="blog/how-to-host-a-watch-party-online.html"><strong>How to host an online watch party</strong><span>A step-by-step setup that skips the countdown.</span></a></li>
+              <li><a href="blog/why-watch-party-out-of-sync.html"><strong>Why a watch party goes out of sync</strong><span>Buffering, ads and stray pauses, and how to stop the drift.</span></a></li>
+              <li><a href="blog/long-distance-movie-night-ideas.html"><strong>Long-distance movie night ideas</strong><span>Ten ways to make a film over the internet feel like a night in.</span></a></li>
+              <li><a href="teleparty-alternative.html"><strong>Watchbear vs Teleparty</strong><span>Supported sites, video chat, price and phones, side by side.</span></a></li>
+            </ul>
+          </div>
+        </section>
+
         <section class="faq">
           <div class="wrap">
             <h2>Frequently asked questions</h2>
@@ -2831,13 +2968,19 @@
               <div class="faq-item" data-faq>
                 <button class="faq-q" type="button"><span>Which sites does Watchbear work with?</span><span class="faq-ic">+</span></button>
                 <div class="faq-a">
-                  <p>Watchbear works on YouTube, Vimeo, and most sites that have a standard video player. It automatically finds the main video on the page and keeps it in sync. Our guide shows <a href="blog/watch-youtube-together.html">how to watch YouTube together</a> step by step.</p>
+                  <p>Watchbear works on YouTube, Netflix, Vimeo, and most sites that have a standard video player. Netflix gets dedicated handling for its player, and on other sites Watchbear finds the main video on the page and keeps it in sync. Our guides show <a href="blog/watch-youtube-together.html">how to watch YouTube together</a> and <a href="blog/how-to-watch-netflix-together-online.html">how to watch Netflix together</a> step by step.</p>
                 </div>
               </div>
               <div class="faq-item" data-faq>
                 <button class="faq-q" type="button"><span>Do my friends need an account to join?</span><span class="faq-ic">+</span></button>
                 <div class="faq-a">
                   <p>Yes. On the public server everyone signs in with Google. It's free and takes seconds.</p>
+                </div>
+              </div>
+              <div class="faq-item" data-faq>
+                <button class="faq-q" type="button"><span>Does Watchbear have video chat?</span><span class="faq-ic">+</span></button>
+                <div class="faq-a">
+                  <p>Yes, for free. Cameras start off and switch on with one click, and the tiles sit in the side panel beside the film instead of over it. Voice and video go peer to peer between the people in the room. A room holds up to 50 people, and up to 8 of them can be on camera and microphone at once.</p>
                 </div>
               </div>
               <div class="faq-item" data-faq>

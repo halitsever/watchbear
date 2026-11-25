@@ -1,243 +1,310 @@
-/** Home page sync wall: four illustrated players driven by one shared clock, so pausing one pauses all. */
+/** Home page room: three real players on one film. The visitor's player leads, the other two follow it. */
 (function () {
-  var FILM = 24 * 60;
-  var TILE = 320;
+  var SRC = "img/a-trip-to-the-moon-1902.webm";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var net = navigator.connection || {};
+  // the film is 4 MB, so slow or metered connections wait for a tap
+  var saveData = !!net.saveData || /(^|-)(2g|3g)$/.test(net.effectiveType || "");
 
-  /** One tile of a hill line; the second copy is shifted by TILE so the layer can loop. */
-  function ridge(y0, segs) {
-    var d = "";
-    for (var k = 0; k < 2; k++) {
-      var o = k * TILE;
-      if (k === 0) d += "M0 " + y0;
-      segs.forEach(function (s) {
-        d += " " + s[0] + " " + s.slice(1).map(function (n, i) {
-          return i % 2 === 0 ? n + o : n;
-        }).join(" ");
-      });
-    }
-    return d + " L" + 2 * TILE + " 180 L0 180 Z";
+  var room = document.getElementById("room");
+  var you = document.getElementById("filmYou");
+  if (!room || !you) return;
+
+  var followers = Array.prototype.map.call(room.querySelectorAll("video[data-follow]"), function (v) {
+    return { v: v, tc: v.closest(".seat").querySelector("[data-tc]") };
+  });
+  var toggle = document.getElementById("filmToggle");
+  var seek = document.getElementById("filmSeek");
+  var time = document.getElementById("filmTime");
+  var chat = document.getElementById("roomChat");
+  var glow = document.getElementById("roomGlow");
+  var glowCtx = glow && glow.getContext("2d");
+  var splitVideo = document.getElementById("splitVideo");
+  var share = document.getElementById("shareCanvas");
+
+  function bear(fur, dark) {
+    return (
+      '<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">' +
+      '<circle cx="13" cy="13" r="7.5" fill="' + dark + '"/><circle cx="35" cy="13" r="7.5" fill="' + dark + '"/>' +
+      '<circle cx="13" cy="13" r="3.4" fill="#F6E2C4"/><circle cx="35" cy="13" r="3.4" fill="#F6E2C4"/>' +
+      '<circle cx="24" cy="25" r="16.5" fill="' + fur + '"/><ellipse cx="24" cy="30" rx="7" ry="5.4" fill="#F6E2C4"/>' +
+      '<circle cx="18.5" cy="23.5" r="1.9" fill="#3A2412"/><circle cx="29.5" cy="23.5" r="1.9" fill="#3A2412"/>' +
+      '<ellipse cx="24" cy="27.6" rx="2" ry="1.6" fill="#3A2412"/></svg>'
+    );
   }
+  var FRIENDS = { Ece: ["#C06B3A", "#9E5328"], Maya: ["#E6DFD2", "#C4B9A6"] };
 
-  function trees(y, xs) {
-    var out = "";
-    for (var k = 0; k < 2; k++) {
-      xs.forEach(function (x) {
-        var X = x + k * TILE;
-        out += '<path d="M' + X + " " + (y - 26) + " L" + (X + 9) + " " + y + " L" + (X - 9) + " " + y + ' Z"/>';
-        out += '<rect x="' + (X - 1.5) + '" y="' + y + '" width="3" height="6"/>';
-      });
-    }
-    return out;
-  }
-
-  function clouds() {
-    var out = "";
-    for (var k = 0; k < 2; k++) {
-      var o = k * TILE;
-      out +=
-        '<ellipse cx="' + (40 + o) + '" cy="34" rx="26" ry="7"/><ellipse cx="' + (56 + o) + '" cy="29" rx="16" ry="7"/>' +
-        '<ellipse cx="' + (190 + o) + '" cy="50" rx="30" ry="6"/><ellipse cx="' + (204 + o) + '" cy="45" rx="15" ry="6"/>';
-    }
-    return out;
-  }
-
-  var SCENE =
-    '<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' +
-    '<defs><linearGradient id="SKY" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b1a33"/><stop offset=".62" stop-color="#e7894e"/><stop offset="1" stop-color="#f7cd80"/></linearGradient></defs>' +
-    '<rect width="320" height="180" fill="url(#SKY)"/>' +
-    '<circle cx="236" cy="96" r="44" fill="#ffd98f" opacity=".22"/><circle cx="236" cy="96" r="24" fill="#ffe2a6"/>' +
-    '<g data-v="3" fill="#fff" opacity=".35">' + clouds() + "</g>" +
-    '<path data-v="6" fill="#9a5058" d="' + ridge(118, [["C", 40, 102, 80, 104, 120, 114], ["S", 200, 98, 240, 108], ["S", 300, 124, 320, 118]]) + '"/>' +
-    '<g data-balloon><path d="M0 -12 C-9 -12 -11 -2 -6 4 L-2 9 L2 9 L6 4 C11 -2 9 -12 0 -12 Z" fill="#d8b46a"/><path d="M-2 9 L-2 13 L2 13 L2 9" stroke="#3a2412" stroke-width=".8" fill="#6b3f1f"/></g>' +
-    '<path data-v="14" fill="#5a2c40" d="' + ridge(140, [["C", 60, 124, 110, 128, 160, 138], ["S", 260, 122, 320, 140]]) + '"/>' +
-    '<g data-v="30" fill="#1d1121"><path d="' + ridge(160, [["C", 80, 152, 160, 156, 240, 162], ["S", 300, 156, 320, 160]]) + '"/>' + trees(158, [36, 58, 150, 268]) + "</g>" +
-    '<g data-bear transform="translate(112 152)" fill="#120a14"><circle cx="0" cy="-10" r="6"/><circle cx="-4.5" cy="-15" r="2.4"/><circle cx="4.5" cy="-15" r="2.4"/><ellipse cx="1" cy="-1" rx="8" ry="6.5"/></g>' +
-    "</svg>";
-
-  function mmss(s) {
-    s = Math.max(0, Math.floor(s));
-    var m = Math.floor(s / 60);
-    var r = s % 60;
-    return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r;
-  }
-
-  function mount(host) {
-    host.innerHTML = SCENE.replace(/SKY/g, "sky" + Math.random().toString(36).slice(2, 7));
-    var svg = host.firstChild;
-    return {
-      layers: Array.prototype.map.call(svg.querySelectorAll("[data-v]"), function (el) {
-        return { el: el, v: +el.getAttribute("data-v") };
-      }),
-      balloon: svg.querySelector("[data-balloon]"),
-      bear: svg.querySelector("[data-bear]"),
-    };
-  }
-
-  function paint(scene, st) {
-    scene.layers.forEach(function (l) {
-      l.el.setAttribute("transform", "translate(" + -((st * l.v) % TILE).toFixed(2) + " 0)");
-    });
-    var bx = 300 - ((st * 5) % 360);
-    scene.balloon.setAttribute("transform", "translate(" + bx.toFixed(2) + " " + (58 + Math.sin(st / 2.2) * 5).toFixed(2) + ")");
-    scene.bear.setAttribute("transform", "translate(112 " + (152 - Math.abs(Math.sin(st * 3)) * 1.6).toFixed(2) + ")");
-  }
-
-  // A blur filter for the "screen share" frame, defined once for the page.
-  var defs = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  defs.setAttribute("width", "0");
-  defs.setAttribute("height", "0");
-  defs.setAttribute("aria-hidden", "true");
-  defs.style.position = "absolute";
-  defs.innerHTML = '<filter id="shareBlur"><feGaussianBlur stdDeviation="3.6"/></filter>';
-  document.body.appendChild(defs);
-
-  document.querySelectorAll("[data-scene]").forEach(function (host) {
-    paint(mount(host), +host.getAttribute("data-at") || 0);
+  document.querySelectorAll(".bear[data-fur]").forEach(function (el) {
+    el.innerHTML = bear(el.dataset.fur, el.dataset.dark);
   });
 
-  var wall = document.getElementById("screens");
-  if (!wall) return;
-
-  var screens = Array.prototype.map.call(wall.querySelectorAll(".screen"), function (el) {
-    el.innerHTML =
-      '<div class="screen-head"><span><b>' + el.dataset.name + '</b> <span class="place">' + el.dataset.place + ", " + el.dataset.clock +
-      '</span></span><span class="screen-sync">In sync</span></div>' +
-      '<div class="frame"></div><div class="screen-buffer"></div>' +
-      '<div class="screen-foot"><span class="tc">00:00</span><span class="screen-track"><i></i></span><span class="dur">24:00</span></div>';
-    return {
-      el: el,
-      scene: mount(el.querySelector(".frame")),
-      sync: el.querySelector(".screen-sync"),
-      tc: el.querySelector(".tc"),
-      bar: el.querySelector(".screen-track i"),
-      drifts: el.hasAttribute("data-drifts"),
-      lag: 0,
-      buffering: false,
-    };
-  });
-
-  var drifter = screens.filter(function (s) {
-    return s.drifts;
-  })[0];
-  var btn = document.getElementById("wallPlay");
-  var btnLabel = document.getElementById("wallPlayLabel");
-  var status = document.getElementById("wallStatus");
-
-  var t = 761;
-  var playing = !reduce;
-  var visible = true;
-  var last = 0;
-  var nextDrift = 6;
-  var phase = "idle";
-  var phaseUntil = 0;
-  var clock = 0;
-  var running = false;
-
-  function setStatus(html) {
-    status.innerHTML = html;
-  }
-
-  function steady() {
-    setStatus(playing ? 'Four players, one frame: <b id="wallTime">' + mmss(t) + "</b> of 24:00" : "Paused for everyone at <b>" + mmss(t) + "</b>");
-  }
-
-  function render() {
-    screens.forEach(function (s) {
-      var st = (t - s.lag + FILM) % FILM;
-      paint(s.scene, st);
-      s.tc.textContent = mmss(st);
-      s.bar.style.transform = "scaleX(" + (st / FILM).toFixed(4) + ")";
-      s.el.classList.toggle("is-buffering", s.buffering);
-      s.el.classList.toggle("is-late", s.lag > 0.25);
-      s.sync.textContent = s.lag > 0.25 ? s.lag.toFixed(1) + " s behind" : "In sync";
-    });
-    var tw = document.getElementById("wallTime");
-    if (tw && phase === "idle") tw.textContent = mmss(t);
-  }
-
-  /** The drifting player buffers, falls behind, then gets nudged back, which is what the real sync does. */
-  function drift(dt) {
-    if (!drifter || reduce) return;
-    if (phase === "idle" && clock >= nextDrift) {
-      phase = "buffer";
-      phaseUntil = clock + 1.8;
-      drifter.buffering = true;
-      setStatus("Daniel's connection in Toronto stalls…");
-    } else if (phase === "buffer") {
-      drifter.lag += dt;
-      if (clock >= phaseUntil) {
-        phase = "late";
-        phaseUntil = clock + 0.9;
-        drifter.buffering = false;
-        setStatus("Daniel is " + drifter.lag.toFixed(1) + " s behind the room");
+  /** Real clocks: the friends' cities right now, and the visitor's own time. */
+  function clocks() {
+    document.querySelectorAll("time[data-tz]").forEach(function (el) {
+      var opts = { hour: "2-digit", minute: "2-digit", hour12: false };
+      if (el.dataset.tz !== "local") opts.timeZone = el.dataset.tz;
+      try {
+        el.textContent = new Intl.DateTimeFormat("en-GB", opts).format(new Date());
+      } catch (e) {
+        el.textContent = "";
       }
-    } else if (phase === "late" && clock >= phaseUntil) {
-      phase = "snap";
-      phaseUntil = clock + 2.6;
-      drifter.lag = 0;
-      setStatus("Watchbear nudged Daniel's player back to <b>" + mmss(t) + "</b>");
-    } else if (phase === "snap" && clock >= phaseUntil) {
-      phase = "idle";
-      nextDrift = clock + 9 + Math.random() * 4;
-      steady();
-    }
+    });
+  }
+  clocks();
+  setInterval(clocks, 20000);
+
+  function stamp(s) {
+    s = Math.max(0, s || 0);
+    var m = Math.floor(s / 60);
+    var r = Math.floor(s % 60);
+    return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r + "." + Math.floor((s % 1) * 10);
   }
 
-  function frame(now) {
-    var dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
-    last = now;
-    if (playing) {
-      t = (t + dt) % FILM;
-      clock += dt;
-      drift(dt);
-    }
-    render();
-    if (playing && visible) requestAnimationFrame(frame);
-    else {
-      last = 0;
-      running = false;
-    }
+  // what the friends type as the scene plays, keyed by film time
+  var LINES = [
+    [1.5, "Maya", "they are firing people out of a cannon"],
+    [7, "Ece", "why does the moon have a face"],
+    [13, "Maya", "it is getting closer"],
+    [19.6, "Ece", "right in the eye"],
+    [22.5, "Maya", "he looks so annoyed"],
+    [27.5, "Ece", "1902, and they just landed"],
+  ];
+  var lastSaid = {};
+
+  function say(who, text) {
+    if (!chat) return;
+    var li = document.createElement("li");
+    var f = FRIENDS[who];
+    li.innerHTML = '<span class="bear">' + bear(f[0], f[1]) + "</span><span><b></b></span>";
+    li.querySelector("b").textContent = who;
+    li.lastChild.appendChild(document.createTextNode(text));
+    chat.appendChild(li);
+    while (chat.children.length > 4) chat.removeChild(chat.firstChild);
+    Array.prototype.forEach.call(chat.children, function (c, i) {
+      c.classList.toggle("is-old", i < chat.children.length - 2);
+    });
   }
 
-  /** Observer and visibility events can both fire, so only one frame loop may run at a time. */
-  function start() {
-    if (running || !playing || !visible) return;
-    running = true;
+  /** a reply to something the visitor did, at most once every few seconds per kind */
+  function react(kind, who, text) {
+    var now = Date.now();
+    if (now - (lastSaid[kind] || 0) < 6000) return;
+    lastSaid[kind] = now;
+    setTimeout(function () {
+      say(who, text);
+    }, 450);
+  }
+
+  var ready = false;
+  var loading = null;
+  var visible = true;
+  var dragging = false;
+  var prevT = 0;
+  var tick = 0;
+
+  function all() {
+    return [you].concat(
+      followers.map(function (f) {
+        return f.v;
+      }),
+    );
+  }
+
+  /** One download feeds every player, and a blob can be seeked on any host. */
+  function load() {
+    if (loading) return loading;
+    loading = fetch(SRC)
+      .then(function (r) {
+        if (!r.ok) throw new Error("film " + r.status);
+        return r.blob();
+      })
+      .then(function (blob) {
+        var url = URL.createObjectURL(blob);
+        var vids = all();
+        if (splitVideo) vids.push(splitVideo);
+        return Promise.all(
+          vids.map(function (v) {
+            return new Promise(function (done) {
+              v.addEventListener("loadeddata", done, { once: true });
+              v.addEventListener("error", done, { once: true });
+              v.src = url;
+            });
+          }),
+        );
+      })
+      .then(function () {
+        ready = true;
+        paint();
+      })
+      .catch(function () {
+        loading = null;
+      });
+    return loading;
+  }
+
+  function play() {
+    return load().then(function () {
+      if (!ready) return;
+      followers.forEach(function (f) {
+        f.v.currentTime = you.currentTime;
+      });
+      all().forEach(function (v) {
+        var p = v.play();
+        if (p && p.catch) p.catch(function () {});
+      });
+    });
+  }
+
+  function pause() {
+    all().forEach(function (v) {
+      v.pause();
+    });
+    followers.forEach(function (f) {
+      f.v.currentTime = you.currentTime;
+    });
+  }
+
+  function paint() {
+    var t = you.currentTime || 0;
+    var d = you.duration || 1;
+    time.textContent = stamp(t);
+    if (!dragging) seek.value = String(Math.round((t / d) * 1000));
+    seek.style.setProperty("--at", ((t / d) * 100).toFixed(2) + "%");
+    followers.forEach(function (f) {
+      var ft = f.v.currentTime || 0;
+      var gap = Math.abs(ft - t);
+      // the loop point puts the two a whole film apart for a frame
+      if (gap > d / 2) gap = d - gap;
+      if (ready && gap > 0.12 && !f.v.seeking) {
+        f.v.currentTime = t;
+        ft = t;
+        gap = 0;
+      }
+      f.tc.textContent = stamp(ft);
+      f.tc.classList.toggle("is-off", gap > 0.12);
+    });
+  }
+
+  function frame() {
+    if (!visible || document.hidden) return;
+    var t = you.currentTime || 0;
+    paint();
+    if (!you.paused) {
+      if (t < prevT - 1) prevT = -1;
+      LINES.forEach(function (l) {
+        if (prevT < l[0] && t >= l[0] && t - l[0] < 0.6) say(l[1], l[2]);
+      });
+      prevT = t;
+      if (glowCtx && ++tick % 4 === 0) {
+        try {
+          glowCtx.drawImage(you, 0, 0, glow.width, glow.height);
+        } catch (e) {}
+      }
+    }
     requestAnimationFrame(frame);
   }
 
-  btn.addEventListener("click", function () {
-    playing = !playing;
-    btn.setAttribute("aria-pressed", String(!playing));
-    btnLabel.textContent = playing ? "Pause for everyone" : "Play for everyone";
-    if (!playing && phase !== "idle") {
-      screens.forEach(function (s) {
-        s.lag = 0;
-        s.buffering = false;
-      });
-      phase = "idle";
-      nextDrift = clock + 6;
+  toggle.addEventListener("click", function () {
+    if (you.paused) {
+      play();
+      react("play", "Ece", "ok, go");
+    } else {
+      pause();
+      react("pause", "Maya", "who paused?");
     }
-    steady();
-    render();
-    start();
+  });
+
+  you.addEventListener("play", function () {
+    toggle.classList.add("is-playing");
+    toggle.setAttribute("aria-label", "Pause for everyone");
+    requestAnimationFrame(frame);
+  });
+  you.addEventListener("pause", function () {
+    toggle.classList.remove("is-playing");
+    toggle.setAttribute("aria-label", "Play for everyone");
+    paint();
+  });
+
+  seek.addEventListener("pointerdown", function () {
+    dragging = true;
+  });
+  window.addEventListener("pointerup", function () {
+    dragging = false;
+  });
+  seek.addEventListener("input", function () {
+    load().then(function () {
+      if (!ready) return;
+      var from = you.currentTime;
+      var to = (seek.value / 1000) * (you.duration || 0);
+      all().forEach(function (v) {
+        v.currentTime = to;
+      });
+      prevT = to;
+      paint();
+      if (to < from - 2) react("back", "Ece", "again, I love this part");
+      else if (to > from + 2) react("ahead", "Maya", "hey, no skipping");
+    });
   });
 
   if ("IntersectionObserver" in window) {
     new IntersectionObserver(function (entries) {
       visible = entries[0].isIntersecting;
-      start();
-    }).observe(wall);
+      if (visible && !you.paused) requestAnimationFrame(frame);
+    }).observe(room);
   }
   document.addEventListener("visibilitychange", function () {
-    visible = !document.hidden;
-    start();
+    if (!document.hidden && !you.paused) requestAnimationFrame(frame);
   });
 
-  btn.setAttribute("aria-pressed", String(!playing));
-  btnLabel.textContent = playing ? "Pause for everyone" : "Play for everyone";
-  steady();
-  render();
-  start();
+  // the screen share stand-in: the same film through a small, slow, late copy
+  if (splitVideo && share) {
+    var ctx = share.getContext("2d");
+    var LATE = 7;
+    var ring = [];
+    var shareTimer = 0;
+
+    function shareTick() {
+      if (splitVideo.readyState < 2) return;
+      var c = document.createElement("canvas");
+      c.width = share.width;
+      c.height = share.height;
+      c.getContext("2d").drawImage(splitVideo, 0, 0, c.width, c.height);
+      ring.push(c);
+      if (ring.length > LATE) ctx.drawImage(ring.shift(), 0, 0);
+      else if (ring.length === 1) ctx.drawImage(c, 0, 0);
+    }
+
+    var poster = new Image();
+    poster.onload = function () {
+      if (!ring.length) ctx.drawImage(poster, 0, 0, share.width, share.height);
+    };
+    poster.src = splitVideo.getAttribute("poster");
+
+    if ("IntersectionObserver" in window && !reduce && !saveData) {
+      new IntersectionObserver(
+        function (entries) {
+          if (entries[0].isIntersecting) {
+            load().then(function () {
+              if (!ready) return;
+              var p = splitVideo.play();
+              if (p && p.catch) p.catch(function () {});
+              if (!shareTimer) shareTimer = setInterval(shareTick, 170);
+            });
+          } else {
+            splitVideo.pause();
+            clearInterval(shareTimer);
+            shareTimer = 0;
+          }
+        },
+        { threshold: 0.25 },
+      ).observe(splitVideo);
+    }
+  }
+
+  paint();
+  // people who asked for less motion or less data get the still frame and a play button
+  if (!reduce && !saveData) {
+    if (document.readyState === "complete") play();
+    else window.addEventListener("load", play, { once: true });
+  }
 })();

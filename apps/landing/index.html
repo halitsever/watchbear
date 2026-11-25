@@ -43,6 +43,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="icon32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="icon16.png" />
     <link rel="manifest" href="site.webmanifest" />
+    <link rel="preload" as="image" href="img/a-trip-to-the-moon-1902.webp" type="image/webp" fetchpriority="high" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -170,39 +171,79 @@
 
     <main id="main">
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy">
+        <div class="hero-head">
           <h1 id="hero-title">Watch Netflix, YouTube and more together, on the same second.</h1>
-          <p class="hero-sub">
-            Watchbear is a free watch party extension for Chrome. Start a room, send the link, and everyone's player plays, pauses and skips together, with video chat beside
-            the film.
-          </p>
-          <div class="hero-cta">
-            <a class="btn lg" href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener">Add to Chrome, free</a>
-            <a class="btn lg ghost" href="#netflix">See the Netflix steps</a>
+          <div class="hero-side">
+            <p class="hero-sub">
+              Watchbear is a free watch party extension for Chrome. Start a room, send the link, and everyone's player plays, pauses and skips together, with video chat
+              beside the film.
+            </p>
+            <div class="hero-cta">
+              <a class="btn lg" href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener">Add to Chrome, free</a>
+              <a class="btn lg ghost" href="#netflix">See the Netflix steps</a>
+            </div>
           </div>
-          <ul class="hero-facts">
-            <li>No card, no second account</li>
-            <li>Up to 50 people a room</li>
-            <li>Video and voice chat included</li>
-          </ul>
         </div>
 
-        <figure class="wall" aria-label="Illustration: four friends in four cities watching the same film on the same second">
-          <div class="screens" id="screens">
-            <div class="screen" data-name="Maya" data-place="Lisbon" data-clock="21:04"></div>
-            <div class="screen" data-name="You" data-place="Berlin" data-clock="22:04"></div>
-            <div class="screen" data-name="Daniel" data-place="Toronto" data-clock="16:04" data-drifts></div>
-            <div class="screen" data-name="Ece" data-place="Istanbul" data-clock="00:04"></div>
+        <div class="room" id="room">
+          <figure class="seat seat-you">
+            <div class="room-glow" aria-hidden="true"><canvas id="roomGlow" width="32" height="24"></canvas></div>
+            <div class="film">
+              <video
+                id="filmYou"
+                muted
+                playsinline
+                loop
+                preload="none"
+                poster="img/a-trip-to-the-moon-1902.webp"
+                width="640"
+                height="480"
+                aria-label="A scene from A Trip to the Moon, 1902: a rocket is fired from a cannon and lands in the eye of the moon"
+              ></video>
+            <div class="transport">
+                <button class="t-btn" id="filmToggle" type="button" aria-label="Play for everyone">
+                  <svg class="i-pause" viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="4" width="3.4" height="12" rx="1" /><rect x="11.6" y="4" width="3.4" height="12" rx="1" /></svg>
+                  <svg class="i-play" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 4.2v11.6c0 .6.7 1 1.2.7l9.2-5.8a.8.8 0 0 0 0-1.4L7.2 3.5C6.7 3.2 6 3.6 6 4.2Z" /></svg>
+                </button>
+                <input class="t-seek" id="filmSeek" type="range" min="0" max="1000" value="0" step="1" aria-label="Position in the film" />
+                <output class="t-time" id="filmTime" for="filmSeek">00:00.0</output>
+              </div>
+            </div>
+            <figcaption><span class="bear" data-fur="#B97C43" data-dark="#9A6230"></span><span><b>Your screen</b>, <time data-tz="local">now</time></span></figcaption>
+          </figure>
+
+          <div class="others">
+            <div class="others-screens">
+              <figure class="seat">
+                <div class="film">
+                  <video data-follow muted playsinline loop preload="none" poster="img/a-trip-to-the-moon-1902.webp" width="640" height="480" aria-hidden="true" tabindex="-1"></video>
+                </div>
+                <figcaption>
+                  <span class="bear" data-fur="#C06B3A" data-dark="#9E5328"></span><span><b>Ece</b> in Istanbul, <time data-tz="Europe/Istanbul"></time></span>
+                  <span class="tc" data-tc>00:00.0</span>
+                </figcaption>
+              </figure>
+              <figure class="seat">
+                <div class="film">
+                  <video data-follow muted playsinline loop preload="none" poster="img/a-trip-to-the-moon-1902.webp" width="640" height="480" aria-hidden="true" tabindex="-1"></video>
+                </div>
+                <figcaption>
+                  <span class="bear" data-fur="#E6DFD2" data-dark="#C4B9A6"></span><span><b>Maya</b> in Lisbon, <time data-tz="Europe/Lisbon"></time></span>
+                  <span class="tc" data-tc>00:00.0</span>
+                </figcaption>
+              </figure>
+            </div>
+            <p class="room-hint" id="roomHint">These are real players. Pause yours or drag the bar, and Ece's and Maya's stay on your frame.</p>
+            <ol class="chat" id="roomChat" aria-hidden="true"></ol>
           </div>
-          <figcaption class="wall-bar">
-            <button class="wall-play" id="wallPlay" type="button" aria-pressed="false">
-              <svg class="i-pause" viewBox="0 0 20 20" aria-hidden="true"><rect x="5" y="4" width="3.4" height="12" rx="1" /><rect x="11.6" y="4" width="3.4" height="12" rx="1" /></svg>
-              <svg class="i-play" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 4.2v11.6c0 .6.7 1 1.2.7l9.2-5.8a.8.8 0 0 0 0-1.4L7.2 3.5C6.7 3.2 6 3.6 6 4.2Z" /></svg>
-              <span id="wallPlayLabel">Pause for everyone</span>
-            </button>
-            <span class="wall-status" id="wallStatus">Four players, one frame: <b id="wallTime">12:41</b> of 24:00</span>
-          </figcaption>
-        </figure>
+        </div>
+
+        <ul class="hero-facts">
+          <li>No card, no second account</li>
+          <li>Up to 50 people a room</li>
+          <li>Video and voice chat included</li>
+        </ul>
+        <p class="film-credit">Playing: A Trip to the Moon, Georges Méliès, 1902. Public domain.</p>
       </section>
 
       <section class="split" aria-labelledby="split-title">
@@ -214,11 +255,13 @@
           </p>
           <div class="split-pair">
             <figure class="split-card">
-              <div class="frame frame-blur" data-scene data-at="512"></div>
-              <figcaption><b>Screen sharing a film</b> One stream for the whole group, compressed by the call.</figcaption>
+              <div class="film film-share"><canvas id="shareCanvas" width="128" height="96" aria-hidden="true"></canvas></div>
+              <figcaption><b>Screen sharing a film</b> One stream for the whole group, compressed by the call. Simulated here: fewer pixels, fewer frames, about a second late.</figcaption>
             </figure>
             <figure class="split-card">
-              <div class="frame" data-scene data-at="512"></div>
+              <div class="film">
+                <video id="splitVideo" muted playsinline loop preload="none" poster="img/a-trip-to-the-moon-1902.webp" width="640" height="480" aria-label="The same scene playing at full quality"></video>
+              </div>
               <figcaption><b>A Watchbear room</b> Each player at full quality, held on the same second.</figcaption>
             </figure>
           </div>
@@ -419,6 +462,7 @@
       </section>
 
       <section class="end" aria-labelledby="end-title">
+        <img class="end-still" src="img/a-trip-to-the-moon-1902-landing.webp" width="640" height="480" loading="lazy" decoding="async" alt="" />
         <div class="wrap">
           <img class="end-bear" src="bear.svg" width="96" height="96" alt="" />
           <h2 id="end-title">Pick a film. Send one link.</h2>

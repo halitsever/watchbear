@@ -212,7 +212,7 @@
       <header class="hero">
         <div class="wrap">
           <h1>Privacy <span class="accent">policy</span></h1>
-          <p class="updated">Last updated: November 22, 2026</p>
+          <p class="updated">Last updated: November 25, 2026</p>
         </div>
       </header>
 
@@ -224,6 +224,7 @@
             <li>When you sign in, we store your Google email, name, and profile picture so your account works across devices. You can delete it any time by emailing us.</li>
             <li>We record how the extension is used (for example that a party was started or an invite link was copied) on our own server, to improve Watchbear and to see which marketing brings people in. No third-party trackers, and we never sell or rent your data.</li>
             <li>Chat messages, page URLs, page titles and the video itself are never part of those records. Watch-party data lives only in the server's memory while the room is open, and is gone the moment the room ends.</li>
+            <li>If you add friends, the server keeps your nickname and your friend list. If you plan a movie night with a friend, it keeps the time and, when you attach a video, its link and title for up to 6 hours after the planned start.</li>
           </ul>
         </div>
       </div>
@@ -260,6 +261,9 @@
             <li><strong>Sign-in session:</strong> if you sign in, your login token and basic Google profile (email, name, picture) are cached here so you stay signed in. Signing out removes it.</li>
             <li><strong>Analytics identifiers:</strong> a random device identifier created when the extension is first used, a usage-session identifier that resets after 30 idle minutes, and a short queue of usage events waiting to be sent to our server.</li>
             <li><strong>Campaign and invite details:</strong> if you arrived through an ad, a link with campaign parameters, or a friend's invite link, the campaign parameters, referring site, and invite identifier are kept so the extension can tell us what brought you here (see "Product analytics").</li>
+            <li><strong>Where you left off:</strong> for up to 10 recent parties and 45 days, the video's link and title, how far you got, and who you watched with, so the popup can offer to continue. This list stays on your device.</li>
+            <li><strong>Party recap:</strong> after a long party, a summary card with the time watched and the first names and bears of the people in it. It stays on your device unless you share it yourself.</li>
+            <li><strong>Movie nights and reminders:</strong> a copy of the movie nights you are part of, so a reminder can fire without asking the server, and whether you turned reminders on.</li>
           </ul>
           <p>You can clear all of this at any time by removing the extension or clearing its storage.</p>
 
@@ -274,8 +278,9 @@
             works across devices: a Google account identifier, your <strong>email</strong>, your
             <strong>name</strong>, your <strong>profile picture URL</strong>, and the dates the record
             was created and last updated. To keep you signed in, the server hands the extension a login
-            token that expires after 30 days. There is no password on file, and no billing or
-            subscription data.
+            token that expires after 90 days and is renewed while you keep using Watchbear. There is no
+            password on file, and no billing or subscription data. If you pick a
+            <strong>nickname</strong>, it is saved with your account so friends can find you by it.
           </p>
           <p>
             When you sign in, the extension also sends the device identifier and any campaign or invite
@@ -306,6 +311,29 @@
             sync. It is only shared while you are in a room, and only with that room. The server keeps
             none of it once the room ends; what it does keep about the party is described next.
           </p>
+          <p>
+            <strong>Voice and camera.</strong> If you join the voice chat or turn your camera on,
+            Chrome asks for the microphone or camera first. Sound and picture travel between the
+            browsers of the people in the room and are never recorded or stored by our server. To set
+            that link up, the browsers exchange network addresses, which include IP addresses, through
+            our server, and ask a Google address-discovery (STUN) server for their public address.
+          </p>
+
+          <h2>Friends and movie nights</h2>
+          <p>
+            Friends are optional. If you use them, the server stores your nickname, the friend
+            requests you sent or received, and your friend list with the dates each request was made
+            and accepted. There is no search: someone can send you a request only by typing your exact
+            nickname or from a room you are both in.
+          </p>
+          <ul>
+            <li><strong>What friends see:</strong> your nickname, name, and profile picture, whether you are in a watch party right now, and how much time the two of you watched together in the last 30 days. They do not see which room you are in or what you are watching.</li>
+            <li><strong>Asking to join and inviting:</strong> a friend can ask to join your party, and you can invite a friend to yours. These requests live in the server's memory for a few minutes (invites for 30) and are not written to disk.</li>
+            <li><strong>Suggestions:</strong> after you watch with someone for a while, each of you may be offered the other as a friend, with the name and bear shown in the room. A suggestion is held in memory for 24 hours.</li>
+            <li><strong>Checking for news:</strong> while you are signed in, the extension asks the server every three minutes how many requests and invites are waiting, and shows the count on its toolbar icon.</li>
+            <li><strong>Movie nights:</strong> planning one with a friend stores who planned it, the friend, the time, and, if you attach a video, its link and title. Only the two of you can see it. The link and title are erased once the night is cancelled or 6 hours after the planned start; the rest of the record stays with your account.</li>
+            <li><strong>Profile and badges:</strong> your profile page and its badges are worked out from the usage records described below, such as how many parties you joined and on how many days.</li>
+          </ul>
 
           <h2>Product analytics</h2>
           <p>
@@ -374,10 +402,12 @@
             not keep chat logs, history, or backups, and the server does not log your IP address.
           </p>
           <p>
-            Two things are written to disk: your account record, if you sign in, and the usage records
-            described under "Product analytics" (including that a party or invite happened, but not what
-            was said or watched). Both are kept until you ask us to delete your account. An invite you
-            save on a phone is also written to disk, for 24 hours only.
+            These things are written to disk: your account record, if you sign in; your friend
+            requests and friend list; the movie nights you planned; and the usage records described
+            under "Product analytics" (including that a party or invite happened and who was in it, but
+            not what was said or watched). They are kept until you ask us to delete your account. Two
+            records hold a video link for a short time: an invite you save on a phone, for 24 hours,
+            and a movie night with a video attached, until 6 hours after its planned start.
           </p>
 
           <h2>What the extension can access on web pages</h2>
@@ -398,15 +428,19 @@
             <li><strong>sidePanel:</strong> to show the chat and reactions panel next to your video.</li>
             <li><strong>identity:</strong> to sign you in with Google through the browser's standard sign-in flow.</li>
             <li><strong>tabGroups:</strong> to put the tab hosting your party in a small labeled tab group so you can spot it, and to remove that group when you leave.</li>
+            <li><strong>offscreen:</strong> to keep the voice and camera call running when the side panel is closed.</li>
+            <li><strong>alarms:</strong> to check every three minutes for waiting friend requests and invites, and to time movie night reminders.</li>
+            <li><strong>notifications (optional):</strong> asked for only when you click "Remind me" on a movie night, to show a reminder 10 minutes before it and when it starts. Watchbear works without it.</li>
             <li><strong>Host access to websites (&lt;all_urls&gt;):</strong> because a watch party can happen on any site with a video player; the extension only reads video state and the page title/URL, and only acts when you're in a room.</li>
           </ul>
 
           <h2>Third parties and tracking</h2>
           <p>
             Watchbear contains <strong>no advertising and no third-party analytics or tracking SDKs</strong>.
-            The usage records described above go only to our own server. The extension talks to two
-            places: the Watchbear server for watch parties and usage records, Google to verify your
-            sign-in, and nowhere else. This website (watchbear.deepfeld.com) loads fonts from Google
+            The usage records described above go only to our own server. The extension talks to the
+            Watchbear server for watch parties, friends and usage records, to Google to verify your
+            sign-in and, during a voice or camera call, to find your public network address, and
+            directly to the other people in that call. It talks to nowhere else. This website (watchbear.deepfeld.com) loads fonts from Google
             Fonts and an icon script from iconify.design to render its pages; the extension itself does
             not.
           </p>

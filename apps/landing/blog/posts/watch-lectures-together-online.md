@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: How to watch lectures together with an online study group
 seoTitle: How to Watch Lectures Together with an Online Study Group · Watchbear
 description: "Run an online study group that watches lectures together: synced playback, pausing to discuss, voice chat, note-taking roles and a session plan that works."

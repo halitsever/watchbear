@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "Watch party games: 9 games to play during an online movie night"
 seoTitle: "Watch Party Games: 9 Games for an Online Movie Night · Watchbear"
 description: "Nine watch party games for online movie nights: bingo, predictions, emoji-only rounds, quote quizzes and more, with rules that fit in a chat beside the film."

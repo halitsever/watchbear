@@ -123,6 +123,7 @@ function loadPost(file) {
     imageAlt: data.imageAlt,
     photo: data.photo,
     featured: Boolean(data.featured),
+    noindex: Boolean(data.noindex),
     related: data.related ?? [],
     cta: { ...DEFAULT_CTA, ...data.cta },
     faq,
@@ -132,10 +133,11 @@ function loadPost(file) {
   };
 }
 
-/** Explicit picks from front matter first, then the newest other posts. */
+/** Explicit picks from front matter first, then the newest other posts. Fallbacks skip noindex posts so links point at pages that can rank. */
 function relatedTo(post, posts) {
   const picked = post.related.map((slug) => posts.find((p) => p.slug === slug) ?? fail(`${post.slug}.md`, `related post "${slug}" not found`));
-  const rest = posts.filter((p) => p !== post && !picked.includes(p));
+  if (!post.noindex) for (const p of picked) if (p.noindex) fail(`${post.slug}.md`, `related post "${p.slug}" is noindex`);
+  const rest = posts.filter((p) => p !== post && !p.noindex && !picked.includes(p));
   return [...picked, ...rest].slice(0, 2);
 }
 
@@ -159,10 +161,12 @@ for (const post of posts) {
   checkLinks(post, slugs);
   writeFileSync(join(out, "blog", `${post.slug}.html`), renderPost(post, relatedTo(post, posts)));
 }
-writeFileSync(join(out, "blog/index.html"), renderIndex(posts));
-writeFileSync(join(out, "blog/feed.xml"), renderFeed(posts));
+/** Noindex posts still build so old links keep working, but stay out of the index page, feed and sitemap. */
+const listed = posts.filter((p) => !p.noindex);
+writeFileSync(join(out, "blog/index.html"), renderIndex(listed));
+writeFileSync(join(out, "blog/feed.xml"), renderFeed(listed));
 
 const sitemapPath = join(out, "sitemap.xml");
-writeFileSync(sitemapPath, readFileSync(sitemapPath, "utf8").replace("</urlset>", `${sitemapEntries(posts)}</urlset>`));
+writeFileSync(sitemapPath, readFileSync(sitemapPath, "utf8").replace("</urlset>", `${sitemapEntries(listed)}</urlset>`));
 
 console.log(`Built ${posts.length} posts into ${out}`);

@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "Watch party etiquette: 10 rules for watching together online"
 seoTitle: "Watch Party Etiquette: 10 Rules for Watching Online · Watchbear"
 description: "Watch party etiquette for online movie nights: ten simple rules about pausing, spoilers, chat, mics and cameras that keep the whole room happy and in sync."

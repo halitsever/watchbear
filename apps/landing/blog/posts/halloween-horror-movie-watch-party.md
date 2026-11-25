@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: How to host a Halloween horror movie watch party online
 seoTitle: How to Host a Halloween Horror Movie Watch Party Online · Watchbear
 description: "Plan a Halloween horror movie watch party online: pick films by scare level, set up a synced room, and add costumes, games and snacks for the night."

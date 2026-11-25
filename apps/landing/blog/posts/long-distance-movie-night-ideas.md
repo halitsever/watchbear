@@ -66,7 +66,7 @@ Eat together on video first, the way you'd sit at a table. When the film starts,
 
 Time zones are usually the hardest part. When it's evening for one of you and two in the morning for the other, a weekend works better: breakfast with a film for one person, a late night for the other. Put it in a shared calendar so it doesn't get bumped.
 
-For the playback, [Watchbear](../index.html) keeps both videos on the same frame. Start a room, send the invite link, and when either of you pauses, both screens pause. Chat and emoji reactions sit in a side panel next to the film, and voice and video chat are built in for when you'd rather talk. Your camera starts off every time you join, so you decide when to be seen.
+For the playback, [Watchbear](../) keeps both videos on the same frame. Start a room, send the invite link, and when either of you pauses, both screens pause. Chat and emoji reactions sit in a side panel next to the film, and voice and video chat are built in for when you'd rather talk. Your camera starts off every time you join, so you decide when to be seen.
 
 Each person streams the film in their own browser, so everyone needs their own access to it. That costs nothing extra on YouTube or Vimeo. For a streaming service, both of you need a login.
 

@@ -59,8 +59,8 @@
   }
 
   var LINKS = [
-    { href: "index.html", label: "Home" },
-    { href: "blog/index.html", label: "Blog", section: true },
+    { href: "./", label: "Home" },
+    { href: "blog/", label: "Blog", section: true },
     { href: "privacy.html", label: "Privacy" },
     { href: "support.html", label: "Support" },
   ];
@@ -120,7 +120,7 @@
         "<style>" + STYLE + "</style>" +
         '<nav class="nav">' +
         '<div class="wrap nav-in">' +
-        '<a href="' + resolve("index.html") + '" class="brand" aria-label="Watchbear home">' +
+        '<a href="' + resolve("./") + '" class="brand" aria-label="Watchbear home">' +
         '<span class="mk">' + bearSVG({ size: 36 }) + "</span>" +
         '<span class="wordmark"><span class="w1">Watch</span><span class="w2">bear</span></span>' +
         "</a>" +

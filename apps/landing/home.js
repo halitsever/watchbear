@@ -1,9 +1,9 @@
 /** Home page room: three real players on one film. The visitor's player leads, the other two follow it. */
 (function () {
-  var SRC = "img/a-trip-to-the-moon-1902.webm";
+  var SRC = "img/caminandes-llamigos.webm";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var net = navigator.connection || {};
-  // the film is 4 MB, so slow or metered connections wait for a tap
+  // the clip is 4 MB, so slow or metered connections wait for a tap
   var saveData = !!net.saveData || /(^|-)(2g|3g)$/.test(net.effectiveType || "");
 
   var room = document.getElementById("room");
@@ -62,12 +62,12 @@
 
   // what the friends type as the scene plays, keyed by film time
   var LINES = [
-    [1.5, "Maya", "they are firing people out of a cannon"],
-    [7, "Ece", "why does the moon have a face"],
-    [13, "Maya", "it is getting closer"],
-    [19.6, "Ece", "right in the eye"],
-    [22.5, "Maya", "he looks so annoyed"],
-    [27.5, "Ece", "1902, and they just landed"],
+    [2.5, "Maya", "llamas and ice do not mix"],
+    [9.3, "Ece", "and down it goes"],
+    [13.5, "Maya", "wait, who is that"],
+    [16.5, "Ece", "the tiniest penguin"],
+    [25, "Maya", "is that a train"],
+    [30.2, "Ece", "get off the tracks"],
   ];
   var lastSaid = {};
 

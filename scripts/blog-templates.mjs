@@ -161,6 +161,7 @@ export function renderIndex(posts) {
         <span class="eyebrow">Watchbear blog</span>
         <h1>Watching together, <span class="accent">from far apart</span></h1>
         <p>Practical guides for watch parties, YouTube and Netflix nights with friends, and movie dates across time zones.</p>
+        <p>New here? Start with how to host a Netflix watch party or how to watch YouTube together. Each guide covers what everyone needs, how to set up a synced room in Watchbear, and how to fix the usual problems, like a friend falling a few seconds behind.</p>
       </header>
 
       <div class="post-grid">

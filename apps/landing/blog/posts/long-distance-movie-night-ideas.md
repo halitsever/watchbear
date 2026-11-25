@@ -1,6 +1,6 @@
 ---
 title: "Long-distance movie night: 10 ideas that feel like hanging out"
-seoTitle: 10 Long-Distance Movie Night Ideas for Couples and Friends · Watchbear
+seoTitle: 10 Long-Distance Movie Night Ideas for Couples and Friends
 description: "Ten long-distance movie night ideas for couples and friends: themes, food, games and small rituals that make watching a film over the internet feel like a night in."
 dek: Pressing play at the same moment is the easy part. These ideas are for the rest of the evening, for couples and friends who would normally share a couch.
 excerpt: Themes, rituals and small games that make a movie night over the internet feel less like a call and more like a night in.

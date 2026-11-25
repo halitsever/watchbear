@@ -1,6 +1,6 @@
 ---
 title: How to host an online watch party that actually stays in sync
-seoTitle: How to Host an Online Watch Party That Stays in Sync · Watchbear
+seoTitle: How to Host an Online Watch Party That Stays in Sync
 description: "How to host an online watch party, step by step: what everyone needs, why screen sharing falls short, how to set up a synced room, and how to fix problems."
 dek: Everyone presses play at once, and five minutes later someone is a scene ahead. Here's what you need, how to set up a synced room, and what to do when something goes wrong.
 excerpt: Skip the "3, 2, 1, play" countdown. What you need, how to set up the room, and how to fix the usual problems before anyone notices them.

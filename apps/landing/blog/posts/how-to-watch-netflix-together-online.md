@@ -1,6 +1,6 @@
 ---
 title: How to watch Netflix together online with friends
-seoTitle: "Netflix Watch Party: How to Watch Netflix Together Online · Watchbear"
+seoTitle: "Netflix Watch Party: How to Watch Netflix Together Online"
 description: "How to watch Netflix together online: what everyone needs, why screen sharing Netflix rarely works, and how to set up a synced Netflix watch party in minutes."
 dek: Pressing play at the same time on two Netflix accounts works for about five minutes. Here's how to keep a Netflix watch party in sync for the whole film, and what everyone needs before you start.
 excerpt: What everyone needs, why screen sharing Netflix rarely works, and how to keep a whole group on the same scene from the opening credits on.
@@ -89,7 +89,7 @@ Agree on intros before you start. A skip from one person moves the whole room, s
 
 The chat sits in the side panel next to Netflix, so messages never cover subtitles. Emoji reactions are one click away, which is handy for the scenes where typing is too slow.
 
-If your group would rather talk, voice and video chat are built in. Cameras start off every time you join, so nobody is on screen until they choose to be. For the full setup, see our guide to [watch parties with video chat](watch-party-with-video-chat.html). Whatever you do, wear headphones on voice, or your mic will pick up the film and send it back to everyone.
+If your group would rather talk, voice and video chat are built in. Cameras start off every time you join, so nobody is on screen until they choose to be. Whatever you do, wear headphones on voice, or your mic will pick up the film and send it back to everyone.
 
 ## When something goes wrong
 
@@ -105,4 +105,4 @@ Skip back a few seconds. The skip moves every player in the room, so everyone la
 
 Your plan allows a set number of screens at once. If two people in one home join on the same account, that counts as two.
 
-Hosting for the first time? Our [guide to hosting an online watch party](how-to-host-a-watch-party-online.html) covers the general setup, and the [watch party etiquette rules](watch-party-etiquette.html) will save you a few arguments about pausing.
+Hosting for the first time? Our [guide to hosting an online watch party](how-to-host-a-watch-party-online.html) covers the general setup.

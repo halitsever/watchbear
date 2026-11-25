@@ -200,6 +200,28 @@
         color: var(--ink);
       }
 
+      .fixes {
+        padding: 8px 0 40px;
+      }
+      .fixes h2 {
+        font-size: 24px;
+        margin-bottom: 18px;
+      }
+      .fixes dl {
+        margin: 0;
+        max-width: 46em;
+      }
+      .fixes dt {
+        font-weight: 700;
+        color: var(--ink);
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+      }
+      .fixes dd {
+        margin: 6px 0 16px;
+        color: var(--muted);
+      }
+
       @media (max-width: 640px) {
         .hero h1 {
           font-size: 32px;
@@ -220,6 +242,26 @@
           <p>Questions, a bug to report, or just some feedback? Drop us a message and we'll get back to you.</p>
         </div>
       </header>
+
+      <section class="fixes">
+        <div class="wrap">
+          <h2>Quick fixes</h2>
+          <dl>
+            <dt>Camera or microphone is blocked</dt>
+            <dd>Chrome asks once. If you declined, allow the camera and microphone for the site in Chrome's site settings, then switch them on again in the panel.</dd>
+            <dt>Another app is using the camera</dt>
+            <dd>Close the other call or app that holds the device, then switch your camera back on.</dd>
+            <dt>My camera switched itself off</dt>
+            <dd>When a computer is struggling, Watchbear lowers the picture it sends and can turn the camera off so the film keeps playing. Switch it back on whenever you like.</dd>
+            <dt>Watchbear says no video was found</dt>
+            <dd>Let the video play once on the page, then reopen the Watchbear panel. It looks for the main video player on the page.</dd>
+            <dt>A friend is a few seconds behind</dt>
+            <dd>Play, pause and skip reach everyone within a moment, and a player that drifts is nudged back to the room's position.</dd>
+            <dt>A friend can't join from their phone</dt>
+            <dd>Watchbear is a Chrome extension, so everyone needs Chrome on a laptop or desktop and a Google account to sign in.</dd>
+          </dl>
+        </div>
+      </section>
 
       <section class="contact">
         <div class="wrap">

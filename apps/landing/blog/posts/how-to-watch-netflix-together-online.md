@@ -1,6 +1,6 @@
 ---
 title: How to watch Netflix together online with friends
-seoTitle: How to Watch Netflix Together Online with Friends · Watchbear
+seoTitle: "Netflix Watch Party: How to Watch Netflix Together Online · Watchbear"
 description: "How to watch Netflix together online: what everyone needs, why screen sharing Netflix rarely works, and how to set up a synced Netflix watch party in minutes."
 dek: Pressing play at the same time on two Netflix accounts works for about five minutes. Here's how to keep a Netflix watch party in sync for the whole film, and what everyone needs before you start.
 excerpt: What everyone needs, why screen sharing Netflix rarely works, and how to keep a whole group on the same scene from the opening credits on.

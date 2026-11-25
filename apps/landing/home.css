@@ -364,6 +364,19 @@ main > section {
   align-items: center;
 }
 
+.need {
+  margin: 22px 0 0;
+  max-width: var(--measure);
+  padding: 14px 16px;
+  border-left: 2px solid var(--accent);
+  background: var(--accent-tint);
+  color: var(--muted);
+  font-size: 16px;
+}
+.need b {
+  color: var(--ink);
+}
+
 .steps {
   margin: 0;
   padding: 0;

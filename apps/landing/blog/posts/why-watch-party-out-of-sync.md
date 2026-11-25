@@ -1,6 +1,6 @@
 ---
 title: Why your watch party keeps going out of sync, and how to fix it
-seoTitle: Watch Party Out of Sync? Why It Happens and How to Fix It · Watchbear
+seoTitle: Watch Party Out of Sync? Why It Happens and How to Fix It
 description: "Is your watch party out of sync? The usual reasons videos drift apart between friends, like buffering and ads, and how to keep everyone on the same frame."
 dek: You all pressed play together, and ten minutes later someone is laughing at a joke nobody else has heard yet. Here's where the drift comes from and what actually stops it.
 excerpt: Buffering, ads, stray pauses and manual countdowns all push friends apart. What causes the drift, and how to stop it for good.
@@ -84,4 +84,4 @@ A sync tool handles the timing, but a few habits still make the night smoother:
 - Decide together whether to skip intros and recaps, and let one person do it for the room.
 - Wait out ads as a group. Whoever gets one says so in the chat, and everyone holds for a few seconds.
 
-Some drift is normal whenever players run on their own. Once something shares the position between them, the only thing left to coordinate is when to start. If you're setting up a room for the first time, our guide to [hosting an online watch party](how-to-host-a-watch-party-online.html) covers the whole process, and our [watch party etiquette](watch-party-etiquette.html) rules cover the human side.
+Some drift is normal whenever players run on their own. Once something shares the position between them, the only thing left to coordinate is when to start. If you're setting up a room for the first time, our guide to [hosting an online watch party](how-to-host-a-watch-party-online.html) covers the whole process.

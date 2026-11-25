@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Page not found · Watchbear</title>
+    <meta name="description" content="This Watchbear page does not exist. Start from the home page or one of the guides." />
+    <meta name="robots" content="noindex,follow" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- root paths: this page is served for any missing address, at any depth -->
+    <link rel="icon" type="image/svg+xml" href="/bear.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/nav.js" defer></script>
+    <style>
+      body {
+        font-size: 17px;
+      }
+      .lost {
+        position: relative;
+        overflow: hidden;
+        padding: clamp(64px, 12vw, 150px) 0;
+      }
+      .lost-still {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 62%;
+        opacity: 0.3;
+        -webkit-mask-image: linear-gradient(transparent, #000 35%, #000 70%, transparent);
+        mask-image: linear-gradient(transparent, #000 35%, #000 70%, transparent);
+      }
+      .lost .wrap {
+        position: relative;
+        max-width: 760px;
+      }
+      .lost h1 {
+        font-family: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
+        font-stretch: 75%;
+        font-weight: 800;
+        font-size: clamp(44px, 7vw, 84px);
+        line-height: 0.94;
+        letter-spacing: -0.03em;
+      }
+      .lost p {
+        margin: 20px 0 0;
+        max-width: 32em;
+        font-size: 19px;
+        color: var(--muted);
+      }
+      .lost ul {
+        display: grid;
+        gap: 10px;
+        margin: 30px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .lost li a {
+        color: var(--accent-text);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
+      .lost .btn {
+        margin-top: 34px;
+      }
+    </style>
+  </head>
+  <body>
+    <wb-nav></wb-nav>
+    <main class="lost">
+      <img class="lost-still" src="/img/a-trip-to-the-moon-1902-landing.webp" width="640" height="480" alt="" />
+      <div class="wrap">
+        <h1>This page landed somewhere else.</h1>
+        <p>The address does not match a page on this site. It may have moved, or the link was mistyped. These go somewhere real:</p>
+        <ul>
+          <li><a href="/blog/how-to-watch-netflix-together-online.html">How to watch Netflix together online</a></li>
+          <li><a href="/blog/watch-youtube-together.html">How to watch YouTube together</a></li>
+          <li><a href="/teleparty-alternative.html">Watchbear compared with Teleparty</a></li>
+          <li><a href="/blog/">All guides</a></li>
+          <li><a href="/support.html">Support</a></li>
+        </ul>
+        <a class="btn lg" href="/">Go to the home page</a>
+      </div>
+    </main>
+  </body>
+</html>

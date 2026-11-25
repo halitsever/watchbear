@@ -18,6 +18,7 @@ Install it from the Chrome Web Store: https://chromewebstore.google.com/detail/w
 - [How to watch YouTube together with friends online](https://watchbear.deepfeld.com/blog/watch-youtube-together.html): Screen sharing, calls and sync extensions compared, plus a step-by-step setup and a few ideas for what to put on.
 - [Long-distance movie night: 10 ideas that feel like hanging out](https://watchbear.deepfeld.com/blog/long-distance-movie-night-ideas.html): Themes, rituals and small games that make a movie night over the internet feel less like a call and more like a night in.
 - [How to watch Netflix together online with friends](https://watchbear.deepfeld.com/blog/how-to-watch-netflix-together-online.html): What everyone needs, why screen sharing Netflix rarely works, and how to keep a whole group on the same scene from the opening credits on.
+- [How to stream Netflix on Discord, and why the screen goes black](https://watchbear.deepfeld.com/blog/screen-share-movie-discord-zoom.html): The Discord steps, why Netflix shows up as a black screen, and what works better for a whole film.
 - [How to host an online watch party that actually stays in sync](https://watchbear.deepfeld.com/blog/how-to-host-a-watch-party-online.html): Skip the "3, 2, 1, play" countdown. What you need, how to set up the room, and how to fix the usual problems before anyone notices them.
 
 ## Optional

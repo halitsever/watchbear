@@ -169,7 +169,7 @@ export function renderIndex(posts) {
     </main>
 
 ${footer([
-  ["../index.html", "Home"],
+  ["../", "Home"],
   ["../teleparty-alternative.html", "Watchbear vs Teleparty"],
   ["../privacy.html", "Privacy Policy"],
 ])}`;
@@ -234,7 +234,7 @@ export function renderPost(post, related) {
     <main>
       <article>
         <header class="article">
-          <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span>/</span><a href="index.html">Blog</a></nav>
+          <nav class="crumbs" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Blog</a></nav>
           <h1>${esc(post.title)}</h1>
           <p class="dek">${esc(post.dek)}</p>
           <div class="meta"><time datetime="${post.date}">${formatDate(post.date)}</time><span class="dot"></span><span>${post.readingTime} min read</span></div>
@@ -269,8 +269,8 @@ ${post.html}
     </main>
 
 ${footer([
-  ["../index.html", "Home"],
-  ["index.html", "Blog"],
+  ["../", "Home"],
+  ["./", "Blog"],
   ["../privacy.html", "Privacy Policy"],
 ])}`;
 }

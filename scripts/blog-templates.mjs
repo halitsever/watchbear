@@ -172,6 +172,7 @@ export function renderIndex(posts) {
 ${footer([
   ["../", "Home"],
   ["../teleparty-alternative.html", "Watchbear vs Teleparty"],
+  ["../support.html", "Support"],
   ["../privacy.html", "Privacy Policy"],
 ])}`;
 }
@@ -272,6 +273,7 @@ ${post.html}
 ${footer([
   ["../", "Home"],
   ["./", "Blog"],
+  ["../support.html", "Support"],
   ["../privacy.html", "Privacy Policy"],
 ])}`;
 }

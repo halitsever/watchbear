@@ -4,7 +4,7 @@
 <img src="https://halitsever-api.vercel.app/api/repo-title?title=Watchbear">
 
 <p align="center">
-🐻 Watchbear: The sweet way to watch together. A free watch party Chrome extension for watching YouTube and other videos together in sync, with live chat and reactions in a side panel.<br>
+Watchbear: The sweet way to watch together. A free watch party Chrome extension for watching YouTube and other videos together in sync, with live chat and reactions in a side panel.<br>
 <br/>
 <br/>
 <img src="https://img.shields.io/github/sponsors/halitsever" alt="GitHub Sponsors"/>

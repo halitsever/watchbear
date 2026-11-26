@@ -13,7 +13,7 @@
    <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn"><b>Get it on the Chrome Web Store</b></a>
 </p>
 <p align="center">
-<a align="center" href="https://watchbear.deepfeld.com/support.html">Documentation</a>
+<a align="center" href="https://watchbear.net/support.html">Documentation</a>
   </p>
 </p>
 
@@ -30,12 +30,12 @@ Watchbear lets you watch any video together, in sync. Start a room, share the
 code, and everyone's playback stays on the same frame, with chat and reactions
 in a side panel right next to the video.
 
-- [**Synced playback**](https://watchbear.deepfeld.com/#sync) - when anyone plays, pauses or skips, everyone's screen follows, so the whole room stays on the same frame.
-- [**Room codes**](https://watchbear.deepfeld.com/#demo) - start a room, share the code, and your friends join in seconds.
-- [**Chat and reactions**](https://watchbear.deepfeld.com/#demo) - live chat and reactions in a side panel next to the video.
-- [**Works on most sites**](https://watchbear.deepfeld.com/#where) - YouTube, Vimeo and most sites with a standard video player. Watchbear finds the main video on the page and keeps it in sync.
-- [**Free**](https://watchbear.deepfeld.com/#get) - hosting a watch party costs nothing. Everyone signs in with a free Google account.
-- [**Teleparty alternative**](https://watchbear.deepfeld.com/teleparty-alternative.html) - not limited to a fixed list of streaming services, with video chat included for free.
+- [**Synced playback**](https://watchbear.net/#sync) - when anyone plays, pauses or skips, everyone's screen follows, so the whole room stays on the same frame.
+- [**Room codes**](https://watchbear.net/#demo) - start a room, share the code, and your friends join in seconds.
+- [**Chat and reactions**](https://watchbear.net/#demo) - live chat and reactions in a side panel next to the video.
+- [**Works on most sites**](https://watchbear.net/#where) - YouTube, Vimeo and most sites with a standard video player. Watchbear finds the main video on the page and keeps it in sync.
+- [**Free**](https://watchbear.net/#get) - hosting a watch party costs nothing. Everyone signs in with a free Google account.
+- [**Teleparty alternative**](https://watchbear.net/teleparty-alternative.html) - not limited to a fixed list of streaming services, with video chat included for free.
 
 <p align="center" >
 <img src="https://halitsever-api.vercel.app/api/installation"/>
@@ -43,7 +43,7 @@ in a side panel right next to the video.
 
 Install Watchbear from the [Chrome Web Store](https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn), open a video, start a room and share the room code.
 
-This repository hosts the [watchbear.deepfeld.com](https://watchbear.deepfeld.com)
+This repository hosts the [watchbear.net](https://watchbear.net)
 landing page.
 
 **Build**

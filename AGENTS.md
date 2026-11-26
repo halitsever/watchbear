@@ -1,6 +1,6 @@
 # Watchbear landing page
 
-Static landing page and blog for Watchbear, a free Chrome extension for synced watch parties, served at https://watchbear.deepfeld.com. The extension source is not in this repository and is no longer open source.
+Static landing page and blog for Watchbear, a free Chrome extension for synced watch parties, served at https://watchbear.net. The extension source is not in this repository and is no longer open source.
 
 ## Verify a change
 
@@ -17,12 +17,13 @@ Static landing page and blog for Watchbear, a free Chrome extension for synced w
 - Each static page carries its own head tags, canonical URL and JSON-LD. Update them per page; there is no shared template.
 - `apps/landing/CNAME` sets the custom domain. Keep it.
 - `j.html` is the room join page and is `noindex`. Keep it out of the sitemap and `llms.txt`.
+- Invite links still open on `https://watchbear.deepfeld.com/j`, because released extensions only recognise that host. A Cloudflare Worker there (`infra/legacy-host-worker.js`) serves `/j` and its assets from this site and redirects every other path to `https://watchbear.net`. Keep `j.html` working on both hosts.
 - The owner removed open source and self-hosting mentions on purpose. Keep the site, README and `llms.txt` from presenting the extension as open source.
 
 ## Docs and site
 
 - Site root: `apps/landing/`. `robots.txt`, `sitemap.xml` and `llms.txt` live there and are served from the domain root.
-- Add a new page or post to `llms.txt` with its absolute `https://watchbear.deepfeld.com/` URL.
+- Add a new page or post to `llms.txt` with its absolute `https://watchbear.net/` URL.
 
 ## Conventions
 

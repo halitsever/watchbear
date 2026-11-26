@@ -75,12 +75,12 @@
     ".brand{display:flex;align-items:center;gap:10px}" +
     ".brand .mk{width:36px;height:36px;display:flex;align-items:center;justify-content:center}" +
     ".brand .mk svg{display:block}" +
-    ".wordmark{font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-weight:800;font-size:21px;letter-spacing:-0.02em;color:var(--nav-ink,var(--ink,#ececec))}" +
+    ".wordmark{font-family:-apple-system,BlinkMacSystemFont,\"Inter\",system-ui,sans-serif;font-weight:800;font-size:21px;letter-spacing:-0.02em;color:var(--nav-ink,var(--ink,#ececec))}" +
     ".wordmark .w2{color:var(--nav-accent,var(--accent-text,#d8b46a))}" +
     ".nav-right{display:flex;align-items:center;gap:28px}" +
-    ".nav-link{font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-weight:500;font-size:15px;color:var(--nav-muted,var(--muted,#989890));transition:color 0.15s}" +
+    ".nav-link{font-family:-apple-system,BlinkMacSystemFont,\"Inter\",system-ui,sans-serif;font-weight:500;font-size:15px;color:var(--nav-muted,var(--muted,#989890));transition:color 0.15s}" +
     ".nav-link:hover,.nav-link[aria-current=\"page\"]{color:var(--nav-ink,var(--ink,#ececec))}" +
-    ".btn{display:inline-flex;align-items:center;gap:9px;font-family:\"Hanken Grotesk\",system-ui,sans-serif;font-weight:700;cursor:pointer;border:none;border-radius:9px;background:var(--accent,#d8b46a);color:var(--on-accent,#1a1204);padding:10px 18px;font-size:15px;box-shadow:0 1px 2px rgba(26,20,13,0.1);transition:background 0.15s}" +
+    ".btn{display:inline-flex;align-items:center;gap:9px;font-family:-apple-system,BlinkMacSystemFont,\"Inter\",system-ui,sans-serif;font-weight:700;cursor:pointer;border:none;border-radius:9px;background:var(--accent,#d8b46a);color:var(--on-accent,#1a1204);padding:10px 18px;font-size:15px;box-shadow:0 1px 2px rgba(26,20,13,0.1);transition:background 0.15s}" +
     ".btn:hover{background:var(--accent-hover,#e4c482)}" +
     ".nav-toggle{display:none;flex-direction:column;justify-content:center;gap:5px;width:42px;height:42px;padding:0 9px;background:transparent;border:1px solid var(--nav-line,var(--line-strong,rgba(255,255,255,0.16)));border-radius:9px;cursor:pointer}" +
     ".nav-toggle span{display:block;width:100%;height:2px;background:var(--nav-ink,var(--ink,#ececec));border-radius:2px;transition:transform 0.2s,opacity 0.2s}" +

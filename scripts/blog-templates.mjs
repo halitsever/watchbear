@@ -73,7 +73,7 @@ function head({ title, description, ogTitle, ogDescription, url, image, imageAlt
     <link rel="alternate" type="application/rss+xml" title="Watchbear Blog" href="${SITE}/blog/feed.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css" />
     <link rel="stylesheet" href="blog.css" />
     <script src="../nav.js" defer></script>

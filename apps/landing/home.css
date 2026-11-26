@@ -1,7 +1,6 @@
 /** Home page only. Shared tokens, buttons and the nav live in styles.css and nav.js. */
 
 :root {
-  --font-display: "Bricolage Grotesque", "Hanken Grotesk", system-ui, sans-serif;
   --measure: 34em;
 }
 
@@ -42,12 +41,11 @@ summary:focus-visible {
 }
 
 main h2 {
-  font-family: var(--font-display);
-  font-stretch: 78%;
+  font-family: var(--font-body);
   font-weight: 800;
-  font-size: clamp(34px, 4.6vw, 60px);
-  line-height: 0.98;
-  letter-spacing: -0.025em;
+  font-size: clamp(30px, 3.8vw, 48px);
+  line-height: 1.06;
+  letter-spacing: -0.032em;
   max-width: 16em;
 }
 
@@ -111,12 +109,11 @@ main .wrap {
 }
 
 .hero h1 {
-  font-family: var(--font-display);
-  font-stretch: 75%;
+  font-family: var(--font-body);
   font-weight: 800;
-  font-size: clamp(42px, 5.6vw, 78px);
-  line-height: 0.92;
-  letter-spacing: -0.03em;
+  font-size: clamp(36px, 4.6vw, 62px);
+  line-height: 1.02;
+  letter-spacing: -0.038em;
   text-wrap: balance;
 }
 
@@ -500,8 +497,7 @@ main .wrap {
 }
 .steps li::before {
   content: counter(step);
-  font-family: var(--font-display);
-  font-stretch: 75%;
+  font-family: var(--font-body);
   font-weight: 800;
   font-size: 44px;
   line-height: 0.9;

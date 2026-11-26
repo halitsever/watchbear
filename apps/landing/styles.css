@@ -40,7 +40,7 @@
   --nav-menu-bg: #0a0a0a;
   --nav-hover: rgba(255, 255, 255, 0.06);
 
-  --font-body: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
   --r-btn: 9px;
   --r-input: 8px;
   --r-card: 14px;

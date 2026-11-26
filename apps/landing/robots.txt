@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://watchbear.deepfeld.com/sitemap.xml
+Sitemap: https://watchbear.net/sitemap.xml

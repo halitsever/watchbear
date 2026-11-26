@@ -1,6 +1,6 @@
 /** HTML for the blog index and post pages. Output mirrors the hand-written landing pages. */
 
-export const SITE = "https://watchbear.deepfeld.com";
+export const SITE = "https://watchbear.net";
 const CHROME_URL = "https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn";
 
 const BLOG = {

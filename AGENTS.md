@@ -4,10 +4,11 @@ Static landing page and blog for Watchbear, a free Chrome extension for synced w
 
 ## Verify a change
 
-- `pnpm install --frozen-lockfile && pnpm build` is exactly what deploy runs (pnpm 11, Node 22). It writes `dist/`.
+- `pnpm install --frozen-lockfile && pnpm build` is what the Docker build runs (pnpm 11, Node 22). It writes `dist/`.
 - Without a global pnpm, `npx pnpm@11.4.0 install --frozen-lockfile` matches the `packageManager` pin.
 - `pnpm preview` builds and serves `dist/` on http://localhost:8080. Check pages there; there is no other CI.
-- Every push to `main` deploys to GitHub Pages through `.github/workflows/landing.yml`, so a broken build on `main` means a broken deploy.
+- Dokploy builds the `Dockerfile` on every push to `main` and serves the result with `nginx.conf`, so a broken build on `main` means a failed deploy.
+- `docker build -t watchbear-landing . && docker run --rm -p 8080:80 watchbear-landing` runs the same image locally. Send a `Host: watchbear.deepfeld.com` header to test the legacy host.
 
 ## Gotchas
 
@@ -15,9 +16,8 @@ Static landing page and blog for Watchbear, a free Chrome extension for synced w
 - The build fails on a post with missing front matter (`title`, `description`, `dek`, `date`, `image`, `imageAlt`, `photo.author`, `photo.url`), a missing image in `blog/img/`, a broken relative link between posts, or an unknown `related` slug. It only warns about title and description lengths.
 - `apps/landing/sitemap.xml` lists the static pages only. The build appends blog posts to it, so add new static pages by hand and leave posts to the build.
 - Each static page carries its own head tags, canonical URL and JSON-LD. Update them per page; there is no shared template.
-- `apps/landing/CNAME` sets the custom domain. Keep it.
 - `j.html` is the room join page and is `noindex`. Keep it out of the sitemap and `llms.txt`.
-- Invite links still open on `https://watchbear.deepfeld.com/j`, because released extensions only recognise that host. A Cloudflare Worker there (`infra/legacy-host-worker.js`) serves `/j` and its assets from this site and redirects every other path to `https://watchbear.net`. Keep `j.html` working on both hosts.
+- Invite links still open on `https://watchbear.deepfeld.com/j`, because released extensions only recognise that host. The first server block in `nginx.conf` serves `/j` and its assets there and redirects every other path to `https://watchbear.net`. Keep `j.html` working on both hosts.
 - The owner removed open source and self-hosting mentions on purpose. Keep the site, README and `llms.txt` from presenting the extension as open source.
 
 ## Docs and site

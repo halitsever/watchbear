@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      esbuild-wasm:
+        specifier: 0.28.2
+        version: 0.28.2
       marked:
         specifier: 18.1.1
         version: 18.1.1
@@ -16,6 +19,11 @@ importers:
         version: 2.9.1
 
 packages:
+
+  esbuild-wasm@0.28.2:
+    resolution: {integrity: sha512-GccVwhv3mmOUVQHCQm2Ox/rby8n/EqUwvZxE6Pjfikrq/lWw9g9WX/u9EykWnpot3Ko6j426DgQdea2xWKIAQA==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   marked@18.1.1:
     resolution: {integrity: sha512-zEGgrtUG8crk+TrMacJSVABU4DYDDkS8uqgU3ohrn/2fW9C2AEfUrO3m6IhpIpQpl7YcVpiXXC9cSMWDANT3dg==}
@@ -28,6 +36,8 @@ packages:
     hasBin: true
 
 snapshots:
+
+  esbuild-wasm@0.28.2: {}
 
   marked@18.1.1: {}
 

@@ -132,6 +132,23 @@ main .wrap {
   margin-top: 22px;
 }
 
+.hero-rating {
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.hero-rating a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
+}
+
+.hero-rating a:hover {
+  color: var(--text);
+}
+
 .room {
   position: relative;
   display: grid;

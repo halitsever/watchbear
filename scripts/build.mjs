@@ -1,8 +1,9 @@
 /** Copies apps/landing to dist/ and renders the Markdown posts in blog/posts into static blog pages. */
 
 import { cpSync, existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { basename, join, resolve } from "node:path";
+import { basename, extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { transform } from "esbuild-wasm";
 import { Marked } from "marked";
 import { parse as parseYaml } from "yaml";
 import { SITE, esc, renderFeed, renderIndex, renderPost } from "./blog-templates.mjs";
@@ -168,5 +169,21 @@ writeFileSync(join(out, "blog/feed.xml"), renderFeed(listed));
 
 const sitemapPath = join(out, "sitemap.xml");
 writeFileSync(sitemapPath, readFileSync(sitemapPath, "utf8").replace("</urlset>", `${sitemapEntries(listed)}</urlset>`));
+
+/** The source files stay readable; the served copies are minified so pages download less. */
+async function minifyAssets(dir) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const path = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      await minifyAssets(path);
+      continue;
+    }
+    const loader = { ".css": "css", ".js": "js" }[extname(entry.name)];
+    if (!loader) continue;
+    const { code } = await transform(readFileSync(path, "utf8"), { loader, minify: true, target: "es2020" });
+    writeFileSync(path, code);
+  }
+}
+await minifyAssets(out);
 
 console.log(`Built ${posts.length} posts into ${out}`);

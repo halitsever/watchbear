@@ -60,7 +60,7 @@ Wait until the whole group has joined, then press play. From then on anyone can 
 
 ### 6. Talk while you watch
 
-Chat lives in the side panel, so messages never cover the film, and emoji reactions are one click away for jump scares and plot twists. Voice and video chat are built in as well. They start switched off, so nobody is on camera until they decide to be.
+Chat lives in the side panel, so messages never cover the film, and emoji reactions are one click away for jump scares and plot twists. Voice and video chat are built in as well. They start switched off, so nobody is on camera until they decide to be. If Chrome blocked your camera or microphone, [allow camera and microphone access in Chrome](allow-camera-microphone-chrome.html) first.
 
 > **Tip:** send the link ten minutes before the start time. First-time guests need a minute to install the extension and sign in, and it's better if that happens before the opening scene.
 

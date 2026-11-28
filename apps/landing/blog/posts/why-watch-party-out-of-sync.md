@@ -80,6 +80,7 @@ A sync tool handles the timing, but a few habits still make the night smoother:
 - Send everyone the exact same link. An invite link that opens the video for each guest avoids the "I think I'm on a different upload" problem.
 - Agree on a pause rule. Say "brb" in the chat before you stop the film, so nobody wonders why their video froze.
 - Lower your quality if you keep buffering. Each person picks their own resolution, so dropping to 480p on your end only changes your picture.
+- If the picture stutters or goes black while the sound plays on, check [Chrome's hardware acceleration setting](chrome-hardware-acceleration.html).
 - Plug in your laptop and turn off sleep for the evening.
 - Decide together whether to skip intros and recaps, and let one person do it for the room.
 - Wait out ads as a group. Whoever gets one says so in the chat, and everyone holds for a few seconds.

@@ -74,4 +74,4 @@ Each person streams the film in their own browser, so everyone needs their own a
 
 > **If you only try one thing:** make it a regular night. Same day, same time, every week. Having it on the calendar to look forward to matters more than what's on screen.
 
-New to hosting? Our step-by-step guide to [hosting an online watch party](how-to-host-a-watch-party-online.html) covers setup and the problems that tend to come up on the first night.
+New to hosting? Our step-by-step guide to [hosting an online watch party](how-to-host-a-watch-party-online.html) covers setup and the problems that tend to come up on the first night. For nights that aren't about a film, try our [virtual date ideas](virtual-date-ideas.html).

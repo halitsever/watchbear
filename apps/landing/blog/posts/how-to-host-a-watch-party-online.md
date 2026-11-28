@@ -32,6 +32,8 @@ Everyone also needs access to the video itself. Each person plays it in their ow
 
 Screen sharing on Zoom, Discord or Google Meet is what most groups try first, and it works in a pinch. The trouble is that the film goes through a call codec built for faces. Fast scenes turn to smudges, frames drop, and the sound can slip out of step with the picture. The host's upload connection carries the stream for the whole group, and guests can't pause or rewind for themselves.
 
+The three common ways to watch together are compared side by side in [how to watch movies together online](how-to-watch-movies-together-online.html).
+
 With a sync extension, each person's player streams at full quality straight from the site. The only thing traveling between you is the playback state: playing or paused, and at which second. If one guest has a slow connection, it doesn't drag everyone else down with them.
 
 ## How to host a watch party with Watchbear

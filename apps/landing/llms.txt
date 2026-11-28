@@ -13,12 +13,22 @@ Install it from the Chrome Web Store: https://chromewebstore.google.com/detail/w
 - [Watch2Gether alternative](https://watchbear.net/watch2gether-alternative): Watchbear vs Watch2Gether, a sync extension compared with a shared player, including where Watch2Gether is stronger
 - [Watchbear (Türkçe)](https://watchbear.net/tr/): Turkish home page
 - [Netflix party nasıl yapılır](https://watchbear.net/tr/netflix-party-nasil-yapilir): Turkish step-by-step Netflix party guide, including the phone question
+- [Watchbear (Español)](https://watchbear.net/es/): Spanish home page
+- [Netflix party: cómo usarlo y cómo hacer uno](https://watchbear.net/es/netflix-party): Spanish Netflix party guide with a Teleparty comparison and the phone question
+- [Watchbear (Português)](https://watchbear.net/pt-br/): Brazilian Portuguese home page
+- [Netflix party: como funciona e como usar](https://watchbear.net/pt-br/netflix-party): Brazilian Portuguese Netflix party guide with a Teleparty comparison and the phone question
 - [Support](https://watchbear.net/support.html): help and contact
 - [Privacy policy](https://watchbear.net/privacy.html): what data the extension and site handle
 
 ## Blog
 
 - [Blog](https://watchbear.net/blog/): guides for watching together online
+- [How to watch movies together online with friends, three ways](https://watchbear.net/blog/how-to-watch-movies-together-online.html): A countdown, screen sharing and a sync extension compared for a full film, plus a step-by-step setup with a video call.
+- [How to watch movies together long distance, from setup to start time](https://watchbear.net/blog/how-to-watch-movies-together-long-distance.html): What you need, a synced setup with video chat, time zones, reminders, and picking up a series where you stopped last time.
+- [How to do a watch party on Discord, three ways compared](https://watchbear.net/blog/discord-watch-party.html): Watch Together, Go Live and a sync extension compared, with Discord's own limits and a setup for Netflix nights in a voice channel.
+- [Is Teleparty free? What the free plan and Premium include](https://watchbear.net/blog/is-teleparty-free.html): What the free plan covers, what Premium adds and costs, who in a party needs it, and how to cancel.
+- [Teleparty not working? Why it happens and how to fix it](https://watchbear.net/blog/teleparty-not-working.html): The fixes Teleparty recommends, the usual causes like browsers and Premium-only services, and what to try if it still won't start.
+- [Watch anime together online: synced episodes, subs and chat](https://watchbear.net/blog/watch-anime-together.html): Where it works, keeping a whole season in sync, subs and dubs per person, openings, and reacting without spoilers.
 - [Why your watch party keeps going out of sync, and how to fix it](https://watchbear.net/blog/why-watch-party-out-of-sync.html): Buffering, ads, stray pauses and manual countdowns all push friends apart. What causes the drift, and how to stop it for good.
 - [How to watch YouTube together with friends online](https://watchbear.net/blog/watch-youtube-together.html): Screen sharing, calls and sync extensions compared, plus a step-by-step setup and a few ideas for what to put on.
 - [Long-distance movie night: 10 ideas that feel like hanging out](https://watchbear.net/blog/long-distance-movie-night-ideas.html): Themes, rituals and small games that make a movie night over the internet feel less like a call and more like a night in.

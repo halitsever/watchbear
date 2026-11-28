@@ -58,24 +58,57 @@
     return new URL(href, BASE).href;
   }
 
-  /** Turkish pages under tr/ get Turkish labels and a home link to tr/. */
-  var TR = document.documentElement.lang === "tr";
-
-  var LINKS = TR
-    ? [
+  /** Language pages (tr/, es/, pt-br/) get their own labels and a home link to their folder. */
+  var LANGS = {
+    tr: {
+      links: [
         { href: "tr/", label: "Ana sayfa" },
         { href: "tr/netflix-party-nasil-yapilir", label: "Netflix party" },
         { href: "privacy.html", label: "Gizlilik" },
         { href: "support.html", label: "Destek" },
-      ]
-    : [
-        { href: "./", label: "Home" },
-        { href: "blog/", label: "Blog", section: true },
-        { href: "privacy.html", label: "Privacy" },
-        { href: "support.html", label: "Support" },
-      ];
-  var HOME = TR ? "tr/" : "./";
-  var CTA = TR ? "Chrome'a ekle" : "Add to Chrome";
+      ],
+      home: "tr/",
+      cta: "Chrome'a ekle",
+      toggle: "Menüyü aç veya kapat",
+    },
+    es: {
+      links: [
+        { href: "es/", label: "Inicio" },
+        { href: "es/netflix-party", label: "Netflix party" },
+        { href: "privacy.html", label: "Privacidad" },
+        { href: "support.html", label: "Ayuda" },
+      ],
+      home: "es/",
+      cta: "Añadir a Chrome",
+      toggle: "Abrir o cerrar el menú",
+    },
+    "pt-br": {
+      links: [
+        { href: "pt-br/", label: "Início" },
+        { href: "pt-br/netflix-party", label: "Netflix party" },
+        { href: "privacy.html", label: "Privacidade" },
+        { href: "support.html", label: "Suporte" },
+      ],
+      home: "pt-br/",
+      cta: "Usar no Chrome",
+      toggle: "Abrir ou fechar o menu",
+    },
+  };
+  var EN = {
+    links: [
+      { href: "./", label: "Home" },
+      { href: "blog/", label: "Blog", section: true },
+      { href: "privacy.html", label: "Privacy" },
+      { href: "support.html", label: "Support" },
+    ],
+    home: "./",
+    cta: "Add to Chrome",
+    toggle: "Toggle menu",
+  };
+  var L = LANGS[document.documentElement.lang.toLowerCase()] || EN;
+  var LINKS = L.links;
+  var HOME = L.home;
+  var CTA = L.cta;
 
   var STYLE =
     ":host{display:block}" +
@@ -140,7 +173,7 @@
         links +
         '<a href="' + CHROME_STORE_URL + '" target="_blank" rel="noopener" class="btn">' + CTA + "</a>" +
         "</div>" +
-        '<button class="nav-toggle" type="button" aria-label="' + (TR ? "Menüyü aç veya kapat" : "Toggle menu") + '" aria-expanded="false">' +
+        '<button class="nav-toggle" type="button" aria-label="' + L.toggle + '" aria-expanded="false">' +
         "<span></span><span></span><span></span>" +
         "</button>" +
         "</nav>";

@@ -287,6 +287,47 @@ body {
   color: var(--accent-text);
 }
 
+/** Comparison tables scroll inside their own box on phones, so the page never scrolls sideways. */
+.prose table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 0 0 22px;
+  font-size: 15px;
+  line-height: 1.5;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.prose th,
+.prose td {
+  text-align: left;
+  vertical-align: top;
+  padding: 11px 14px;
+  min-width: 120px;
+  border-bottom: 1px solid var(--line);
+}
+
+.prose thead th {
+  color: var(--ink);
+  font-weight: 700;
+  background: var(--bg-soft);
+}
+
+.prose tbody td {
+  color: var(--muted);
+}
+
+.prose tbody td:first-child {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.prose tr:last-child td {
+  border-bottom: none;
+}
+
 /* closing call to action */
 
 .cta-band {

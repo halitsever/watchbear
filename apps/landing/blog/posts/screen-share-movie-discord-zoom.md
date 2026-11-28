@@ -99,6 +99,9 @@ For a two-hour film, the second option wins easily. If you're still seeing drift
 
 ## When screen sharing is still fine
 
+If your group lives in a Discord server, our [Discord watch party guide](discord-watch-party.html) compares Discord's Watch Together activity, Go Live and a sync extension side by side.
+
+
 Screen sharing has its place. It's a good way to show a short clip during a meeting, walk someone through a game, or share a home video that only you have. For anything longer than a few minutes, or anything you'd actually like to see clearly, give everyone their own player.
 
 If this is your first time running a synced room, our guide to [hosting an online watch party](how-to-host-a-watch-party-online.html) covers the setup step by step, including what to do when something goes wrong.

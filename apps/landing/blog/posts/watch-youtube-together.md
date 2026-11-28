@@ -73,3 +73,5 @@ Ads are the most common hiccup. Guests without YouTube Premium may get them at d
 Quality is personal. Each person picks their own resolution, so a friend on a weak connection can drop to 480p without making the video worse for anyone else.
 
 Age-restricted and members-only videos need every guest to have access on their own account. If one person can't open the video normally, they won't be able to watch it in the room either.
+
+If your friends are already in a Discord voice channel, Discord's own Watch Together activity also plays YouTube in sync. Our [Discord watch party guide](discord-watch-party.html) covers its limits, and anime fans can start with [how to watch anime together](watch-anime-together.html).

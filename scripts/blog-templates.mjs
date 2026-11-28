@@ -180,6 +180,9 @@ ${footer([
 ])}`;
 }
 
+/** Posts are written by the owner, so search engines get a person, not the brand, as author. */
+const AUTHOR = { "@type": "Person", name: "Halit Sever", url: "https://www.halit.org" };
+
 export function renderPost(post, related) {
   const schema = [
     {
@@ -194,7 +197,7 @@ export function renderPost(post, related) {
       inLanguage: "en",
       mainEntityOfPage: post.url,
       isPartOf: { "@id": `${SITE}/blog/#blog` },
-      author: { "@id": `${SITE}/#org` },
+      author: AUTHOR,
       publisher: { "@id": `${SITE}/#org` },
     },
     {
@@ -242,7 +245,7 @@ export function renderPost(post, related) {
           <nav class="crumbs" aria-label="Breadcrumb"><a href="../">Home</a><span>/</span><a href="./">Blog</a></nav>
           <h1>${esc(post.title)}</h1>
           <p class="dek">${esc(post.dek)}</p>
-          <div class="meta"><time datetime="${post.date}">${formatDate(post.date)}</time><span class="dot"></span><span>${post.readingTime} min read</span></div>
+          <div class="meta"><span>By <a href="${AUTHOR.url}" rel="author">${AUTHOR.name}</a></span><span class="dot"></span><time datetime="${post.date}">${formatDate(post.date)}</time><span class="dot"></span><span>${post.readingTime} min read</span></div>
         </header>
 
         <figure class="cover">

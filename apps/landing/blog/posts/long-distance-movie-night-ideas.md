@@ -64,6 +64,8 @@ Eat together on video first, the way you'd sit at a table. When the film starts,
 
 ## Getting the logistics out of the way
 
+For the setup itself, with time zones, reminders and picking up a series where you stopped, see [how to watch movies together long distance](how-to-watch-movies-together-long-distance.html).
+
 Time zones are usually the hardest part. When it's evening for one of you and two in the morning for the other, a weekend works better: breakfast with a film for one person, a late night for the other. Put it in a shared calendar so it doesn't get bumped.
 
 For the playback, [Watchbear](../) keeps both videos on the same frame. Start a room, send the invite link, and when either of you pauses, both screens pause. Chat and emoji reactions sit in a side panel next to the film, and voice and video chat are built in for when you'd rather talk. Your camera starts off every time you join, so you decide when to be seen.

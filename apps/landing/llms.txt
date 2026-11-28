@@ -17,6 +17,13 @@ Install it from the Chrome Web Store: https://chromewebstore.google.com/detail/w
 - [Netflix party: cómo usarlo y cómo hacer uno](https://watchbear.net/es/netflix-party): Spanish Netflix party guide with a Teleparty comparison and the phone question
 - [Watchbear (Português)](https://watchbear.net/pt-br/): Brazilian Portuguese home page
 - [Netflix party: como funciona e como usar](https://watchbear.net/pt-br/netflix-party): Brazilian Portuguese Netflix party guide with a Teleparty comparison and the phone question
+- [Watchbear (Bahasa Indonesia)](https://watchbear.net/id/): Indonesian home page, an app for nonton bareng online in Chrome
+- [Cara nonton bareng online](https://watchbear.net/id/cara-nonton-bareng-online): Indonesian step-by-step guide to a Netflix watch party, with a Teleparty comparison and the phone question
+- [Watchbear (Italiano)](https://watchbear.net/it/): Italian home page
+- [Netflix party: come funziona e come farla](https://watchbear.net/it/netflix-party): Italian Netflix party guide on watching films together at a distance, with a Teleparty comparison and the phone question
+- [Netflix Party: so klappt die Netflix Watch Party](https://watchbear.net/de/netflix-party): German Netflix party guide with a Teleparty comparison and the phone question
+- [Netflix Party : comment faire une watch party Netflix](https://watchbear.net/fr/netflix-party): French Netflix party guide with a Teleparty comparison and the phone question
+- [Netflix Party: wspólne oglądanie Netflixa](https://watchbear.net/pl/netflix-party): Polish Netflix party guide with a Teleparty comparison and the phone question
 - [Support](https://watchbear.net/support.html): help and contact
 - [Privacy policy](https://watchbear.net/privacy.html): what data the extension and site handle
 

@@ -58,7 +58,7 @@
     return new URL(href, BASE).href;
   }
 
-  /** Language pages (tr/, es/, pt-br/) get their own labels and a home link to their folder. */
+  /** Language pages get their own labels; de, fr and pl have no home page yet, so their guide is home. */
   var LANGS = {
     tr: {
       links: [
@@ -92,6 +92,58 @@
       home: "pt-br/",
       cta: "Usar no Chrome",
       toggle: "Abrir ou fechar o menu",
+    },
+    id: {
+      links: [
+        { href: "id/", label: "Beranda" },
+        { href: "id/cara-nonton-bareng-online", label: "Nonton bareng" },
+        { href: "privacy.html", label: "Privasi" },
+        { href: "support.html", label: "Bantuan" },
+      ],
+      home: "id/",
+      cta: "Tambahkan ke Chrome",
+      toggle: "Buka atau tutup menu",
+    },
+    it: {
+      links: [
+        { href: "it/", label: "Home" },
+        { href: "it/netflix-party", label: "Netflix party" },
+        { href: "privacy.html", label: "Privacy" },
+        { href: "support.html", label: "Assistenza" },
+      ],
+      home: "it/",
+      cta: "Aggiungi a Chrome",
+      toggle: "Apri o chiudi il menu",
+    },
+    de: {
+      links: [
+        { href: "de/netflix-party", label: "Netflix Party" },
+        { href: "privacy.html", label: "Datenschutz" },
+        { href: "support.html", label: "Hilfe" },
+      ],
+      home: "de/netflix-party",
+      cta: "Zu Chrome hinzufügen",
+      toggle: "Menü öffnen oder schließen",
+    },
+    fr: {
+      links: [
+        { href: "fr/netflix-party", label: "Netflix Party" },
+        { href: "privacy.html", label: "Confidentialité" },
+        { href: "support.html", label: "Aide" },
+      ],
+      home: "fr/netflix-party",
+      cta: "Ajouter à Chrome",
+      toggle: "Ouvrir ou fermer le menu",
+    },
+    pl: {
+      links: [
+        { href: "pl/netflix-party", label: "Netflix Party" },
+        { href: "privacy.html", label: "Prywatność" },
+        { href: "support.html", label: "Pomoc" },
+      ],
+      home: "pl/netflix-party",
+      cta: "Dodaj do Chrome",
+      toggle: "Otwórz lub zamknij menu",
     },
   };
   var EN = {

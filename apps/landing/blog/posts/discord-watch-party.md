@@ -96,7 +96,7 @@ You can also drop Discord for the night. Watchbear's side panel has text chat, e
 | Phones | Yes, Discord's FAQ covers mobile | Depends on the Discord app | No, Chrome on a computer |
 | Everyone needs access to the video | No, it's YouTube | No | Yes |
 
-Short version: YouTube clips, use Watch Together. A file only you have, use Go Live. A film from a streaming service, use an extension and keep Discord for voice.
+Short version: YouTube clips, use Watch Together. A file only you have, use Go Live. A film from a streaming service, use an extension and keep Discord for voice. If you are weighing tools outside Discord as well, our [Hyperbeam alternatives](hyperbeam-alternatives.html) roundup compares five of them.
 
 ## A Netflix watch party on Discord, step by step
 

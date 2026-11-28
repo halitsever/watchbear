@@ -42,6 +42,12 @@ Install it from the Chrome Web Store: https://chromewebstore.google.com/detail/w
 - [How to watch Netflix together online with friends](https://watchbear.net/blog/how-to-watch-netflix-together-online.html): What everyone needs, why screen sharing Netflix rarely works, and how to keep a whole group on the same scene from the opening credits on.
 - [How to stream Netflix on Discord, and why the screen goes black](https://watchbear.net/blog/screen-share-movie-discord-zoom.html): The Discord steps, why Netflix shows up as a black screen, and what works better for a whole film.
 - [How to host an online watch party that actually stays in sync](https://watchbear.net/blog/how-to-host-a-watch-party-online.html): Skip the "3, 2, 1, play" countdown. What you need, how to set up the room, and how to fix the usual problems before anyone notices them.
+- [How to turn hardware acceleration on or off in Chrome](https://watchbear.net/blog/chrome-hardware-acceleration.html): Where the graphics acceleration switch lives in current Chrome, how to read chrome://gpu, and when turning it off is worth a try.
+- [How to allow camera and microphone access in Chrome](https://watchbear.net/blog/allow-camera-microphone-chrome.html): The permission prompt, Chrome's site settings and your computer's own privacy setting, in the order to check them.
+- [How to use the Chrome side panel, and how to close it](https://watchbear.net/blog/chrome-side-panel.html): Opening, pinning, resizing, moving and closing Chrome's side panel, and how extensions like Watchbear use it.
+- [How to use picture-in-picture in Chrome on a computer](https://watchbear.net/blog/picture-in-picture-chrome.html): The Media control button, the right-click menu, Google's extension and automatic picture-in-picture.
+- [Hyperbeam alternatives for watch parties, compared honestly](https://watchbear.net/blog/hyperbeam-alternatives.html): How Hyperbeam's shared cloud browser differs from Kosmi, Watch2Gether, Teleparty, Discord and Watchbear.
+- [Virtual date ideas: 15 things to do together over video](https://watchbear.net/blog/virtual-date-ideas.html): Cooking the same dinner, museum tours, games, reading aloud, a synced film and more for a date over video.
 
 ## Optional
 

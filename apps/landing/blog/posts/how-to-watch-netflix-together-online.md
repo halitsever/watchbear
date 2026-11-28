@@ -49,7 +49,7 @@ A sync extension avoids all of that. Nobody's screen gets shared. Each player st
 
 ## Netflix Party, Teleparty and other options
 
-A lot of people still search for "Netflix Party". That was the name of a popular extension, which is now called Teleparty. If you're comparing tools, our [Watchbear vs Teleparty page](../teleparty-alternative.html) lays out how the two differ.
+A lot of people still search for "Netflix Party". That was the name of a popular extension, which is now called Teleparty. If you're comparing tools, our [Watchbear vs Teleparty page](../teleparty-alternative.html) lays out how the two differ, and the [Netflix party page](../netflix-party) shows the setup in three steps with screenshots.
 
 Watchbear isn't tied to Netflix. The same room works on YouTube, Vimeo and most sites with a standard video player, so your group can switch from a Netflix film to a YouTube trailer without changing tools.
 

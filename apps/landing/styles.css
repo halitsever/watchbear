@@ -211,8 +211,9 @@ summary,
 
 .foot-links {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 26px;
+  gap: 12px 26px;
 }
 
 .foot-links a {

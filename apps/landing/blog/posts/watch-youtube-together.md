@@ -43,7 +43,7 @@ Everyone watches the same picture, which solves the timing. The cost is quality.
 
 ### Use a watch party extension
 
-Each person watches on youtube.com in their own browser, at whatever quality their connection handles. The extension keeps the players together: when anyone plays, pauses or skips, every other player does the same. This is how Watchbear works, and it's the option the rest of this guide sets up.
+Each person watches on youtube.com in their own browser, at whatever quality their connection handles. The extension keeps the players together: when anyone plays, pauses or skips, every other player does the same. This is how Watchbear works, and it's the option the rest of this guide sets up. Sites like Watch2Gether take a different route and play the video in a shared player on their own page; our [Watchbear vs Watch2Gether comparison](../watch2gether-alternative) covers when each one fits.
 
 ## How to watch YouTube together with Watchbear
 

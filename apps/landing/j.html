@@ -54,27 +54,37 @@
       }
       .card {
         width: 100%;
-        max-width: 440px;
+        max-width: 460px;
         background: var(--surface);
         border: 1px solid var(--line);
         border-radius: 16px;
-        padding: 30px 28px 26px;
+        padding: 28px 28px 24px;
         text-align: center;
         box-shadow: var(--shadow-md);
       }
       .mk {
-        width: 56px;
-        height: 56px;
+        width: 48px;
+        height: 48px;
         margin: 0 auto 14px;
       }
       h1 {
         font-weight: 800;
-        font-size: 22px;
+        font-size: 24px;
+        line-height: 1.25;
         letter-spacing: -0.02em;
-        margin: 0 0 6px;
+        margin: 0 0 8px;
+        text-wrap: balance;
+        overflow-wrap: anywhere;
       }
       h1 .w2 {
         color: var(--accent-text);
+      }
+      .where {
+        margin: -2px 0 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        overflow-wrap: anywhere;
       }
       .sub {
         font-size: 14.5px;
@@ -84,7 +94,7 @@
       }
       .dest {
         display: block;
-        margin: 0 0 22px;
+        margin: 0 0 18px;
         padding: 11px 14px;
         border-radius: 10px;
         border: 1px solid var(--line);
@@ -159,22 +169,22 @@
         cursor: pointer;
       }
       .btn.ghost {
-        margin-top: 12px;
-        color: var(--muted);
+        margin-top: 10px;
       }
-      .btn.ghost:hover {
-        color: var(--ink);
+      .btn:focus-visible,
+      .link:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
       }
       .link {
         display: inline-block;
-        margin-top: 14px;
         padding: 0;
         border: 0;
         background: none;
         font-family: var(--font-body);
         font-size: 13px;
         font-weight: 600;
-        color: var(--faint);
+        color: var(--muted);
         text-decoration: underline;
         cursor: pointer;
       }
@@ -187,18 +197,96 @@
       .note {
         font-size: 12.5px;
         font-weight: 400;
-        color: var(--faint);
-        margin-top: 16px;
+        color: var(--muted);
+        margin-top: 14px;
       }
       .note:empty {
         display: none;
       }
+      .wait {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 6px 10px;
+        margin-top: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .wait .spin {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid var(--line-strong);
+        border-top-color: var(--accent);
+        animation: spin 0.9s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .wait .spin {
+          animation: none;
+        }
+      }
+      .how {
+        margin-top: 18px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+        text-align: start;
+      }
+      .lead {
+        margin: 0 0 10px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .steps {
+        display: grid;
+        gap: 9px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: step;
+      }
+      .steps li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.35;
+        color: var(--ink);
+        counter-increment: step;
+      }
+      .steps li::before {
+        content: counter(step);
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1px solid var(--line-strong);
+        background: var(--surface-2);
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 22px;
+        text-align: center;
+        color: var(--accent-text);
+      }
+      .how .note {
+        margin-top: 12px;
+      }
       .save {
-        margin: 0 0 4px;
+        margin: 0;
         padding: 16px 16px 14px;
         border-radius: 12px;
-        border: 1px solid rgba(216, 180, 106, 0.3);
-        background: var(--accent-tint);
+        border: 1px solid var(--line);
+        background: var(--surface-2);
         text-align: start;
       }
       .save h2 {
@@ -226,6 +314,9 @@
       }
       .save .info {
         margin: 0;
+        background: none;
+        border: 0;
+        padding: 0;
       }
       .save .note {
         margin-top: 10px;
@@ -242,10 +333,10 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        margin: 14px 0;
+        margin: 16px 0 14px;
         font-size: 12px;
         font-weight: 600;
-        color: var(--faint);
+        color: var(--muted);
       }
       .or::before,
       .or::after {
@@ -253,6 +344,17 @@
         flex: 1;
         height: 1px;
         background: var(--line);
+      }
+      @media (max-width: 420px) {
+        body {
+          padding: 16px;
+        }
+        .card {
+          padding: 22px 18px 20px;
+        }
+        h1 {
+          font-size: 22px;
+        }
       }
     </style>
   </head>
@@ -269,23 +371,23 @@
 
       <!-- valid invite: join, install, or open it somewhere that can install -->
       <div id="ok" class="hidden">
-        <h1><span id="t1">You're invited to a </span><span id="t2" class="w2">watch party</span><span id="t3"></span></h1>
-        <p class="sub" data-i18n="sub">A friend invited you to watch together on Watchbear.</p>
-
-        <span class="dest">
-          <span class="lbl" data-i18n="destLabel">You'll be taken to</span>
-          <span id="dest-host" class="host" dir="ltr"></span>
-          <span id="dest-url" class="url" dir="ltr"></span>
-        </span>
+        <h1 id="headline">A friend invited you to watch together</h1>
+        <p id="where" class="where hidden" dir="ltr"></p>
+        <p id="what" class="sub" data-i18n="what">Watchbear is a free Chrome extension. It keeps the video in sync for everyone in the room, with chat.</p>
 
         <!-- extension installed -->
         <div id="install-yes" class="hidden">
+          <span id="dest-box" class="dest">
+            <span class="lbl" data-i18n="destLabel">You'll be taken to</span>
+            <span id="dest-host" class="host" dir="ltr"></span>
+            <span id="dest-url" class="url" dir="ltr"></span>
+          </span>
           <p id="caution" class="caution">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
             <span id="caution-text" data-i18n="caution">Only continue if you trust whoever sent you this link. It will take you to the site above.</span>
           </p>
-          <a id="join-link" class="btn" href="#" data-i18n="join">Join watch party</a>
-          <div class="note" data-i18n="joinNote">This takes you to the video and joins the watch party. You'll sign in with Google to join.</div>
+          <a id="join-link" class="btn" href="#" data-i18n="join">Join the room</a>
+          <div class="note" data-i18n="joinNote">This takes you to the video and joins the room. You'll sign in with Google to join.</div>
         </div>
 
         <!-- extension missing, browser can install from the Chrome Web Store -->
@@ -293,8 +395,11 @@
           <a id="install-link" class="btn" href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn?utm_source=invite&amp;utm_medium=landing" target="_blank" rel="noopener" data-i18n="install">
             Install Watchbear
           </a>
-          <button type="button" class="link" id="retry" data-i18n="retry">I've installed it, try again</button>
-          <div class="note" data-i18n="installNote">Watchbear is a free browser extension you need to join. After installing, come back to this page.</div>
+          <div id="waiting" class="wait hidden" role="status">
+            <span class="spin" aria-hidden="true"></span>
+            <span data-i18n="waiting">Waiting for Watchbear to be installed…</span>
+            <button type="button" class="link" id="retry" data-i18n="retry">I've installed it, try again</button>
+          </div>
         </div>
 
         <!-- phone, tablet, or a desktop browser that can't install it: move the link to Chrome -->
@@ -303,35 +408,47 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
             <span id="info-text"></span>
           </p>
-          <!-- phones only: keep the invite on the Google account for the computer -->
-          <section id="save-box" class="save hidden" aria-labelledby="save-title">
-            <h2 id="save-title">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
-              <span data-i18n="saveTitle">Continue on your computer</span>
-            </h2>
-            <p data-i18n="saveSub">Save this invite to your Google account. We keep it for 24 hours, and it will be waiting when you sign in to Watchbear on a computer.</p>
-            <div id="gsi-btn" class="gsi"></div>
-            <div id="save-status" class="note" role="status" aria-live="polite"></div>
-          </section>
-          <section id="saved-box" class="save hidden" aria-live="polite">
-            <p class="info">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
-              <span data-i18n="saved">Saved. Open Chrome on your computer, install Watchbear and sign in with this Google account; your invite will be waiting.</span>
-            </p>
-            <div id="saved-to" class="note" dir="auto"></div>
-            <a class="btn ghost" id="saved-store" href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn?utm_source=invite&amp;utm_medium=saved" target="_blank" rel="noopener" data-i18n="storeLink">Open the Chrome Web Store page</a>
-          </section>
-          <div id="save-or" class="or hidden" data-i18n="or">or</div>
+          <button type="button" id="share-btn" class="btn hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.54 21.69a.5.5 0 0 0 .93-.02l6.5-19a.5.5 0 0 0-.63-.63l-19 6.5a.5.5 0 0 0-.02.93l7.93 3.18a2 2 0 0 1 1.11 1.11z"/><path d="m21.85 2.15-10.94 10.94"/></svg>
+            <span data-i18n="share">Send to myself</span>
+          </button>
           <button type="button" id="copy-btn" class="btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
             <span id="copy-label" data-i18n="copy">Copy link</span>
           </button>
-          <button type="button" id="share-btn" class="btn ghost hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.54 21.69a.5.5 0 0 0 .93-.02l6.5-19a.5.5 0 0 0-.63-.63l-19 6.5a.5.5 0 0 0-.02.93l7.93 3.18a2 2 0 0 1 1.11 1.11z"/><path d="m21.85 2.15-10.94 10.94"/></svg>
-            <span data-i18n="share">Send to myself</span>
-          </button>
           <div id="copy-status" class="note" role="status" aria-live="polite"></div>
         </div>
+
+        <!-- what happens after the button, for everyone without the extension -->
+        <section id="how" class="how hidden">
+          <p id="steps-lead" class="lead hidden" data-i18n="stepsLead">On your computer</p>
+          <ol class="steps">
+            <li data-i18n="step1">Add Watchbear to Chrome</li>
+            <li data-i18n="step2">Sign in with Google</li>
+            <li data-i18n="step3">You land in the room</li>
+          </ol>
+          <p id="keep" class="note hidden"></p>
+        </section>
+
+        <!-- phones only: keep the invite on the Google account for the computer -->
+        <div id="save-or" class="or hidden" data-i18n="or">or</div>
+        <section id="save-box" class="save hidden" aria-labelledby="save-title">
+          <h2 id="save-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+            <span data-i18n="saveTitle">Continue on your computer</span>
+          </h2>
+          <p data-i18n="saveSub">Save this invite to your Google account. We keep it for 24 hours, and it will be waiting when you sign in to Watchbear on a computer.</p>
+          <div id="gsi-btn" class="gsi"></div>
+          <div id="save-status" class="note" role="status" aria-live="polite"></div>
+        </section>
+        <section id="saved-box" class="save hidden" aria-live="polite">
+          <p class="info">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+            <span data-i18n="saved">Saved. Open Chrome on your computer, install Watchbear and sign in with this Google account; your invite will be waiting.</span>
+          </p>
+          <div id="saved-to" class="note" dir="auto"></div>
+          <a class="btn ghost" id="saved-store" href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn?utm_source=invite&amp;utm_medium=saved" target="_blank" rel="noopener" data-i18n="storeLink">Open the Chrome Web Store page</a>
+        </section>
       </div>
     </main>
 
@@ -348,8 +465,25 @@
         var GOOGLE_CLIENT_ID = "934864780263-ojf7ujhtd7gcd531s4srlu6qoskr2vdh.apps.googleusercontent.com";
         var INGEST_URL = "https://watchbear-server.deepfeld.com/analytics/events";
         var SAVE_URL = "https://watchbear-server.deepfeld.com/invites/saved";
+        // a file the store extension lets any page fetch: it answers only once the extension is installed
+        var EXTENSION_PROBE = "chrome-extension://ldegfikaldilbcpgmiopdnnhpkpcnepn/fonts/twemoji.woff2";
         var ROOM_CODE_RE = /^[A-Z]{2,8}-[A-Z0-9]{4,12}$/;
+        // a standing link between two friends names no video page
+        var PAIR_CODE_RE = /^PAIR-[A-Z0-9]{12}$/;
         var INVITE_ID_RE = /^[A-Za-z0-9_-]{6,32}$/;
+        var SITE_NAMES = {
+          "youtube.com": "YouTube",
+          "youtu.be": "YouTube",
+          "netflix.com": "Netflix",
+          "twitch.tv": "Twitch",
+          "vimeo.com": "Vimeo",
+          "disneyplus.com": "Disney+",
+          "primevideo.com": "Prime Video",
+          "max.com": "Max",
+          "hulu.com": "Hulu",
+          "crunchyroll.com": "Crunchyroll",
+          "dailymotion.com": "Dailymotion"
+        };
 
         var STRINGS = {
           en: {
@@ -357,18 +491,29 @@
             badTitle: "Invalid invite",
             badSub: "This invite link looks broken. Ask your friend to send it again.",
             badHome: "Go to Watchbear",
-            title: ["You're invited to a ", "watch party", ""],
-            sub: "A friend invited you to watch together on Watchbear.",
+            hNameTitle: "{name} invited you to watch {title}",
+            hName: "{name} invited you to watch on {site}",
+            hTitle: "A friend invited you to watch {title}",
+            hSite: "A friend invited you to watch on {site}",
+            hNamePlain: "{name} invited you to watch together",
+            hPlain: "A friend invited you to watch together",
+            what: "Watchbear is a free Chrome extension. It keeps the video in sync for everyone in the room, with chat.",
             destLabel: "You'll be taken to",
             caution: "Only continue if you trust whoever sent you this link. It will take you to the site above.",
             danger: "This link is NOT secure (http) and points to {host}. Only continue if you fully trust the sender.",
-            join: "Join watch party",
-            joinNote: "This takes you to the video and joins the watch party. You'll sign in with Google to join.",
+            join: "Join the room",
+            joinNote: "This takes you to the video and joins the room. You'll sign in with Google to join.",
             install: "Install Watchbear",
+            step1: "Add Watchbear to Chrome",
+            step2: "Sign in with Google",
+            step3: "You land in the room",
+            stepsLead: "On your computer",
+            keepAuto: "Keep this tab open. It takes you to the room once you sign in.",
+            keepJoin: "Keep this tab open. A join button shows up here once Watchbear is installed.",
+            waiting: "Waiting for Watchbear to be installed…",
             retry: "I've installed it, try again",
-            installNote: "Watchbear is a free browser extension you need to join. After installing, come back to this page.",
-            mobileInfo: "Watchbear runs in Chrome on a computer, so you can't join from a phone or tablet. Send this link to yourself and open it on your computer.",
-            browserInfo: "Watchbear works in Google Chrome, and in Microsoft Edge through the Chrome Web Store. Copy this link and open it in Chrome to join.",
+            mobileInfo: "Watchbear only works in Chrome on a computer. Send this link to yourself and open it there.",
+            browserInfo: "Watchbear only works in Google Chrome on a computer. Copy this link and open it in Chrome.",
             copy: "Copy link",
             copied: "Link copied",
             copyFail: "Couldn't copy. Copy the address from the address bar instead.",
@@ -385,27 +530,38 @@
             or: "or"
           },
           tr: {
-            docTitle: "İzleme partisine katıl",
+            docTitle: "Odaya katıl",
             badTitle: "Geçersiz davet",
             badSub: "Bu davet bağlantısı bozuk görünüyor. Arkadaşından tekrar göndermesini iste.",
             badHome: "Watchbear'a git",
-            title: ["Bir ", "izleme partisine", " davet edildin"],
-            sub: "Bir arkadaşın seni Watchbear'da birlikte izlemeye davet etti.",
+            hNameTitle: "{name} seni {title} izlemeye davet etti",
+            hName: "{name} seni {site} üzerinde birlikte izlemeye davet etti",
+            hTitle: "Bir arkadaşın seni {title} izlemeye davet etti",
+            hSite: "Bir arkadaşın seni {site} üzerinde birlikte izlemeye davet etti",
+            hNamePlain: "{name} seni birlikte izlemeye davet etti",
+            hPlain: "Bir arkadaşın seni birlikte izlemeye davet etti",
+            what: "Watchbear ücretsiz bir Chrome eklentisi. Videoyu odadaki herkes için aynı anda oynatır, sohbet de var.",
             destLabel: "Gideceğin adres",
             caution: "Sadece bu bağlantıyı gönderen kişiye güveniyorsan devam et. Seni yukarıdaki siteye götürecek.",
             danger: "Bu bağlantı güvenli DEĞİL (http) ve {host} adresine gidiyor. Sadece gönderene tamamen güveniyorsan devam et.",
-            join: "İzleme partisine katıl",
-            joinNote: "Seni videoya götürür ve izleme partisine katar. Katılmak için Google ile giriş yaparsın.",
+            join: "Odaya katıl",
+            joinNote: "Seni videoya götürür ve odaya katar. Katılmak için Google ile giriş yaparsın.",
             install: "Watchbear'ı yükle",
+            step1: "Watchbear'ı Chrome'a ekle",
+            step2: "Google ile giriş yap",
+            step3: "Odaya girersin",
+            stepsLead: "Bilgisayarında",
+            keepAuto: "Bu sekmeyi açık tut. Giriş yapınca seni odaya götürür.",
+            keepJoin: "Bu sekmeyi açık tut. Watchbear yüklenince katılma düğmesi burada çıkar.",
+            waiting: "Watchbear'ın yüklenmesi bekleniyor…",
             retry: "Yükledim, tekrar dene",
-            installNote: "Katılmak için ücretsiz Watchbear tarayıcı eklentisi gerekiyor. Yükledikten sonra bu sayfaya geri dön.",
-            mobileInfo: "Watchbear bilgisayarda Chrome'da çalışır, bu yüzden telefondan veya tabletten katılamazsın. Bağlantıyı kendine gönder ve bilgisayarında aç.",
-            browserInfo: "Watchbear Google Chrome'da, Chrome Web Mağazası üzerinden de Microsoft Edge'de çalışır. Katılmak için bağlantıyı kopyala ve Chrome'da aç.",
+            mobileInfo: "Watchbear yalnızca bilgisayarda, Chrome'da çalışır. Bağlantıyı kendine gönder ve bilgisayarında aç.",
+            browserInfo: "Watchbear yalnızca bilgisayarda, Google Chrome'da çalışır. Bağlantıyı kopyala ve Chrome'da aç.",
             copy: "Bağlantıyı kopyala",
             copied: "Bağlantı kopyalandı",
             copyFail: "Kopyalanamadı. Adresi tarayıcının adres çubuğundan kopyala.",
             share: "Kendime gönder",
-            shareText: "Watchbear izleme partisi daveti. Bilgisayarında Chrome'da aç.",
+            shareText: "Watchbear'da birlikte izleme daveti. Bilgisayarında Chrome'da aç.",
             saveTitle: "Bilgisayarda devam et",
             saveSub: "Bu daveti Google hesabına kaydet. 24 saat saklarız, bilgisayarda Watchbear'a giriş yaptığında seni bekliyor olacak.",
             saving: "Kaydediliyor…",
@@ -421,18 +577,29 @@
             badTitle: "Convite inválido",
             badSub: "Este link de convite parece quebrado. Peça para seu amigo enviar de novo.",
             badHome: "Ir para o Watchbear",
-            title: ["Você foi convidado para ", "assistir junto", ""],
-            sub: "Um amigo convidou você para assistir junto no Watchbear.",
+            hNameTitle: "{name} convidou você para assistir {title}",
+            hName: "{name} convidou você para assistir junto em {site}",
+            hTitle: "Um amigo convidou você para assistir {title}",
+            hSite: "Um amigo convidou você para assistir junto em {site}",
+            hNamePlain: "{name} convidou você para assistir junto",
+            hPlain: "Um amigo convidou você para assistir junto",
+            what: "O Watchbear é uma extensão gratuita para o Chrome. Ela mantém o vídeo sincronizado para todos na sala, com chat.",
             destLabel: "Você será levado para",
             caution: "Só continue se você confia em quem enviou este link. Ele vai levar você para o site acima.",
             danger: "Este link NÃO é seguro (http) e leva para {host}. Só continue se você confia totalmente em quem enviou.",
             join: "Entrar na sala",
             joinNote: "Isso leva você ao vídeo e coloca você na sala. Para entrar, você faz login com o Google.",
             install: "Instalar o Watchbear",
+            step1: "Adicione o Watchbear ao Chrome",
+            step2: "Entre com o Google",
+            step3: "Você cai direto na sala",
+            stepsLead: "No computador",
+            keepAuto: "Deixe esta aba aberta. Depois do login, ela leva você para a sala.",
+            keepJoin: "Deixe esta aba aberta. Quando o Watchbear estiver instalado, o botão para entrar aparece aqui.",
+            waiting: "Esperando a instalação do Watchbear…",
             retry: "Já instalei, tentar de novo",
-            installNote: "Para entrar, você precisa do Watchbear, uma extensão gratuita para o navegador. Depois de instalar, volte para esta página.",
-            mobileInfo: "O Watchbear funciona no Chrome em um computador, então não dá para entrar pelo celular ou tablet. Envie este link para você mesmo e abra no computador.",
-            browserInfo: "O Watchbear funciona no Google Chrome e no Microsoft Edge pela Chrome Web Store. Copie este link e abra no Chrome para entrar.",
+            mobileInfo: "O Watchbear só funciona no Chrome, em um computador. Envie este link para você mesmo e abra por lá.",
+            browserInfo: "O Watchbear só funciona no Google Chrome, em um computador. Copie este link e abra no Chrome.",
             copy: "Copiar link",
             copied: "Link copiado",
             copyFail: "Não foi possível copiar. Copie o endereço na barra de endereços.",
@@ -453,18 +620,29 @@
             badTitle: "Invitación no válida",
             badSub: "Este enlace de invitación parece roto. Pide a tu amigo que lo envíe de nuevo.",
             badHome: "Ir a Watchbear",
-            title: ["Te invitaron a ", "ver juntos", ""],
-            sub: "Un amigo te invitó a ver algo juntos en Watchbear.",
+            hNameTitle: "{name} te invitó a ver {title}",
+            hName: "{name} te invitó a ver juntos en {site}",
+            hTitle: "Un amigo te invitó a ver {title}",
+            hSite: "Un amigo te invitó a ver juntos en {site}",
+            hNamePlain: "{name} te invitó a ver juntos",
+            hPlain: "Un amigo te invitó a ver juntos",
+            what: "Watchbear es una extensión gratuita para Chrome. Mantiene el video sincronizado para todos en la sala, con chat.",
             destLabel: "Te llevará a",
             caution: "Continúa solo si confías en quien te envió este enlace. Te llevará al sitio de arriba.",
             danger: "Este enlace NO es seguro (http) y lleva a {host}. Continúa solo si confías plenamente en quien lo envió.",
             join: "Unirme a la sala",
             joinNote: "Esto te lleva al video y te une a la sala. Para unirte, inicias sesión con Google.",
             install: "Instalar Watchbear",
+            step1: "Agrega Watchbear a Chrome",
+            step2: "Inicia sesión con Google",
+            step3: "Entras directo a la sala",
+            stepsLead: "En tu computadora",
+            keepAuto: "Deja esta pestaña abierta. Cuando inicies sesión, te lleva a la sala.",
+            keepJoin: "Deja esta pestaña abierta. Cuando Watchbear esté instalado, aquí aparece el botón para unirte.",
+            waiting: "Esperando a que se instale Watchbear…",
             retry: "Ya lo instalé, intentar de nuevo",
-            installNote: "Para unirte necesitas Watchbear, una extensión gratuita para el navegador. Después de instalarla, vuelve a esta página.",
-            mobileInfo: "Watchbear funciona en Chrome en una computadora, así que no puedes unirte desde un teléfono o tablet. Envíate este enlace y ábrelo en tu computadora.",
-            browserInfo: "Watchbear funciona en Google Chrome y en Microsoft Edge a través de Chrome Web Store. Copia este enlace y ábrelo en Chrome para unirte.",
+            mobileInfo: "Watchbear solo funciona en Chrome, en una computadora. Envíate este enlace y ábrelo ahí.",
+            browserInfo: "Watchbear solo funciona en Google Chrome, en una computadora. Copia este enlace y ábrelo en Chrome.",
             copy: "Copiar enlace",
             copied: "Enlace copiado",
             copyFail: "No se pudo copiar. Copia la dirección desde la barra de direcciones.",
@@ -485,23 +663,34 @@
             badTitle: "Ungültige Einladung",
             badSub: "Dieser Einladungslink funktioniert nicht. Lass ihn dir noch einmal schicken.",
             badHome: "Zu Watchbear",
-            title: ["Du bist zu einer ", "Watchparty", " eingeladen"],
-            sub: "Ein Freund hat dich eingeladen, gemeinsam auf Watchbear zu schauen.",
+            hNameTitle: "{name} lädt dich ein, {title} zu schauen",
+            hName: "{name} lädt dich ein, gemeinsam auf {site} zu schauen",
+            hTitle: "Jemand lädt dich ein, {title} zu schauen",
+            hSite: "Jemand lädt dich ein, gemeinsam auf {site} zu schauen",
+            hNamePlain: "{name} lädt dich ein, gemeinsam zu schauen",
+            hPlain: "Jemand lädt dich ein, gemeinsam zu schauen",
+            what: "Watchbear ist eine kostenlose Chrome-Erweiterung. Sie hält das Video für alle im Raum synchron, mit Chat.",
             destLabel: "Weiter zu",
             caution: "Mach nur weiter, wenn du der Person vertraust, die dir diesen Link geschickt hat. Er führt dich zur Seite oben.",
             danger: "Dieser Link ist NICHT sicher (http) und führt zu {host}. Mach nur weiter, wenn du dem Absender voll vertraust.",
-            join: "Watchparty beitreten",
-            joinNote: "Damit gehst du zum Video und trittst der Watchparty bei. Zum Beitreten meldest du dich mit Google an.",
+            join: "Dem Raum beitreten",
+            joinNote: "Damit gehst du zum Video und trittst dem Raum bei. Zum Beitreten meldest du dich mit Google an.",
             install: "Watchbear installieren",
+            step1: "Watchbear zu Chrome hinzufügen",
+            step2: "Mit Google anmelden",
+            step3: "Du landest direkt im Raum",
+            stepsLead: "Am Computer",
+            keepAuto: "Lass diesen Tab offen. Nach der Anmeldung bringt er dich in den Raum.",
+            keepJoin: "Lass diesen Tab offen. Sobald Watchbear installiert ist, erscheint hier der Button zum Beitreten.",
+            waiting: "Warte auf die Installation von Watchbear…",
             retry: "Ich habe es installiert, erneut versuchen",
-            installNote: "Zum Beitreten brauchst du Watchbear, eine kostenlose Browsererweiterung. Komm nach der Installation auf diese Seite zurück.",
-            mobileInfo: "Watchbear läuft in Chrome auf einem Computer, deshalb kannst du nicht vom Handy oder Tablet beitreten. Schick dir diesen Link selbst und öffne ihn am Computer.",
-            browserInfo: "Watchbear funktioniert in Google Chrome und über den Chrome Web Store auch in Microsoft Edge. Kopiere diesen Link und öffne ihn in Chrome, um beizutreten.",
+            mobileInfo: "Watchbear läuft nur in Chrome auf einem Computer. Schick dir diesen Link und öffne ihn dort.",
+            browserInfo: "Watchbear läuft nur in Google Chrome auf einem Computer. Kopiere diesen Link und öffne ihn in Chrome.",
             copy: "Link kopieren",
             copied: "Link kopiert",
             copyFail: "Kopieren hat nicht geklappt. Kopiere die Adresse aus der Adressleiste.",
             share: "An mich senden",
-            shareText: "Einladung zur Watchparty auf Watchbear. Am Computer in Chrome öffnen.",
+            shareText: "Einladung zum gemeinsamen Schauen auf Watchbear. Am Computer in Chrome öffnen.",
             saveTitle: "Am Computer weitermachen",
             saveSub: "Speichere diese Einladung in deinem Google-Konto. Wir heben sie 24 Stunden auf, und sie wartet auf dich, wenn du dich am Computer bei Watchbear anmeldest.",
             saving: "Wird gespeichert…",
@@ -517,18 +706,29 @@
             badTitle: "Invitation invalide",
             badSub: "Ce lien d'invitation semble cassé. Demande qu'on te le renvoie.",
             badHome: "Aller sur Watchbear",
-            title: ["On t'invite à ", "regarder ensemble", ""],
-            sub: "Un ami t'invite à regarder ensemble sur Watchbear.",
+            hNameTitle: "{name} t'invite à regarder {title}",
+            hName: "{name} t'invite à regarder ensemble sur {site}",
+            hTitle: "On t'invite à regarder {title}",
+            hSite: "On t'invite à regarder ensemble sur {site}",
+            hNamePlain: "{name} t'invite à regarder ensemble",
+            hPlain: "On t'invite à regarder ensemble",
+            what: "Watchbear est une extension Chrome gratuite. Elle garde la vidéo synchronisée pour tout le monde dans le salon, avec un chat.",
             destLabel: "Destination",
             caution: "Continue seulement si tu fais confiance à la personne qui t'a envoyé ce lien. Il t'emmène sur le site ci-dessus.",
             danger: "Ce lien n'est PAS sécurisé (http) et mène à {host}. Continue seulement si tu as entièrement confiance en l'expéditeur.",
-            join: "Rejoindre la séance",
-            joinNote: "Tu iras sur la vidéo et rejoindras la séance. Pour rejoindre, tu te connectes avec Google.",
+            join: "Rejoindre le salon",
+            joinNote: "Tu iras sur la vidéo et rejoindras le salon. Pour rejoindre, tu te connectes avec Google.",
             install: "Installer Watchbear",
+            step1: "Ajoute Watchbear à Chrome",
+            step2: "Connecte-toi avec Google",
+            step3: "Tu arrives dans le salon",
+            stepsLead: "Sur ton ordinateur",
+            keepAuto: "Garde cet onglet ouvert. Après la connexion, il t'emmène dans le salon.",
+            keepJoin: "Garde cet onglet ouvert. Quand Watchbear est installé, le bouton pour rejoindre apparaît ici.",
+            waiting: "En attente de l'installation de Watchbear…",
             retry: "Je l'ai installé, réessayer",
-            installNote: "Pour rejoindre, il te faut Watchbear, une extension de navigateur gratuite. Une fois installée, reviens sur cette page.",
-            mobileInfo: "Watchbear fonctionne dans Chrome sur ordinateur, tu ne peux donc pas rejoindre depuis un téléphone ou une tablette. Envoie-toi ce lien et ouvre-le sur ton ordinateur.",
-            browserInfo: "Watchbear fonctionne dans Google Chrome, et dans Microsoft Edge via le Chrome Web Store. Copie ce lien et ouvre-le dans Chrome pour rejoindre.",
+            mobileInfo: "Watchbear fonctionne seulement dans Chrome, sur ordinateur. Envoie-toi ce lien et ouvre-le là-bas.",
+            browserInfo: "Watchbear fonctionne seulement dans Google Chrome, sur ordinateur. Copie ce lien et ouvre-le dans Chrome.",
             copy: "Copier le lien",
             copied: "Lien copié",
             copyFail: "Impossible de copier. Copie l'adresse depuis la barre d'adresse.",
@@ -549,23 +749,34 @@
             badTitle: "دعوة غير صالحة",
             badSub: "يبدو أن رابط الدعوة هذا لا يعمل. اطلب من صديقك إرساله مرة أخرى.",
             badHome: "الانتقال إلى Watchbear",
-            title: ["أنت مدعو إلى ", "مشاهدة جماعية", ""],
-            sub: "دعاك صديق للمشاهدة معًا على Watchbear.",
+            hNameTitle: "{name} يدعوك لمشاهدة {title}",
+            hName: "{name} يدعوك للمشاهدة معًا على {site}",
+            hTitle: "صديق يدعوك لمشاهدة {title}",
+            hSite: "صديق يدعوك للمشاهدة معًا على {site}",
+            hNamePlain: "{name} يدعوك للمشاهدة معًا",
+            hPlain: "صديق يدعوك للمشاهدة معًا",
+            what: "Watchbear إضافة مجانية لمتصفح Chrome. تُبقي الفيديو متزامنًا لكل من في الغرفة، مع دردشة.",
             destLabel: "ستنتقل إلى",
             caution: "تابع فقط إذا كنت تثق بمن أرسل لك هذا الرابط. سينقلك إلى الموقع أعلاه.",
             danger: "هذا الرابط غير آمن (http) ويؤدي إلى {host}. تابع فقط إذا كنت تثق بالمرسل تمامًا.",
-            join: "انضم إلى المشاهدة الجماعية",
-            joinNote: "سينقلك هذا إلى الفيديو ويضمّك إلى المشاهدة الجماعية. ستسجّل الدخول باستخدام Google للانضمام.",
+            join: "انضم إلى الغرفة",
+            joinNote: "سينقلك هذا إلى الفيديو ويضمّك إلى الغرفة. ستسجّل الدخول باستخدام Google للانضمام.",
             install: "ثبّت Watchbear",
+            step1: "أضف Watchbear إلى Chrome",
+            step2: "سجّل الدخول باستخدام Google",
+            step3: "تدخل الغرفة مباشرة",
+            stepsLead: "على الكمبيوتر",
+            keepAuto: "أبقِ هذا التبويب مفتوحًا. بعد تسجيل الدخول سينقلك إلى الغرفة.",
+            keepJoin: "أبقِ هذا التبويب مفتوحًا. عند تثبيت Watchbear سيظهر زر الانضمام هنا.",
+            waiting: "بانتظار تثبيت Watchbear…",
             retry: "لقد ثبّتُّه، أعد المحاولة",
-            installNote: "تحتاج إلى Watchbear، وهو إضافة مجانية للمتصفح، حتى تنضم. بعد التثبيت، ارجع إلى هذه الصفحة.",
-            mobileInfo: "يعمل Watchbear في متصفح Chrome على الكمبيوتر، لذلك لا يمكنك الانضمام من الهاتف أو الجهاز اللوحي. أرسل هذا الرابط إلى نفسك وافتحه على الكمبيوتر.",
-            browserInfo: "يعمل Watchbear في Google Chrome، وفي Microsoft Edge عبر Chrome Web Store. انسخ هذا الرابط وافتحه في Chrome للانضمام.",
+            mobileInfo: "يعمل Watchbear فقط في Chrome على الكمبيوتر. أرسل هذا الرابط إلى نفسك وافتحه هناك.",
+            browserInfo: "يعمل Watchbear فقط في Google Chrome على الكمبيوتر. انسخ هذا الرابط وافتحه في Chrome.",
             copy: "نسخ الرابط",
             copied: "تم نسخ الرابط",
             copyFail: "تعذّر النسخ. انسخ العنوان من شريط العناوين.",
             share: "أرسله إلى نفسي",
-            shareText: "دعوة إلى مشاهدة جماعية على Watchbear. افتحها على الكمبيوتر في Chrome.",
+            shareText: "دعوة للمشاهدة معًا على Watchbear. افتحها على الكمبيوتر في Chrome.",
             saveTitle: "تابع على الكمبيوتر",
             saveSub: "احفظ هذه الدعوة في حساب Google. نحتفظ بها 24 ساعة، وستجدها بانتظارك عندما تسجّل الدخول إلى Watchbear على الكمبيوتر.",
             saving: "جارٍ الحفظ…",
@@ -575,6 +786,92 @@
             saveBusy: "محاولات كثيرة. انتظر قليلًا أو انسخ الرابط.",
             storeLink: "افتح صفحة Chrome Web Store",
             or: "أو"
+          },
+          hi: {
+            docTitle: "रूम में शामिल हों",
+            badTitle: "इनवाइट काम नहीं कर रहा",
+            badSub: "यह इनवाइट लिंक टूटा हुआ लगता है। अपने दोस्त से इसे दोबारा भेजने को कहें।",
+            badHome: "Watchbear पर जाएँ",
+            hNameTitle: "{name} ने आपको {title} देखने के लिए बुलाया है",
+            hName: "{name} ने आपको {site} पर साथ में देखने के लिए बुलाया है",
+            hTitle: "एक दोस्त ने आपको {title} देखने के लिए बुलाया है",
+            hSite: "एक दोस्त ने आपको {site} पर साथ में देखने के लिए बुलाया है",
+            hNamePlain: "{name} ने आपको साथ में देखने के लिए बुलाया है",
+            hPlain: "एक दोस्त ने आपको साथ में देखने के लिए बुलाया है",
+            what: "Watchbear एक मुफ़्त Chrome एक्सटेंशन है। यह रूम में सबके लिए वीडियो एक साथ चलाता है, चैट के साथ।",
+            destLabel: "आप यहाँ पहुँचेंगे",
+            caution: "तभी आगे बढ़ें जब आपको यह लिंक भेजने वाले पर भरोसा हो। यह आपको ऊपर दी गई साइट पर ले जाएगा।",
+            danger: "यह लिंक सुरक्षित नहीं है (http) और {host} पर ले जाता है। तभी आगे बढ़ें जब आपको भेजने वाले पर पूरा भरोसा हो।",
+            join: "रूम में शामिल हों",
+            joinNote: "यह आपको वीडियो पर ले जाता है और रूम में जोड़ देता है। जुड़ने के लिए आप Google से साइन इन करेंगे।",
+            install: "Watchbear इंस्टॉल करें",
+            step1: "Watchbear को Chrome में जोड़ें",
+            step2: "Google से साइन इन करें",
+            step3: "आप सीधे रूम में पहुँच जाएँगे",
+            stepsLead: "अपने कंप्यूटर पर",
+            keepAuto: "यह टैब खुला रखें। साइन इन करते ही यह आपको रूम में ले जाएगा।",
+            keepJoin: "यह टैब खुला रखें। Watchbear इंस्टॉल होते ही यहाँ जुड़ने का बटन दिखेगा।",
+            waiting: "Watchbear के इंस्टॉल होने का इंतज़ार है…",
+            retry: "मैंने इंस्टॉल कर लिया है, फिर से कोशिश करें",
+            mobileInfo: "Watchbear सिर्फ़ कंप्यूटर पर Chrome में चलता है। यह लिंक खुद को भेजें और वहाँ खोलें।",
+            browserInfo: "Watchbear सिर्फ़ कंप्यूटर पर Google Chrome में चलता है। यह लिंक कॉपी करें और Chrome में खोलें।",
+            copy: "लिंक कॉपी करें",
+            copied: "लिंक कॉपी हो गया",
+            copyFail: "कॉपी नहीं हो पाया। एड्रेस बार से पता कॉपी करें।",
+            share: "खुद को भेजें",
+            shareText: "Watchbear पर साथ में देखने का इनवाइट। इसे कंप्यूटर पर Chrome में खोलें।",
+            saveTitle: "कंप्यूटर पर जारी रखें",
+            saveSub: "यह इनवाइट अपने Google अकाउंट में सेव करें। हम इसे 24 घंटे रखते हैं, और कंप्यूटर पर Watchbear में साइन इन करने पर यह आपको वहीं मिलेगा।",
+            saving: "सेव हो रहा है…",
+            saved: "सेव हो गया। कंप्यूटर पर Chrome खोलें, Watchbear इंस्टॉल करें और इसी Google अकाउंट से साइन इन करें। आपका इनवाइट वहीं मिलेगा।",
+            savedTo: "{email} में सेव हुआ",
+            saveFail: "सेव नहीं हो पाया। फिर से कोशिश करें या लिंक कॉपी करें।",
+            saveBusy: "बहुत ज़्यादा कोशिशें हो गईं। थोड़ा रुकें या लिंक कॉपी करें।",
+            storeLink: "Chrome Web Store का पेज खोलें",
+            or: "या"
+          },
+          id: {
+            docTitle: "Gabung nobar",
+            badTitle: "Undangan tidak valid",
+            badSub: "Link undangan ini sepertinya rusak. Minta temanmu mengirimnya lagi.",
+            badHome: "Buka Watchbear",
+            hNameTitle: "{name} mengajakmu nonton {title}",
+            hName: "{name} mengajakmu nonton bareng di {site}",
+            hTitle: "Temanmu mengajakmu nonton {title}",
+            hSite: "Temanmu mengajakmu nonton bareng di {site}",
+            hNamePlain: "{name} mengajakmu nonton bareng",
+            hPlain: "Temanmu mengajakmu nonton bareng",
+            what: "Watchbear adalah ekstensi Chrome gratis. Videonya diputar serentak untuk semua orang di ruang, lengkap dengan chat.",
+            destLabel: "Kamu akan dibawa ke",
+            caution: "Lanjutkan hanya kalau kamu percaya pada pengirim link ini. Link ini membawamu ke situs di atas.",
+            danger: "Link ini TIDAK aman (http) dan mengarah ke {host}. Lanjutkan hanya kalau kamu benar-benar percaya pada pengirimnya.",
+            join: "Gabung ke ruang",
+            joinNote: "Ini membawamu ke video dan memasukkanmu ke ruang. Untuk gabung, kamu masuk dengan Google.",
+            install: "Pasang Watchbear",
+            step1: "Tambahkan Watchbear ke Chrome",
+            step2: "Masuk dengan Google",
+            step3: "Kamu langsung masuk ke ruang",
+            stepsLead: "Di komputermu",
+            keepAuto: "Biarkan tab ini terbuka. Setelah kamu masuk, tab ini membawamu ke ruang.",
+            keepJoin: "Biarkan tab ini terbuka. Setelah Watchbear terpasang, tombol gabung muncul di sini.",
+            waiting: "Menunggu Watchbear terpasang…",
+            retry: "Sudah kupasang, coba lagi",
+            mobileInfo: "Watchbear hanya berjalan di Chrome di komputer. Kirim link ini ke dirimu sendiri dan buka di sana.",
+            browserInfo: "Watchbear hanya berjalan di Google Chrome di komputer. Salin link ini dan buka di Chrome.",
+            copy: "Salin link",
+            copied: "Link disalin",
+            copyFail: "Gagal menyalin. Salin alamatnya dari bilah alamat.",
+            share: "Kirim ke diri sendiri",
+            shareText: "Undangan nobar di Watchbear. Buka di komputer, di Chrome.",
+            saveTitle: "Lanjutkan di komputer",
+            saveSub: "Simpan undangan ini ke akun Google kamu. Kami menyimpannya selama 24 jam, dan undangan ini sudah menunggu saat kamu masuk ke Watchbear di komputer.",
+            saving: "Menyimpan…",
+            saved: "Tersimpan. Buka Chrome di komputer, pasang Watchbear, lalu masuk dengan akun Google ini. Undanganmu sudah menunggu.",
+            savedTo: "Tersimpan di {email}",
+            saveFail: "Gagal menyimpan. Coba lagi, atau salin link-nya.",
+            saveBusy: "Terlalu banyak percobaan. Tunggu sebentar, atau salin link-nya.",
+            storeLink: "Buka halaman Chrome Web Store",
+            or: "atau"
           }
         };
 
@@ -588,14 +885,11 @@
         Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (el) {
           el.textContent = T[el.getAttribute("data-i18n")];
         });
-        document.getElementById("t1").textContent = T.title[0];
-        document.getElementById("t2").textContent = T.title[1];
-        document.getElementById("t3").textContent = T.title[2];
 
         // read the room code + destination from the hash, which page requests never carry
         function parseHash() {
           var h = location.hash.charAt(0) === "#" ? location.hash.slice(1) : location.hash;
-          var out = { code: null, url: null, invite: null };
+          var out = { code: null, url: null, invite: null, name: null, title: null };
           h.split("&").forEach(function (part) {
             var i = part.indexOf("=");
             if (i < 0) return;
@@ -609,6 +903,8 @@
             if (k === "wb") out.code = v.toUpperCase();
             else if (k === "u") out.url = v;
             else if (k === "i") out.invite = v;
+            else if (k === "n") out.name = v;
+            else if (k === "t") out.title = v;
           });
           return out;
         }
@@ -622,6 +918,42 @@
           } catch (e) {
             return null;
           }
+        }
+
+        // link text is whatever the sender typed: no control or direction-override characters, one short line
+        function cleanText(raw, max) {
+          if (!raw) return "";
+          var s = String(raw)
+            .replace(/[\u0000-\u001f\u007f-\u009f​-‏‪-‮⁦-⁩﻿]/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+          return s.length > max ? s.slice(0, max - 1).trim() + "…" : s;
+        }
+        // a name that reads like an address or an account is dropped, the headline falls back to "a friend"
+        function cleanName(raw) {
+          var s = cleanText(raw, 24);
+          return /[<>@\/]|www\./i.test(s) ? "" : s;
+        }
+        // only exact hosts get a brand name, so a lookalike domain shows as itself
+        function siteName(host) {
+          var h = host.replace(/^(www|m)\./, "");
+          return SITE_NAMES[h] || h;
+        }
+        /** fills a "{name} ... {title}" template with text nodes, never markup */
+        function fill(el, tpl, parts) {
+          el.textContent = "";
+          tpl.split(/(\{name\}|\{title\}|\{site\})/).forEach(function (seg) {
+            var key = seg.charAt(0) === "{" ? seg.slice(1, -1) : "";
+            if (!key) {
+              el.appendChild(document.createTextNode(seg));
+              return;
+            }
+            // bdi keeps a Latin name or title from reordering an Arabic sentence
+            var b = document.createElement("bdi");
+            if (key !== "name") b.className = "w2";
+            b.textContent = parts[key];
+            el.appendChild(b);
+          });
         }
 
         var ua = navigator.userAgent || "";
@@ -684,6 +1016,17 @@
           show("bad");
           return;
         }
+
+        var isPair = PAIR_CODE_RE.test(data.code);
+        var who = cleanName(data.name);
+        var what = isPair ? "" : cleanText(data.title, 70);
+        var headline = who ? (what ? T.hNameTitle : isPair ? T.hNamePlain : T.hName) : what ? T.hTitle : isPair ? T.hPlain : T.hSite;
+        fill(document.getElementById("headline"), headline, { name: who, title: what, site: siteName(dest.hostname) });
+        // a title is the sender's word, so the real host stays in sight next to it
+        if (what) {
+          document.getElementById("where").textContent = dest.hostname;
+          show("where");
+        }
         show("ok");
 
         function randomId() {
@@ -737,6 +1080,11 @@
         document.getElementById("dest-host").textContent = dest.hostname;
         document.getElementById("dest-url").textContent = dest.href;
         document.getElementById("join-link").setAttribute("href", target);
+        // a pair link carries this site as a placeholder, the extension asks the server for the real room
+        if (isPair) {
+          hide("dest-box");
+          hide("caution");
+        }
 
         // a non-https destination is a stronger phishing/eavesdrop signal, so escalate
         if (dest.protocol !== "https:") {
@@ -744,24 +1092,62 @@
           document.getElementById("caution-text").textContent = T.danger.replace("{host}", dest.hostname);
         }
 
+        // set when this load is the reload that follows a detected install
+        var RELOAD_KEY = "wb_install_reload";
+        var afterInstall = false;
+        try {
+          afterInstall = sessionStorage.getItem(RELOAD_KEY) === data.code;
+        } catch (e) {
+          // storage blocked: the page then never reloads itself
+        }
+
         var lateDetect = false;
+        var missingShown = false;
         function installed() {
           return document.documentElement.dataset.wbInstalled === "1";
         }
         function showJoin() {
+          hide("what");
           hide("install-no");
           hide("elsewhere");
+          hide("how");
+          hide("save-or");
+          hide("save-box");
+          hide("saved-box");
           show("install-yes");
         }
         function showMissing() {
+          if (missingShown || installed()) return;
+          missingShown = true;
+          show("how");
           if (canInstall) {
+            // the extension only follows an invite into its room when the link carries an invite id
+            document.getElementById("keep").textContent = inviteId ? T.keepAuto : T.keepJoin;
+            show("keep");
             show("install-no");
             return;
           }
           document.getElementById("info-text").textContent = isMobile ? T.mobileInfo : T.browserInfo;
-          if (isMobile && navigator.share) show("share-btn");
+          if (isMobile) show("steps-lead");
+          if (isMobile && navigator.share) {
+            // one filled button per screen: the share sheet leads, copy steps back
+            show("share-btn");
+            document.getElementById("copy-btn").classList.add("ghost");
+          }
           show("elsewhere");
           if (isMobile) offerSave();
+        }
+
+        /** true once the store extension is installed, even in a tab its content script never reached */
+        function probe() {
+          if (!canInstall || !window.fetch) return Promise.resolve(false);
+          return fetch(EXTENSION_PROBE).then(
+            function (r) {
+              if (r.body && r.body.cancel) r.body.cancel().catch(function () {});
+              return r.ok;
+            },
+            function () { return false; }
+          );
         }
 
         // the content script sets data-wb-installed at document_idle; poll briefly, then slowly in case it is installed meanwhile
@@ -788,9 +1174,59 @@
             device: isMobile ? "mobile" : "desktop",
             browser_supported: canInstall,
             invite_id: inviteId,
-            lang: langTag
+            lang: langTag,
+            after_install: afterInstall
           };
         }
+
+        // a tab that was open before the install gets no content script, so the page asks the extension itself
+        var watchUntil = 0;
+        var clickedAt = 0;
+        var pollTimer;
+        var sawInstall = false;
+        function watchInstall() {
+          show("waiting");
+          if (!watchUntil) {
+            watchUntil = Date.now() + 10 * 60 * 1000;
+            clickedAt = Date.now();
+          }
+          pollInstall();
+        }
+        function pollInstall() {
+          clearTimeout(pollTimer);
+          if (sawInstall || installed() || !watchUntil) return;
+          probe().then(function (has) {
+            if (has) return installSeen();
+            clearTimeout(pollTimer);
+            if (Date.now() < watchUntil) pollTimer = setTimeout(pollInstall, 2000);
+          });
+        }
+        function installSeen() {
+          if (sawInstall) return;
+          sawInstall = true;
+          track("invite_install_detected", { invite_id: inviteId, seconds: Math.round((Date.now() - clickedAt) / 1000) });
+          // one reload per tab: if the join button still isn't there, the manual link is what's left
+          if (afterInstall) return;
+          try {
+            sessionStorage.setItem(RELOAD_KEY, data.code);
+          } catch (e) {
+            return;
+          }
+          reloadWhenSeen();
+        }
+        // a reload is what lets the content script in. It waits until someone looks at the tab,
+        // because after sign-in the extension navigates this tab to the video by itself.
+        function reloadWhenSeen() {
+          if (document.hidden) return;
+          setTimeout(function () {
+            if (!document.hidden) location.reload();
+          }, 1200);
+        }
+        document.addEventListener("visibilitychange", function () {
+          if (document.hidden) return;
+          if (sawInstall && !afterInstall) reloadWhenSeen();
+          else pollInstall();
+        });
         // phone visitors can park the invite on their Google account for the computer
         var SAVED_KEY = "wb_saved_invite";
         var saveNonce = randomId();
@@ -901,13 +1337,23 @@
             });
         }
 
+        // nothing to wait for where the extension can't exist or the store extension doesn't answer;
+        // detect() still decides what invite_page_viewed reports
+        if (!canInstall) showMissing();
+        else probe().then(function (has) { if (!has) showMissing(); });
         detect();
 
         document.getElementById("join-link").addEventListener("click", function () {
           track("invite_join_clicked", { invite_id: inviteId, detected_late: lateDetect });
         });
-        document.getElementById("install-link").addEventListener("click", function () {
+        function installClicked() {
           track("invite_install_clicked", { invite_id: inviteId });
+          watchInstall();
+        }
+        document.getElementById("install-link").addEventListener("click", installClicked);
+        // a middle click opens the store too
+        document.getElementById("install-link").addEventListener("auxclick", function (e) {
+          if (e.button === 1) installClicked();
         });
         document.getElementById("retry").addEventListener("click", function () {
           track("invite_retry_clicked", { invite_id: inviteId });

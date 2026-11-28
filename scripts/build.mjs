@@ -78,7 +78,9 @@ function checkLinks(post, slugs) {
   for (const [, href] of post.html.matchAll(/href="([^"]+)"/g)) {
     if (/^(https?:|mailto:|#)/.test(href)) continue;
     const path = href.split("#")[0];
-    const ok = path.startsWith("../") ? existsSync(join(site, path.slice(3))) : path === "index.html" || slugs.has(path.replace(/\.html$/, ""));
+    /** Static pages answer without .html too (nginx try_files), so ../netflix-party is a valid link. */
+    const page = path.slice(3);
+    const ok = path.startsWith("../") ? existsSync(join(site, page)) || existsSync(join(site, `${page}.html`)) : path === "index.html" || slugs.has(path.replace(/\.html$/, ""));
     if (!ok) fail(`${post.slug}.md`, `broken link "${href}"`);
   }
 }

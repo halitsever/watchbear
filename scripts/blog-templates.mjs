@@ -171,7 +171,10 @@ export function renderIndex(posts) {
 
 ${footer([
   ["../", "Home"],
+  ["../netflix-party", "Netflix party"],
+  ["../watch-party-extension", "Watch party extension"],
   ["../teleparty-alternative.html", "Watchbear vs Teleparty"],
+  ["../watch2gether-alternative", "Watchbear vs Watch2Gether"],
   ["../support.html", "Support"],
   ["../privacy.html", "Privacy Policy"],
 ])}`;
@@ -273,6 +276,8 @@ ${post.html}
 ${footer([
   ["../", "Home"],
   ["./", "Blog"],
+  ["../netflix-party", "Netflix party"],
+  ["../watch-party-extension", "Watch party extension"],
   ["../support.html", "Support"],
   ["../privacy.html", "Privacy Policy"],
 ])}`;

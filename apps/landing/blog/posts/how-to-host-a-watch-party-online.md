@@ -38,7 +38,7 @@ With a sync extension, each person's player streams at full quality straight fro
 
 ### 1. Install the extension
 
-Add Watchbear from the [Chrome Web Store](https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn) and pin it to your toolbar so the bear icon is easy to find.
+Add Watchbear from the [Chrome Web Store](https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn) and pin it to your toolbar so the bear icon is easy to find. The [watch party extension page](../watch-party-extension) lists which sites it supports and what it stores.
 
 ### 2. Open the video
 

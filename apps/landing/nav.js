@@ -58,12 +58,24 @@
     return new URL(href, BASE).href;
   }
 
-  var LINKS = [
-    { href: "./", label: "Home" },
-    { href: "blog/", label: "Blog", section: true },
-    { href: "privacy.html", label: "Privacy" },
-    { href: "support.html", label: "Support" },
-  ];
+  /** Turkish pages under tr/ get Turkish labels and a home link to tr/. */
+  var TR = document.documentElement.lang === "tr";
+
+  var LINKS = TR
+    ? [
+        { href: "tr/", label: "Ana sayfa" },
+        { href: "tr/netflix-party-nasil-yapilir", label: "Netflix party" },
+        { href: "privacy.html", label: "Gizlilik" },
+        { href: "support.html", label: "Destek" },
+      ]
+    : [
+        { href: "./", label: "Home" },
+        { href: "blog/", label: "Blog", section: true },
+        { href: "privacy.html", label: "Privacy" },
+        { href: "support.html", label: "Support" },
+      ];
+  var HOME = TR ? "tr/" : "./";
+  var CTA = TR ? "Chrome'a ekle" : "Add to Chrome";
 
   var STYLE =
     ":host{display:block}" +
@@ -120,15 +132,15 @@
         "<style>" + STYLE + "</style>" +
         '<nav class="nav">' +
         '<div class="wrap nav-in">' +
-        '<a href="' + resolve("./") + '" class="brand" aria-label="Watchbear home">' +
+        '<a href="' + resolve(HOME) + '" class="brand" aria-label="Watchbear home">' +
         '<span class="mk">' + bearSVG({ size: 36 }) + "</span>" +
         '<span class="wordmark"><span class="w1">Watch</span><span class="w2">bear</span></span>' +
         "</a>" +
         '<div class="nav-right">' +
         links +
-        '<a href="' + CHROME_STORE_URL + '" target="_blank" rel="noopener" class="btn">Add to Chrome</a>' +
+        '<a href="' + CHROME_STORE_URL + '" target="_blank" rel="noopener" class="btn">' + CTA + "</a>" +
         "</div>" +
-        '<button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">' +
+        '<button class="nav-toggle" type="button" aria-label="' + (TR ? "Menüyü aç veya kapat" : "Toggle menu") + '" aria-expanded="false">' +
         "<span></span><span></span><span></span>" +
         "</button>" +
         "</nav>";

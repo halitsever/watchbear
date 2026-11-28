@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Watch Party Extension for Chrome, Free · Watchbear</title>
+    <meta
+      name="description"
+      content="Watchbear is a free watch party extension for Chrome. It syncs Netflix, YouTube and Vimeo for up to 50 people, with video chat in a side panel."
+    />
+    <link rel="canonical" href="https://watchbear.net/watch-party-extension" />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Watchbear" />
+    <meta property="og:title" content="Watch Party Extension for Chrome, Free · Watchbear" />
+    <meta property="og:description" content="A free Chrome extension that keeps Netflix, YouTube and most video players in sync for everyone in a room, with chat, voice and video beside the film." />
+    <meta property="og:url" content="https://watchbear.net/watch-party-extension" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://watchbear.net/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Watchbear, watch videos together in perfect sync" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Watch Party Extension for Chrome, Free · Watchbear" />
+    <meta name="twitter:description" content="A free Chrome extension that keeps Netflix, YouTube and most video players in sync for everyone in a room, with chat, voice and video beside the film." />
+    <meta name="twitter:image" content="https://watchbear.net/og.png" />
+    <meta name="twitter:image:alt" content="Watchbear, watch videos together in perfect sync" />
+
+    <link rel="icon" type="image/svg+xml" href="bear.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="icon32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="icon16.png" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="landing.css" />
+    <script src="nav.js" defer></script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://watchbear.net/watch-party-extension#webpage",
+            "url": "https://watchbear.net/watch-party-extension",
+            "name": "Watch Party Extension for Chrome, Free · Watchbear",
+            "description": "Watchbear is a free watch party extension for Chrome. It syncs Netflix, YouTube and Vimeo for up to 50 people, with video chat in a side panel.",
+            "inLanguage": "en",
+            "isPartOf": { "@id": "https://watchbear.net/#website" },
+            "about": { "@id": "https://watchbear.net/#app" },
+            "primaryImageOfPage": "https://watchbear.net/img/watchbear-side-panel-youtube.webp",
+            "publisher": { "@id": "https://watchbear.net/#org" }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://watchbear.net/watch-party-extension#breadcrumb",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://watchbear.net/" },
+              { "@type": "ListItem", "position": 2, "name": "Watch Party Extension", "item": "https://watchbear.net/watch-party-extension" }
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://watchbear.net/watch-party-extension#faq",
+            "inLanguage": "en",
+            "isPartOf": { "@id": "https://watchbear.net/#website" },
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Which browsers does the extension work in?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Chrome on a laptop or desktop computer. Watchbear is published on the Chrome Web Store only, and it does not run on phones or tablets." }
+              },
+              {
+                "@type": "Question",
+                "name": "Is it a Netflix watch party extension or a YouTube one?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Both. Netflix gets dedicated handling for its player, YouTube and Vimeo work out of the box, and the same room works on most other sites with a standard video player." }
+              },
+              {
+                "@type": "Question",
+                "name": "Why does Chrome say it can read data on all websites?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Watchbear has to find the video on whatever page you open, so it asks to run on every site. Its privacy policy says it does not collect your browsing history or page content, and usage records keep only the domain of the video site." }
+              },
+              {
+                "@type": "Question",
+                "name": "Does it cost anything?",
+                "acceptedAnswer": { "@type": "Answer", "text": "No. Hosting a room, joining one, video and voice chat, messages and reactions are free, and nothing asks for a card. Everyone signs in with a Google account." }
+              },
+              {
+                "@type": "Question",
+                "name": "Does everyone in the room need the extension?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Yes. Each person plays the video in their own browser, so everyone needs Watchbear in Chrome and access to the video, such as their own Netflix account. Someone who opens an invite link without the extension is shown how to install it first." }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <wb-nav></wb-nav>
+
+    <main>
+      <header class="hero">
+        <div class="wrap">
+          <h1>A <span class="accent">watch party extension</span> for Netflix, YouTube and any video player</h1>
+          <p class="sub">
+            Watchbear adds a watch party button to Chrome. Open a video, start a room, and every player in the room plays, pauses and skips together, with chat, voice and video
+            in a side panel beside the film.
+          </p>
+          <div class="cta-row">
+            <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener" class="btn lg">Add to Chrome, free</a>
+            <a href="#sites" class="btn lg ghost">Supported sites</a>
+          </div>
+          <!-- keep in step with the hero rating on index.html; both come from the store listing -->
+          <p class="rating"><a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn/reviews" target="_blank" rel="noopener">Rated 4.8 out of 5 from 59 ratings on the Chrome Web Store</a></p>
+        </div>
+      </header>
+
+      <section class="block" aria-labelledby="what-title">
+        <div class="wrap">
+          <h2 id="what-title">What the extension does</h2>
+          <ul>
+            <li><strong>Synced playback.</strong> Play, pause and seek stay in step for everyone in the room.</li>
+            <li><strong>Video and voice chat, free.</strong> Up to 8 people on camera and microphone at once. Cameras start off every time you join.</li>
+            <li><strong>Chat and reactions.</strong> Messages and emoji reactions in Chrome's side panel, beside the video rather than over it.</li>
+            <li><strong>Invite link or room code.</strong> Send a link, or read out a short code. Up to 50 people in a room.</li>
+            <li><strong>No screen sharing.</strong> Each person plays their own copy at full quality, and only the playback position travels between you.</li>
+            <li><strong>Seven languages.</strong> The interface follows your browser language, and you can pick another one in the extension.</li>
+          </ul>
+          <figure class="shot wide">
+            <img src="img/watchbear-side-panel-youtube.webp" width="1413" height="823" loading="lazy" decoding="async" alt="Watchbear side panel next to a YouTube video, showing the room code, four people in the room, chat messages and reaction buttons" />
+            <figcaption>The side panel in a real YouTube tab.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="block" id="sites" aria-labelledby="sites-title">
+        <div class="wrap">
+          <h2 id="sites-title">Supported sites</h2>
+          <p>Watchbear does not keep a list of approved services. It looks for the main video on the page you open. What that means in practice:</p>
+          <div class="table-card">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Site</th>
+                  <th scope="col">How Watchbear handles it</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Netflix</th>
+                  <td>Dedicated handling: seeks go through Netflix's own player so it does not crash. See the <a href="netflix-party">Netflix party steps</a>.</td>
+                </tr>
+                <tr>
+                  <th scope="row">YouTube</th>
+                  <td>Works, and keeps up when YouTube swaps in the next video without reloading the page. See <a href="blog/watch-youtube-together.html">watching YouTube together</a>.</td>
+                </tr>
+                <tr>
+                  <th scope="row">Vimeo</th>
+                  <td>Works with the standard player.</td>
+                </tr>
+                <tr>
+                  <th scope="row">Other sites with a video player</th>
+                  <td>Works on most pages with a standard HTML5 video player, including players embedded in a frame, such as course platforms.</td>
+                </tr>
+                <tr>
+                  <th scope="row">Hulu, Prime Video, Disney+, HBO Max</th>
+                  <td>No dedicated handling. Watchbear looks for the video as on any page, and copy-protected players vary from site to site, so test with one friend first.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="privacy-title">
+        <div class="wrap">
+          <h2 id="privacy-title">Privacy in short</h2>
+          <ul>
+            <li>Starting or joining a room needs a Google sign-in. The account keeps your email, name and profile picture, and you can ask for it to be deleted.</li>
+            <li>Chat messages are relayed to your room and never written down. Room data lives in the server's memory only while the room is open.</li>
+            <li>Voice and camera go peer to peer between the people in the room and are never recorded or stored by our server.</li>
+            <li>Usage analytics go to our own server only. There are no third-party trackers, and data is never sold.</li>
+            <li>No browsing history or page content is collected. Usage records keep only the domain of the video site, such as youtube.com.</li>
+          </ul>
+          <p>The <a href="privacy.html">privacy policy</a> has the full details.</p>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="faq-title">
+        <div class="wrap">
+          <h2 id="faq-title">Questions about the extension</h2>
+          <div class="qa">
+            <h3>Which browsers does the extension work in?</h3>
+            <p>Chrome on a laptop or desktop computer. Watchbear is published on the Chrome Web Store only, and it does not run on phones or tablets.</p>
+          </div>
+          <div class="qa">
+            <h3>Is it a Netflix watch party extension or a YouTube one?</h3>
+            <p>Both. Netflix gets dedicated handling for its player, YouTube and Vimeo work out of the box, and the same room works on most other sites with a standard video player.</p>
+          </div>
+          <div class="qa">
+            <h3>Why does Chrome say it can read data on all websites?</h3>
+            <p>Watchbear has to find the video on whatever page you open, so it asks to run on every site. Its <a href="privacy.html">privacy policy</a> says it does not collect your browsing history or page content, and usage records keep only the domain of the video site.</p>
+          </div>
+          <div class="qa">
+            <h3>Does it cost anything?</h3>
+            <p>No. Hosting a room, joining one, video and voice chat, messages and reactions are free, and nothing asks for a card. Everyone signs in with a Google account.</p>
+          </div>
+          <div class="qa">
+            <h3>Does everyone in the room need the extension?</h3>
+            <p>Yes. Each person plays the video in their own browser, so everyone needs Watchbear in Chrome and access to the video, such as their own Netflix account. Someone who opens an invite link without the extension is shown how to install it first.</p>
+          </div>
+
+          <div class="band">
+            <h2>Add Watchbear to Chrome</h2>
+            <p>Comparing tools first? See <a href="teleparty-alternative.html">Watchbear vs Teleparty</a> and <a href="watch2gether-alternative">Watchbear vs Watch2Gether</a>.</p>
+            <a href="https://chromewebstore.google.com/detail/watchbear-watch-together/ldegfikaldilbcpgmiopdnnhpkpcnepn" target="_blank" rel="noopener" class="btn lg">Add to Chrome, free</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot-wrap">
+      <div class="foot">
+        <div class="foot-brand">
+          <img src="bear.svg" alt="" width="28" height="28" style="display: block" />
+          <span class="tag">Watchbear · watch videos together, in sync</span>
+        </div>
+        <nav class="foot-links" aria-label="Footer">
+          <a href="./">Home</a>
+          <a href="blog/">Blog</a>
+          <a href="netflix-party">Netflix party</a>
+          <a href="watch2gether-alternative">Watch2Gether alternative</a>
+          <a href="teleparty-alternative.html">Watchbear vs Teleparty</a>
+          <a href="support.html">Support</a>
+          <a href="privacy.html">Privacy Policy</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

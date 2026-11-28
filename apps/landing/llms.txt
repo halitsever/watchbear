@@ -8,6 +8,11 @@ Install it from the Chrome Web Store: https://chromewebstore.google.com/detail/w
 
 - [Watchbear](https://watchbear.net/): what the extension does, supported sites and FAQ
 - [Teleparty alternative](https://watchbear.net/teleparty-alternative.html): Watchbear vs Teleparty on supported sites, video chat, price and phones, including where Teleparty is stronger
+- [Netflix party](https://watchbear.net/netflix-party): Netflix Party is now called Teleparty; how to host a Netflix watch party with Watchbear in three steps, with a Teleparty comparison
+- [Watch party extension](https://watchbear.net/watch-party-extension): what the Chrome extension does, supported sites and a privacy summary
+- [Watch2Gether alternative](https://watchbear.net/watch2gether-alternative): Watchbear vs Watch2Gether, a sync extension compared with a shared player, including where Watch2Gether is stronger
+- [Watchbear (Türkçe)](https://watchbear.net/tr/): Turkish home page
+- [Netflix party nasıl yapılır](https://watchbear.net/tr/netflix-party-nasil-yapilir): Turkish step-by-step Netflix party guide, including the phone question
 - [Support](https://watchbear.net/support.html): help and contact
 - [Privacy policy](https://watchbear.net/privacy.html): what data the extension and site handle
 

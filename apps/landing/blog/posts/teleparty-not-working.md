@@ -26,7 +26,7 @@ faq:
   - q: Why can't I turn on my camera in Teleparty?
     a: Camera and microphone are Premium features in Teleparty. Free users can see and hear Premium users but can't turn on their own. If you are on Premium and it still fails, check that Chrome has permission to use your camera on that site.
   - q: How do I contact Teleparty support?
-    a: Teleparty's support page gives team@teleparty.com as the address to write to when a problem continues after reinstalling.
+    a: Contact Teleparty through its [support page](https://www.teleparty.com/support) when a problem continues after reinstalling.
 ---
 
 You send the link, everyone clicks it, and nothing happens. Or the TP button is gone, or the party starts for you and not for your friend. Teleparty problems are frustrating mostly because they show up right when everyone is waiting.
@@ -78,7 +78,7 @@ This one isn't from Teleparty's page, it is general Chrome advice. Extensions th
 
 ## 9. Contact Teleparty
 
-If nothing above helps, Teleparty asks you to email team@teleparty.com. Say which browser and service you're using, what you see, and what you have already tried. It saves a round of questions.
+If nothing above helps, write to Teleparty through its [support page](https://www.teleparty.com/support). Say which browser and service you're using, what you see, and what you have already tried. It saves a round of questions.
 
 ## If you just need tonight's party to work
 
